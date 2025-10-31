@@ -7,6 +7,8 @@ export default defineConfig({
   test: {
     // WHY: Use jsdom for DOM testing (React components)
     environment: "jsdom",
+    // WHY: Allow CI to pass before we add tests
+    passWithNoTests: true,
     // WHY: Setup file for test utilities
     setupFiles: ["./src/test/setup.ts"],
     // WHY: Include src files in coverage
