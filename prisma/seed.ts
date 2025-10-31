@@ -54,6 +54,12 @@ function normalizeItemStatus(cond?: string | null): ItemStatus {
 // ───────────────────── Seed ─────────────────────
 
 async function main() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      'DATABASE_URL is not set. Create a .env with DATABASE_URL pointing to your Postgres instance (see .env.example).'
+    );
+  }
+
   const csvPath = path.resolve(
     process.cwd(),
     "Obsidian_Notes/files/Tote Inventory Intake Form (Responses) - Form Responses 1.csv"
@@ -85,6 +91,11 @@ async function main() {
     skip_empty_lines: true,
     trim: true,
   }) as Row[];
+
+  if (!rows.length) {
+    console.warn("CSV parsed, but no rows found. Nothing to seed.");
+    return;
+  }
 
   // Track created Locations to avoid duplicates
   const locationCache = new Map<string, string>(); // name -> id
