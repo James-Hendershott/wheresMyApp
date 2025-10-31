@@ -51,4 +51,3 @@ prisma/migrations/*_migration.sql
 .vercel
 .turbo
 tsconfig.tsbuildinfo
-next-env.d.ts
