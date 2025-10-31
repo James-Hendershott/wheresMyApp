@@ -2,30 +2,53 @@
 // WHAT: Lists all racks; clicking a rack shows its SVG grid (rows × cols) with containers placed
 // HOW: Server component fetches racks and containers from the DB; placeholder for now
 
+
 import Link from "next/link";
 import { PrismaClient } from "@prisma/client";
+import { AddLocationForm, AddRackForm, AddContainerForm, AddItemForm } from "../components/CrudForms";
 
 const prisma = new PrismaClient();
 
+
 export default async function RacksPage() {
-  // TODO: Replace with server action or loader pattern for production
-  // Fetch all racks and their locations
-  const racks = await prisma.rack.findMany({
-    include: {
-      location: true,
-      slots: {
-        include: {
-          container: true,
-        },
+  // Fetch all locations, racks, slots, containers for CRUD forms
+  const [locations, racks, containers, slots] = await Promise.all([
+    prisma.location.findMany({ orderBy: { name: "asc" } }),
+    prisma.rack.findMany({
+      include: {
+        location: true,
+        slots: { include: { container: true } },
       },
-    },
-    orderBy: { name: "asc" },
-  });
+      orderBy: { name: "asc" },
+    }),
+    prisma.container.findMany({ orderBy: { label: "asc" } }),
+    prisma.slot.findMany({
+      include: { rack: true },
+      orderBy: [{ rack: { name: "asc" } }, { row: "asc" }, { col: "asc" }],
+    }),
+  ]);
+
+  // For slot/containers dropdowns
+  const slotOptions = slots.map((slot) => ({
+    id: slot.id,
+    label: `${slot.rack?.name || "Rack"} [${slot.row},${slot.col}]`,
+  }));
+  const containerOptions = containers.map((c) => ({ id: c.id, label: c.label }));
 
   return (
     <main className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Inventory Map</h1>
       <p className="mb-8 text-gray-600">See all racks and where each container is located. Click a rack to view its grid.</p>
+
+      {/* CRUD Forms */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2">
+        <AddLocationForm />
+        <AddRackForm locations={locations} />
+        <AddContainerForm slots={slotOptions} />
+        <AddItemForm containers={containerOptions} />
+      </div>
+
+      {/* Racks List */}
       <div className="grid gap-6 md:grid-cols-2">
         {racks.map((rack) => (
           <Link key={rack.id} href={`/racks/${rack.id}`} className="block rounded-lg border p-4 shadow-sm hover:shadow-md transition">
