@@ -172,24 +172,39 @@ async function main() {
     const status = normalizeItemStatus(cond);
 
     for (let i = 0; i < qty; i++) {
-      const item = await prisma.item.create({
-        data: {
-          name: itemName,
-          description: description || null,
-          status,
+      // Idempotency: skip if an identical item already exists (containerId + name + description + createdAt)
+      const existingItem = await prisma.item.findFirst({
+        where: {
           containerId,
-          tags,
+          name: itemName,
           createdAt: ts,
+          ...(description ? { description } : { description: null }),
         },
       });
 
-      if (photo && /^https?:\/\//i.test(photo)) {
-        await prisma.itemPhoto.create({
+      const item =
+        existingItem ||
+        (await prisma.item.create({
           data: {
-            itemId: item.id,
-            url: photo,
+            name: itemName,
+            description: description || null,
+            status,
+            containerId,
+            tags,
+            createdAt: ts,
           },
-        });
+        }));
+
+      if (photo && /^https?:\/\//i.test(photo)) {
+        const existingPhoto = await prisma.itemPhoto.findFirst({ where: { itemId: item.id, url: photo } });
+        if (!existingPhoto) {
+          await prisma.itemPhoto.create({
+            data: {
+              itemId: item.id,
+              url: photo,
+            },
+          });
+        }
       }
     }
   }
