@@ -46,9 +46,9 @@ export default function HomePage() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <Link href="/dashboard">
+          <Link href="/racks">
             <Button size="lg" className="w-full sm:w-auto">
-              Get Started
+              View Inventory Map
             </Button>
           </Link>
           <Link href="/scan">
