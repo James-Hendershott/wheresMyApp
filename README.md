@@ -79,6 +79,23 @@ This project showcases a modern, production-ready stack:
 
 6. **Open** [http://localhost:3000](http://localhost:3000)
 
+### Seeding from the CSV (what it imports)
+
+The seed script reads the real intake CSV at `Obsidian_Notes/files/Tote Inventory Intake Form (Responses) - Form Responses 1.csv` and imports:
+
+- Locations from “Tote Location”
+- Containers from “Tote Number” + “Tote Description” (stable code generated for QR)
+- Items from “Item Name”, quantity from “QTY”, tags from Category/Condition/ISBN
+- Item photos from “Item Photo” URLs
+
+It’s idempotent: you can re-run `pnpm db:seed` without duplicating data.
+
+Example `.env` for Postgres on a LAN host:
+
+```
+DATABASE_URL="postgresql://postgres:postgres@192.168.1.153:5433/wheresMyApp?schema=public"
+```
+
 ## 📂 Project Structure
 
 ```
