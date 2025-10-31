@@ -1,0 +1,212 @@
+// WHY: Data model for WheresMy App - tracks locations, racks, containers, items, and movements
+// WHAT: PostgreSQL schema with full relationships and indexes for performance
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────── User & Auth ─────────────────────
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole        @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  movements     Movement[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ───────────────────── Physical Locations ─────────────────────
+
+model Location {
+  id        String   @id @default(cuid())
+  name      String
+  notes     String?  @db.Text
+  racks     Rack[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("locations")
+}
+
+model Rack {
+  id         String   @id @default(cuid())
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  name       String
+  rows       Int      @default(1)
+  cols       Int      @default(1)
+  slots      Slot[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([locationId])
+  @@map("racks")
+}
+
+model Slot {
+  id          String      @id @default(cuid())
+  rackId      String
+  rack        Rack        @relation(fields: [rackId], references: [id], onDelete: Cascade)
+  row         Int
+  col         Int
+  containerId String?     @unique
+  container   Container?  @relation(fields: [containerId], references: [id])
+  movements   Movement[]  @relation("slotMovements")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // GOTCHA: Ensure unique slot position per rack
+  @@unique([rackId, row, col])
+  @@index([rackId])
+  @@index([containerId])
+  @@map("slots")
+}
+
+// ───────────────────── Containers (Totes/Boxes) ─────────────────────
+
+model Container {
+  id             String            @id @default(cuid())
+  code           String            @unique // WHY: QR code-friendly unique identifier
+  label          String            // WHAT: Human-readable name (e.g., "Holiday Decor")
+  description    String?           @db.Text
+  status         ContainerStatus   @default(ACTIVE)
+  currentSlotId  String?           @unique
+  currentSlot    Slot?
+  tags           String[]          @default([])
+  items          Item[]
+  movementsFrom  Movement[]        @relation("containerFrom")
+  movementsTo    Movement[]        @relation("containerTo")
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([status])
+  @@index([code])
+  @@map("containers")
+}
+
+enum ContainerStatus {
+  ACTIVE
+  ARCHIVED
+  MISSING
+}
+
+// ───────────────────── Items ─────────────────────
+
+model Item {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?     @db.Text
+  status       ItemStatus  @default(IN_STORAGE)
+  containerId  String?
+  container    Container?  @relation(fields: [containerId], references: [id], onDelete: SetNull)
+  tags         String[]    @default([])
+  photos       ItemPhoto[]
+  movements    Movement[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([containerId])
+  @@index([status])
+  @@map("items")
+}
+
+enum ItemStatus {
+  IN_STORAGE
+  CHECKED_OUT
+  DISCARDED
+}
+
+model ItemPhoto {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  url       String   // WHY: S3 or MinIO URL
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+
+  @@index([itemId])
+  @@map("item_photos")
+}
+
+// ───────────────────── Movement History ─────────────────────
+
+model Movement {
+  id              String     @id @default(cuid())
+  actorId         String
+  actor           User       @relation(fields: [actorId], references: [id])
+  itemId          String?
+  item            Item?      @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  action          String     // WHAT: "check_in", "check_out", "move", "add", "remove"
+  fromContainerId String?
+  fromContainer   Container? @relation("containerFrom", fields: [fromContainerId], references: [id], onDelete: SetNull)
+  toContainerId   String?
+  toContainer     Container? @relation("containerTo", fields: [toContainerId], references: [id], onDelete: SetNull)
+  fromSlotId      String?
+  fromSlot        Slot?      @relation("slotMovements", fields: [fromSlotId], references: [id], onDelete: SetNull)
+  toSlotId        String?
+  note            String?    @db.Text
+  createdAt       DateTime   @default(now())
+
+  @@index([actorId])
+  @@index([itemId])
+  @@index([createdAt])
+  @@map("movements")
+}
