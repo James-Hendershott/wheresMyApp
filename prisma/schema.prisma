@@ -123,9 +123,11 @@ model Slot {
 
 model Container {
   id             String            @id @default(cuid())
-  code           String            @unique // WHY: QR code-friendly unique identifier
-  label          String            // WHAT: Human-readable name (e.g., "Holiday Decor")
+  type           String?           // WHAT: Container type (Bin, Tote, Book Box, etc.)
+  code           String            @unique // WHY: QR code-friendly unique identifier (extracted from name)
+  label          String            // WHAT: Human-readable name (e.g., "Bin #01", "Tote #05")
   description    String?           @db.Text
+  locationName   String?           // WHAT: Freeform location (e.g., "Uhaul Unit #AA5929N")
   status         ContainerStatus   @default(ACTIVE)
   currentSlotId  String?           @unique
   currentSlot    Slot?
@@ -150,20 +152,27 @@ enum ContainerStatus {
 // ───────────────────── Items ─────────────────────
 
 model Item {
-  id           String      @id @default(cuid())
-  name         String
-  description  String?     @db.Text
-  status       ItemStatus  @default(IN_STORAGE)
-  containerId  String?
-  container    Container?  @relation(fields: [containerId], references: [id], onDelete: SetNull)
-  tags         String[]    @default([])
-  photos       ItemPhoto[]
-  movements    Movement[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id             String         @id @default(cuid())
+  name           String
+  description    String?        @db.Text
+  status         ItemStatus     @default(IN_STORAGE)
+  condition      ItemCondition? // WHAT: Physical state of item
+  category       ItemCategory?  // WHAT: Organizational category
+  isbn           String?        // WHAT: For books
+  notes          String?        @db.Text
+  quantity       Int            @default(1)
+  expirationDate DateTime?      // WHAT: For items that expire
+  containerId    String?
+  container      Container?     @relation(fields: [containerId], references: [id], onDelete: SetNull)
+  tags           String[]       @default([])
+  photos         ItemPhoto[]
+  movements      Movement[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   @@index([containerId])
   @@index([status])
+  @@index([category])
   @@map("items")
 }
 
@@ -171,6 +180,31 @@ enum ItemStatus {
   IN_STORAGE
   CHECKED_OUT
   DISCARDED
+}
+
+enum ItemCondition {
+  UNOPENED          // Brand new, sealed
+  OPENED_COMPLETE   // Opened but all parts present
+  OPENED_MISSING    // Opened with some parts missing
+  USED              // Used condition
+  DAMAGED           // Has damage
+}
+
+enum ItemCategory {
+  BOOKS
+  GAMES_HOBBIES
+  CAMPING_OUTDOORS
+  TOOLS_GEAR
+  COOKING
+  CLEANING
+  ELECTRONICS
+  LIGHTS
+  FIRST_AID
+  EMERGENCY
+  CLOTHES
+  CORDAGE
+  TECH_MEDIA
+  MISC
 }
 
 model ItemPhoto {
