@@ -3,9 +3,8 @@
 
 "use server";
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
 const locationSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -21,6 +20,7 @@ export async function createLocation(formData: FormData) {
     return { error: parsed.error.flatten() };
   }
   const loc = await prisma.location.create({ data: parsed.data });
+  revalidatePath("/racks");
   return { location: loc };
 }
 
@@ -33,10 +33,12 @@ export async function updateLocation(id: string, formData: FormData) {
     return { error: parsed.error.flatten() };
   }
   const loc = await prisma.location.update({ where: { id }, data: parsed.data });
+  revalidatePath("/racks");
   return { location: loc };
 }
 
 export async function deleteLocation(id: string) {
   await prisma.location.delete({ where: { id } });
+  revalidatePath("/racks");
   return { success: true };
 }

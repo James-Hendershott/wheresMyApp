@@ -2,10 +2,8 @@
 // WHAT: Fetches rack by id, renders SVG grid (rows × cols), shows containers in slots
 // HOW: Server component, ready for future drag/drop and actions
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-
-const prisma = new PrismaClient();
 
 interface RackPageProps {
   params: { id: string };

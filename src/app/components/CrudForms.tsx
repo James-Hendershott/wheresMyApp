@@ -1,69 +1,93 @@
 // WHY: Unified CRUD forms for Location, Rack, Container, and Item
-// WHAT: Exports React components for create/update forms for each entity
-// HOW: Uses server actions, Zod validation, and minimal UI for demo
+// WHAT: Server components that post directly to Server Actions using the action prop
+// HOW: Tailwind-only controls for portability; shadcn/ui can be swapped in later
 
-import { useState } from "react";
+import { createLocation } from "@/app/actions/locationActions";
+import { createRack } from "@/app/actions/rackActions";
+import { createContainer } from "@/app/actions/containerActions";
+import { createItem } from "@/app/actions/itemActions";
 
-export function AddLocationForm({ onCreated }: { onCreated?: () => void }) {
+const inputClass = "mb-2 w-full rounded border p-2";
+const buttonClass = "inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700";
+
+export function AddLocationForm() {
+  const action = async (formData: FormData) => {
+    "use server";
+    await createLocation(formData);
+  };
   return (
-    <form action="/actions/locationActions.createLocation" className="mb-4 p-4 border rounded">
-      <h2 className="font-bold mb-2">Add Location</h2>
-      <input name="name" placeholder="Location name" className="input input-bordered mb-2 w-full" required />
-      <input name="notes" placeholder="Notes (optional)" className="input input-bordered mb-2 w-full" />
-      <button type="submit" className="btn btn-primary">Add Location</button>
+    <form action={action} className="mb-4 rounded border p-4">
+      <h2 className="mb-2 font-bold">Add Location</h2>
+      <input name="name" placeholder="Location name" className={inputClass} required />
+      <input name="notes" placeholder="Notes (optional)" className={inputClass} />
+      <button type="submit" className={buttonClass}>Add Location</button>
     </form>
   );
 }
 
-export function AddRackForm({ locations, onCreated }: { locations: { id: string; name: string }[]; onCreated?: () => void }) {
+export function AddRackForm({ locations }: { locations: { id: string; name: string }[] }) {
+  const action = async (formData: FormData) => {
+    "use server";
+    await createRack(formData);
+  };
   return (
-    <form action="/actions/rackActions.createRack" className="mb-4 p-4 border rounded">
-      <h2 className="font-bold mb-2">Add Rack</h2>
-      <input name="name" placeholder="Rack name" className="input input-bordered mb-2 w-full" required />
-      <select name="locationId" className="input input-bordered mb-2 w-full" required>
+    <form action={action} className="mb-4 rounded border p-4">
+      <h2 className="mb-2 font-bold">Add Rack</h2>
+      <input name="name" placeholder="Rack name" className={inputClass} required />
+      <select name="locationId" className={inputClass} required>
         <option value="">Select location</option>
         {locations.map((loc) => (
           <option key={loc.id} value={loc.id}>{loc.name}</option>
         ))}
       </select>
-      <input name="rows" type="number" min={1} placeholder="Rows" className="input input-bordered mb-2 w-full" required />
-      <input name="cols" type="number" min={1} placeholder="Columns" className="input input-bordered mb-2 w-full" required />
-      <button type="submit" className="btn btn-primary">Add Rack</button>
+      <div className="grid grid-cols-2 gap-2">
+        <input name="rows" type="number" min={1} placeholder="Rows" className={inputClass} required />
+        <input name="cols" type="number" min={1} placeholder="Columns" className={inputClass} required />
+      </div>
+      <button type="submit" className={buttonClass}>Add Rack</button>
     </form>
   );
 }
 
-export function AddContainerForm({ slots, onCreated }: { slots: { id: string; label: string }[]; onCreated?: () => void }) {
+export function AddContainerForm({ slots }: { slots: { id: string; label: string }[] }) {
+  const action = async (formData: FormData) => {
+    "use server";
+    await createContainer(formData);
+  };
   return (
-    <form action="/actions/containerActions.createContainer" className="mb-4 p-4 border rounded">
-      <h2 className="font-bold mb-2">Add Container (Tote)</h2>
-      <input name="code" placeholder="Tote code (e.g. tote-11)" className="input input-bordered mb-2 w-full" required />
-      <input name="label" placeholder="Label (e.g. Red Tote)" className="input input-bordered mb-2 w-full" required />
-      <input name="description" placeholder="Description (optional)" className="input input-bordered mb-2 w-full" />
-      <select name="slotId" className="input input-bordered mb-2 w-full">
+    <form action={action} className="mb-4 rounded border p-4">
+      <h2 className="mb-2 font-bold">Add Container (Tote)</h2>
+      <input name="code" placeholder="Tote code (e.g. TOTE-11)" className={inputClass} required />
+      <input name="label" placeholder="Label (e.g. Red Tote)" className={inputClass} required />
+      <input name="description" placeholder="Description (optional)" className={inputClass} />
+      <select name="slotId" className={inputClass}>
         <option value="">Assign to slot (optional)</option>
         {slots.map((slot) => (
           <option key={slot.id} value={slot.id}>{slot.label}</option>
         ))}
       </select>
-      <button type="submit" className="btn btn-primary">Add Container</button>
+      <button type="submit" className={buttonClass}>Add Container</button>
     </form>
   );
 }
 
-export function AddItemForm({ containers, onCreated }: { containers: { id: string; label: string }[]; onCreated?: () => void }) {
+export function AddItemForm({ containers }: { containers: { id: string; label: string }[] }) {
+  const action = async (formData: FormData) => {
+    "use server";
+    await createItem(formData);
+  };
   return (
-    <form action="/actions/itemActions.createItem" className="mb-4 p-4 border rounded">
-      <h2 className="font-bold mb-2">Add Item</h2>
-      <input name="name" placeholder="Item name" className="input input-bordered mb-2 w-full" required />
-      <input name="description" placeholder="Description (optional)" className="input input-bordered mb-2 w-full" />
-      <select name="containerId" className="input input-bordered mb-2 w-full">
+    <form action={action} className="mb-4 rounded border p-4">
+      <h2 className="mb-2 font-bold">Add Item</h2>
+      <input name="name" placeholder="Item name" className={inputClass} required />
+      <input name="description" placeholder="Description (optional)" className={inputClass} />
+      <select name="containerId" className={inputClass}>
         <option value="">Assign to container (optional)</option>
         {containers.map((c) => (
           <option key={c.id} value={c.id}>{c.label}</option>
         ))}
       </select>
-      <button type="submit" className="btn btn-primary">Add Item</button>
+      <button type="submit" className={buttonClass}>Add Item</button>
     </form>
   );
 }

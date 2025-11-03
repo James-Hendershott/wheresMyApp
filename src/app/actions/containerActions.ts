@@ -3,9 +3,9 @@
 
 "use server";
 import { z } from "zod";
-import { PrismaClient, ContainerStatus } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
+import { ContainerStatus } from "@prisma/client";
 
 const containerSchema = z.object({
   code: z.string().min(2, "Code required"),
@@ -28,17 +28,33 @@ export async function createContainer(formData: FormData) {
   if (!parsed.success) {
     return { error: parsed.error.flatten() };
   }
-  const container = await prisma.container.create({
-    data: {
-      code: parsed.data.code,
-      label: parsed.data.label,
-      description: parsed.data.description,
-      status: parsed.data.status,
-      tags: parsed.data.tags,
-      currentSlotId: parsed.data.slotId,
-    },
+  // Create container, and if slotId provided, ensure the slot is empty and link both sides
+  const result = await prisma.$transaction(async (tx) => {
+    if (parsed.data.slotId) {
+      const slot = await tx.slot.findUnique({ where: { id: parsed.data.slotId } });
+      if (!slot) throw new Error("Selected slot not found");
+      if (slot.containerId) throw new Error("Selected slot is already occupied");
+    }
+
+    const container = await tx.container.create({
+      data: {
+        code: parsed.data.code,
+        label: parsed.data.label,
+        description: parsed.data.description,
+        status: parsed.data.status,
+        tags: parsed.data.tags,
+        currentSlotId: parsed.data.slotId,
+      },
+    });
+
+    if (parsed.data.slotId) {
+      await tx.slot.update({ where: { id: parsed.data.slotId }, data: { containerId: container.id } });
+    }
+
+    return container;
   });
-  return { container };
+  revalidatePath("/racks");
+  return { container: result };
 }
 
 export async function updateContainer(id: string, formData: FormData) {
@@ -53,21 +69,51 @@ export async function updateContainer(id: string, formData: FormData) {
   if (!parsed.success) {
     return { error: parsed.error.flatten() };
   }
-  const container = await prisma.container.update({
-    where: { id },
-    data: {
-      code: parsed.data.code,
-      label: parsed.data.label,
-      description: parsed.data.description,
-      status: parsed.data.status,
-      tags: parsed.data.tags,
-      currentSlotId: parsed.data.slotId,
-    },
+  // Update container and adjust slot occupancy if changed
+  const updated = await prisma.$transaction(async (tx) => {
+    // Find current slot for container
+    const existing = await tx.container.findUnique({ where: { id } });
+    if (!existing) throw new Error("Container not found");
+
+    // If slotId changed, free previous and occupy new
+    if (parsed.data.slotId !== existing.currentSlotId) {
+      if (existing.currentSlotId) {
+        await tx.slot.update({ where: { id: existing.currentSlotId }, data: { containerId: null } });
+      }
+      if (parsed.data.slotId) {
+        const newSlot = await tx.slot.findUnique({ where: { id: parsed.data.slotId } });
+        if (!newSlot) throw new Error("Selected slot not found");
+        if (newSlot.containerId && newSlot.containerId !== id) throw new Error("Selected slot is already occupied");
+        await tx.slot.update({ where: { id: parsed.data.slotId }, data: { containerId: id } });
+      }
+    }
+
+    const container = await tx.container.update({
+      where: { id },
+      data: {
+        code: parsed.data.code,
+        label: parsed.data.label,
+        description: parsed.data.description,
+        status: parsed.data.status,
+        tags: parsed.data.tags,
+        currentSlotId: parsed.data.slotId ?? null,
+      },
+    });
+    return container;
   });
-  return { container };
+  revalidatePath("/racks");
+  return { container: updated };
 }
 
 export async function deleteContainer(id: string) {
-  await prisma.container.delete({ where: { id } });
+  // Clear slot occupancy, then delete
+  await prisma.$transaction(async (tx) => {
+    const existing = await tx.container.findUnique({ where: { id } });
+    if (existing?.currentSlotId) {
+      await tx.slot.update({ where: { id: existing.currentSlotId }, data: { containerId: null } });
+    }
+    await tx.container.delete({ where: { id } });
+  });
+  revalidatePath("/racks");
   return { success: true };
 }

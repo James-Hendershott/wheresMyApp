@@ -3,9 +3,9 @@
 
 "use server";
 import { z } from "zod";
-import { PrismaClient, ItemStatus } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
+import { ItemStatus } from "@prisma/client";
 
 const itemSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -35,6 +35,7 @@ export async function createItem(formData: FormData) {
       containerId: parsed.data.containerId,
     },
   });
+  revalidatePath("/racks");
   return { item };
 }
 
@@ -59,10 +60,12 @@ export async function updateItem(id: string, formData: FormData) {
       containerId: parsed.data.containerId,
     },
   });
+  revalidatePath("/racks");
   return { item };
 }
 
 export async function deleteItem(id: string) {
   await prisma.item.delete({ where: { id } });
+  revalidatePath("/racks");
   return { success: true };
 }

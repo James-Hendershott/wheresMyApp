@@ -3,9 +3,8 @@
 
 "use server";
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
 const rackSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -40,6 +39,7 @@ export async function createRack(formData: FormData) {
     },
     include: { slots: true },
   });
+  revalidatePath("/racks");
   return { rack };
 }
 
@@ -61,10 +61,12 @@ export async function updateRack(id: string, formData: FormData) {
       locationId: parsed.data.locationId,
     },
   });
+  revalidatePath("/racks");
   return { rack };
 }
 
 export async function deleteRack(id: string) {
   await prisma.rack.delete({ where: { id } });
+  revalidatePath("/racks");
   return { success: true };
 }
