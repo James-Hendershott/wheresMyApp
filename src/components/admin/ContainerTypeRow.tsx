@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "sonner";
-import { ICON_OPTIONS } from "@/lib/iconKeys";
+// import { ICON_OPTIONS } from "@/lib/iconKeys";
+import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 
 type FormResult = { success?: string; error?: string };
 
@@ -104,13 +105,10 @@ export function ContainerTypeRow({
             <input name="name" defaultValue={type.name} className={input} required placeholder="Name" />
             <input name="codePrefix" defaultValue={type.codePrefix} className={input} required placeholder="Prefix" />
           </div>
-          <select name="iconKey" defaultValue={type.iconKey ?? ""} className={input}>
-            {ICON_OPTIONS.map((opt: typeof ICON_OPTIONS[number]) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <input name="iconKey" defaultValue={type.iconKey ?? ""} className={input} placeholder="Icon name (e.g., Package)" />
+            <ContainerTypeIcon iconKey={type.iconKey ?? undefined} className="h-5 w-5 text-gray-700" />
+          </div>
           <div className="text-xs font-medium text-gray-700">Box Dimensions (L×W×H):</div>
           <div className="grid grid-cols-3 gap-2">
             <input name="length" defaultValue={type.length ?? ""} className={input} type="number" min={1} placeholder="L" />

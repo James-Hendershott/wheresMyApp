@@ -5,6 +5,7 @@ import { useFormState } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ICON_OPTIONS } from "@/lib/iconKeys";
+import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 
 type FormResult = { success?: string; error?: string };
 
@@ -71,15 +72,21 @@ export function AddContainerTypeForm({
       {/* Icon Selection */}
       <div>
         <label htmlFor="iconKey" className={labelClass}>
-          Icon <span className="font-normal text-gray-500">(visual identifier)</span>
+          Icon <span className="font-normal text-gray-500">(search any Lucide icon name or choose a preset)</span>
         </label>
-        <select id="iconKey" name="iconKey" className={inputClass} defaultValue="">
+        <div className="flex items-center gap-3">
+          <input id="iconKey" name="iconKey" list="icon-presets" placeholder="e.g., Package, Box, Archive, Briefcase" className={inputClass + " flex-1"} />
+          <div className="flex h-9 w-9 items-center justify-center rounded border bg-white">
+            {/* Live preview from text input using formRef */}
+            <IconPreview formRef={formRef} />
+          </div>
+        </div>
+        <datalist id="icon-presets">
           {ICON_OPTIONS.map((opt: typeof ICON_OPTIONS[number]) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
+            <option key={opt.value} value={opt.value} />
           ))}
-        </select>
+        </datalist>
+        <p className="mt-1 text-xs text-gray-500">Tip: You can type any Lucide icon name (e.g., Package, Truck, Archive).</p>
       </div>
 
       {/* Container Shape Toggle */}
@@ -216,4 +223,18 @@ function Dimensions3DTapered() {
       </svg>
     </div>
   );
+}
+
+// Live icon preview component reads current iconKey value from the form
+function IconPreview({ formRef }: { formRef: React.RefObject<HTMLFormElement> }) {
+  const [val, setVal] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    const el = formRef.current?.querySelector<HTMLInputElement>("#iconKey");
+    if (!el) return;
+    const handler = () => setVal(el.value);
+    handler();
+    el.addEventListener("input", handler);
+    return () => el.removeEventListener("input", handler);
+  }, [formRef]);
+  return <ContainerTypeIcon iconKey={val} className="h-5 w-5 text-gray-700" />;
 }
