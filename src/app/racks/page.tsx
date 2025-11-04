@@ -5,14 +5,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
-import {
-  AddLocationForm,
-  AddRackForm,
-  AddContainerForm,
-  AddItemForm,
-} from "@/components/CrudFormsClient";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
 import { formatSlotLabel } from "@/lib/slotLabels";
+import { AddRackModalButton } from "@/components/racks/AddRackModalButton";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
@@ -21,7 +16,7 @@ export default async function RacksPage() {
   // Defensive: ensure container types schema exists to avoid runtime errors
   await ensureContainerTypesSchema();
   // Fetch all locations with their racks, and containers/slots for CRUD forms
-  const [locations, containers, slots, containerTypes] = await Promise.all([
+  const [locations, containers, _slots, containerTypes] = await Promise.all([
     prisma.location.findMany({
       include: {
         racks: {
@@ -43,31 +38,30 @@ export default async function RacksPage() {
   ]);
 
   // For slot/containers dropdowns
-  const slotOptions = slots.map((slot) => ({
-    id: slot.id,
-    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
-  }));
-  const containerOptions = containers.map((c) => ({
-    id: c.id,
-    label: c.label,
-  }));
+  // Dropdown data no longer needed here (quick forms removed)
 
   // Build counts for each container type id by matching either relation or legacy string name
   const typeCounts: Record<string, number> = {};
   for (const t of containerTypes) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const count = containers.filter(
-      (c) => (c as any).containerTypeId === t.id || c.type === t.name
-    ).length;
+    const count = containers.filter((c) => {
+      const ctId = (c as unknown as { containerTypeId?: string | null })
+        .containerTypeId;
+      return ctId === t.id || (c as { type?: string | null }).type === t.name;
+    }).length;
     typeCounts[t.id] = count;
   }
 
   return (
     <main className="mx-auto max-w-7xl p-6">
-      <h1 className="mb-6 text-3xl font-bold">Inventory Map</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Racks</h1>
+        <AddRackModalButton
+          locations={locations.map((l) => ({ id: l.id, name: l.name }))}
+        />
+      </div>
       <p className="mb-8 text-gray-600">
-        Visual overview of all storage locations and their racks. Click a rack
-        to view details.
+        Visual overview of all storage racks by location. Click a rack to view
+        details.
       </p>
 
       {/* Rack Map organized by Location */}
@@ -189,20 +183,7 @@ export default async function RacksPage() {
         )}
       </div>
 
-      {/* CRUD Forms Section */}
-      <div className="rounded-lg border-t-4 border-blue-500 bg-gray-50 p-6">
-        <h2 className="mb-6 text-2xl font-semibold">Quick Add Forms</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <AddLocationForm />
-          <AddRackForm locations={locations} />
-          <AddContainerForm
-            slots={slotOptions}
-            containerTypes={containerTypes}
-            typeCounts={typeCounts}
-          />
-          <AddItemForm containers={containerOptions} />
-        </div>
-      </div>
+      {/* Quick forms removed; use Add Rack modal above */}
     </main>
   );
 }

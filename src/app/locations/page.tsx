@@ -4,15 +4,13 @@
 import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { CollapsibleLocation } from "@/components/CollapsibleLocation";
-import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
-import { listContainerTypes } from "@/app/actions/containerTypeActions";
-import { formatSlotLabel } from "@/lib/slotLabels";
+import { AddLocationModalButton } from "@/components/locations/AddLocationModalButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function LocationsPage() {
   await ensureContainerTypesSchema();
-  const [locations, slots, containerTypes, containers] = await Promise.all([
+  const [locations] = await Promise.all([
     prisma.location.findMany({
       include: {
         racks: {
@@ -22,26 +20,7 @@ export default async function LocationsPage() {
       },
       orderBy: { name: "asc" },
     }),
-    prisma.slot.findMany({
-      include: { rack: true },
-      orderBy: [{ rack: { name: "asc" } }, { row: "asc" }, { col: "asc" }],
-    }),
-    listContainerTypes(),
-    prisma.container.findMany({ select: { id: true, containerTypeId: true } }),
   ]);
-
-  const slotOptions = slots.map((slot) => ({
-    id: slot.id,
-    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
-  }));
-  const typeCounts: Record<string, number> = Object.fromEntries(
-    containerTypes.map((t) => [t.id, 0])
-  );
-  for (const c of containers) {
-    if (c.containerTypeId && typeCounts[c.containerTypeId] !== undefined) {
-      typeCounts[c.containerTypeId] += 1;
-    }
-  }
 
   return (
     <main className="mx-auto max-w-7xl p-6">
@@ -54,15 +33,7 @@ export default async function LocationsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <AddContainerModalButton
-            slots={slotOptions}
-            containerTypes={containerTypes.map((t) => ({
-              id: t.id,
-              name: t.name,
-              codePrefix: t.codePrefix,
-            }))}
-            typeCounts={typeCounts}
-          />
+          <AddLocationModalButton />
         </div>
       </div>
 
