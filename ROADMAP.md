@@ -105,31 +105,11 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ### High Priority
 - Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
 - Dev server requires host binding for mobile access (documented workaround)
-- [x] ~~Inventory Map, Add Location, Add Rack, Add Container, Add Item are not giving prompt when clicked.~~ FIXED
-  - ~~Should be "Created" or "Already Exists - Try Again".~~
-- [x] ~~Add Validation for Adding Location, Rack, Item or Container. All should be unique except Item but should be prompted if it already exists.~~ FIXED
-- [x] ~~The Actual Racks are not loading correctly on the screen but are when you click into it.~~ FIXED
-- [x] ~~Inventory Map page layout: CRUD forms should be below Rack Map visualization~~ FIXED
-- [x] ~~Rack Map should be organized by Locations with visual grid representation~~ FIXED
-- [x] ~~Racks page error: "Unsupported Server Component Type: Undefined"~~ FIXED (implemented `CollapsibleLocation`)
-- [x] ~~Production seed script risk of data wipe if CSV invalid~~ FIXED (validate CSV before any deletes)
-- [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
-- [x] Admin functionality to add new Container Types — Create/List/Edit/Delete DONE; icon dropdown with validation DONE
-- [x] Container Type dimensions (L×W×H) — Supported in admin create form
-- [x] Container Type dropdown with auto-number suggestion when adding containers (with Autofill)
-- [x] Specific icons for each container TYPE (tote/suitcase/box/bin) shown on rack detail page
-- [x] Containers list grouped by Type; shows tote name/label/code/description; item counts Current/Total with checked-out breakdown
-- [x] Rack Creation visual preview during creation (live grid, labeled slots)
-- [x] Toast notifications for create/update/delete actions
-- [x] QR codes downloadable as PNG (alongside print)
-- [x] The home page should not have the little Scan QR button or the View Inventory Map in addition to the 3 larger feature cards — cleaned up to avoid confusion.
-- [x] Auth.js (NextAuth v5) integration with Prisma adapter and dev credentials login
-- [x] User registration flow with admin approval: /register page; admin review at /admin/pending-users
-- [x] Test account seeding: admin@test.local and user@test.local via /admin/seed-accounts
-- [x] Account page for profile editing: update name and avatar URL
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
+- [ ] In the admin add new container type, support unit toggle (mm/in), larger wireframe visuals, and correct tapered orientation.
+- [ ] Icon selector should reset/show all options after a selection.
 
 ### Medium Priority
 - No item photo upload UI yet (database ready)
@@ -213,6 +193,43 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - Priorities may shift as development progresses
 - Check GitHub Issues for detailed feature discussions
 - Completed items moved to CHANGELOG.md
+
+---
+
+## ✅ Completed (Issues & Features)
+
+> Recently shipped improvements are listed here. Completed items are checked, the original issue is struck through, and the resolution is shown in green.
+
+### Resolved Issues
+
+- [x] ~~Inventory Map, Add Location, Add Rack, Add Container, Add Item were not showing success/duplicate prompts~~ — <span style="color:#16a34a">Fixed: standardized toasts for create/update with duplicate detection</span>
+- [x] ~~Add Validation for Location/Rack/Item/Container uniqueness~~ — <span style="color:#16a34a">Fixed: server-side Zod validation + toasts</span>
+- [x] ~~Racks not loading on overview but worked on detail~~ — <span style="color:#16a34a">Fixed: defensive DB ensures and query fixes</span>
+- [x] ~~Inventory Map page layout was confusing~~ — <span style="color:#16a34a">Fixed: forms moved below rack map</span>
+- [x] ~~Rack Map not grouped by location~~ — <span style="color:#16a34a">Fixed: grouped and sorted by Location → Rack → Slot</span>
+- [x] ~~Racks page error “Unsupported Server Component Type: Undefined”~~ — <span style="color:#16a34a">Fixed: implemented CollapsibleLocation wrapper</span>
+- [x] ~~Production seed could erase data on bad CSV~~ — <span style="color:#16a34a">Fixed: CSV validated before any destructive action</span>
+- [x] ~~Home page duplicated Scan/Map CTAs~~ — <span style="color:#16a34a">Fixed: simplified to three feature cards</span>
+
+### Shipped Features
+
+- [x] ~~Admin: Container Types CRUD with icon selection~~ — <span style="color:#16a34a">Shipped: create/list/inline edit/delete; validation</span>
+- [x] ~~Container Type dimensions (L×W×H)~~ — <span style="color:#16a34a">Shipped in admin form</span>
+- [x] ~~Auto-number suggestion when adding containers by type prefix~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Type-specific icons shown on rack detail~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Containers list grouped by Type with counts and codes~~ — <span style="color:#16a34a">Shipped with responsive cards</span>
+- [x] ~~Rack creation visual preview (live grid)~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Toasts for CRUD actions~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~QR codes downloadable as PNG~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Auth: NextAuth v5 with Prisma adapter and dev credentials~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~User registration with admin approval~~ — <span style="color:#16a34a">Shipped (/register, /admin/pending-users)</span>
+- [x] ~~Seed test accounts (admin/user)~~ — <span style="color:#16a34a">Shipped via /admin/seed-accounts</span>
+- [x] ~~Account profile editing (name, avatar)~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Standard container catalog + seeding button~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Containers page redesigned with modal-based quick add~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Locations page introduced for inventory map (moved from Racks)~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Container Types enhanced with tapered dimensions and 3D visuals~~ — <span style="color:#16a34a">Shipped</span>
+- [x] ~~Migration tool to link legacy containers to Container Types~~ — <span style="color:#16a34a">Shipped: dry-run + apply under Admin</span>
 
 ---
 
