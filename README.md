@@ -48,21 +48,27 @@ This project showcases a modern, production-ready stack:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/wheresmy-app.git
-   cd wheresmy-app
+   git clone https://github.com/James-Hendershott/wheresMyApp.git
+   cd wheresMyApp
    ```
 
 2. **Install dependencies**
 
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. **Set up environment variables**
 
-   ```bash
-   cp .env.example .env
-   ```
+   Copy `.env.example` to `.env`:
+   - macOS/Linux:
+     ```bash
+     cp .env.example .env
+     ```
+   - Windows PowerShell:
+     ```powershell
+     Copy-Item .env.example .env
+     ```
 
    Edit `.env` with your values:
    - `DATABASE_URL`: Your PostgreSQL connection string
@@ -72,14 +78,14 @@ This project showcases a modern, production-ready stack:
 4. **Initialize the database**
 
    ```bash
-   pnpm db:migrate
-   pnpm db:seed
+   npm run db:migrate
+   npm run db:seed
    ```
 
 5. **Run the development server**
 
    ```bash
-   pnpm dev
+   npm run dev
    ```
 
 6. **Open** [http://localhost:3000](http://localhost:3000)
@@ -127,25 +133,25 @@ wheresmy-app/
 
 ```bash
 # Run unit tests
-pnpm test
+npm run test
 
 # Run unit tests with UI
-pnpm test:ui
+npm run test:ui
 
 # Run E2E tests
-pnpm test:e2e
+npm run test:e2e
 
 # Run E2E tests with UI
-pnpm test:e2e:ui
+npm run test:e2e:ui
 
 # Type checking
-pnpm type-check
+npm run type-check
 
 # Linting
-pnpm lint
+npm run lint
 
 # Format code
-pnpm format
+npm run format
 ```
 
 ## 📖 Key Features
@@ -233,7 +239,7 @@ docs(readme): add printing instructions
 
 ### Option 3: Unraid (Self-Hosted)
 
-See `docs/unraid-deployment.md` for Docker Compose setup with MinIO.
+See `Obsidian_Notes/docs/wheresMyApp.md` for current self-hosting notes. A dedicated Unraid Docker Compose guide will be added in the repo soon.
 
 ## 📊 Database Schema
 
@@ -262,6 +268,11 @@ Check out `learn.md` for detailed tutorials on:
 - PWA configuration
 - Testing strategies
 
+Additional notes and deeper dives live in the Obsidian vault:
+
+- `Obsidian_Notes/02-Learning/01-Complete-Learning-Guide.md`
+- `Obsidian_Notes/02-Learning/02-NPM-Explained.md`
+
 ## 🤝 Contributing
 
 Contributions welcome! Please:
@@ -274,7 +285,7 @@ Contributions welcome! Please:
 
 ## 📝 License
 
-MIT © [Your Name]
+MIT © James Hendershott
 
 ## 🙏 Acknowledgments
 

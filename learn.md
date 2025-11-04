@@ -819,13 +819,13 @@ await prisma.container.delete({
 
 ```bash
 # Create migration
-pnpm db:migrate
+npm run db:migrate
 
 # Apply migrations (production)
-pnpm db:migrate:deploy
+npm run db:migrate:deploy
 
 # View data
-pnpm db:studio
+npm run db:studio
 ```
 
 ### Best Practices
@@ -1223,7 +1223,7 @@ const withPWA = require("next-pwa")({
 
 ### Testing
 
-1. Build for production: `pnpm build && pnpm start`
+1. Build for production: `npm run build && npm run start`
 2. Open in Chrome
 3. DevTools → Application → Manifest
 4. Click "Install" prompt

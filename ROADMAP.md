@@ -13,7 +13,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ---
 
-## � Known Issues
+## 🐞 Known Issues
 
 ### High Priority
 
@@ -22,7 +22,8 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
 - [ ] In the admin add new container type, support unit toggle (mm/in), larger wireframe visuals, and correct tapered orientation.
 - [ ] Icon selector should reset/show all options after a selection.
-- [ ] Add modal buttons to Locations page header (Location, Rack, Container, Item quick adds)
+- [ ] Locations follows per-page modal pattern (Add Location only). Add clear navigation links to create Rack/Container/Item from their respective pages.
+- [ ] Node deprecation warning [DEP0040] (punycode) surfaced via Prisma CLI on Windows — upgrade in progress; requires closing Node processes to resolve locked engine binary before reinstall/regenerate.
 
 ### Medium Priority
 
@@ -72,7 +73,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ---
 
-## �🚀 Planned Features
+## 🚀 Planned Features
 
 ### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
 
