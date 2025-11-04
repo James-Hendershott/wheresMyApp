@@ -129,8 +129,40 @@ interface CSVRow {
 
 async function main() {
   console.log("🌱 Starting production seed...");
+  // Step 1: Read and parse CSV (SAFETY: do this BEFORE clearing any data)
+  const csvPath = path.join(
+    __dirname,
+    "..",
+    "Obsidian_Notes",
+    "files",
+    "Tote Inventory Intake Form (Responses) - Form Responses 1 (1).csv"
+  );
+  if (!fs.existsSync(csvPath)) {
+    console.error(
+      `❌ CSV not found at: ${csvPath}. Aborting without touching the database.`
+    );
+    process.exit(1);
+  }
 
-  // Step 1: Clear existing data
+  const csvContent = fs.readFileSync(csvPath, "utf-8");
+
+  const rows = parse(csvContent, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+    relaxColumnCount: true, // Handle rows with missing columns
+  }) as CSVRow[];
+
+  if (!rows || rows.length === 0) {
+    console.error(
+      "❌ CSV parsed, but no rows were found. Aborting without touching the database."
+    );
+    process.exit(1);
+  }
+
+  console.log(`📄 Loaded ${rows.length} items from CSV`);
+
+  // Step 2: Clear existing data (only after CSV is confirmed valid)
   console.log("🧹 Clearing old data...");
   await prisma.movement.deleteMany({});
   await prisma.itemPhoto.deleteMany({});
@@ -141,25 +173,6 @@ async function main() {
   await prisma.location.deleteMany({});
 
   console.log("✅ Old data cleared");
-
-  // Step 2: Read and parse CSV
-  const csvPath = path.join(
-    __dirname,
-    "..",
-    "Obsidian_Notes",
-    "files",
-    "Tote Inventory Intake Form (Responses) - Form Responses 1 (1).csv"
-  );
-  const csvContent = fs.readFileSync(csvPath, "utf-8");
-
-  const rows = parse(csvContent, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-    relaxColumnCount: true, // Handle rows with missing columns
-  }) as CSVRow[];
-
-  console.log(`📄 Loaded ${rows.length} items from CSV`);
 
   // Step 3: Extract unique containers and locations
   const containerMap = new Map<

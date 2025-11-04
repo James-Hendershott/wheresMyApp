@@ -86,18 +86,28 @@ model Location {
 }
 
 model Rack {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   locationId String
-  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  location   Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
   name       String
-  rows       Int      @default(1)
-  cols       Int      @default(1)
+  rackType   RackType? // WHAT: Type of rack for visual representation
+  photoUrl   String?   // WHAT: Optional photo uploaded by user
+  rows       Int       @default(1)
+  cols       Int       @default(1)
   slots      Slot[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([locationId])
   @@map("racks")
+}
+
+enum RackType {
+  SHELF      // Standard shelving unit
+  PEGBOARD   // Wall-mounted pegboard
+  CABINET    // Enclosed cabinet
+  DRAWER     // Drawer system
+  CUSTOM     // Custom or other
 }
 
 model Slot {
@@ -121,25 +131,39 @@ model Slot {
 
 // ───────────────────── Containers (Totes/Boxes) ─────────────────────
 
+model ContainerType {
+  id          String      @id @default(cuid())
+  name        String      @unique // WHAT: Type name (Tote, Bin, Box, Bag, etc.)
+  description String?     // WHAT: Optional description of this container type
+  containers  Container[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("container_types")
+}
+
 model Container {
-  id             String            @id @default(cuid())
-  type           String?           // WHAT: Container type (Bin, Tote, Book Box, etc.)
-  code           String            @unique // WHY: QR code-friendly unique identifier (extracted from name)
-  label          String            // WHAT: Human-readable name (e.g., "Bin #01", "Tote #05")
-  description    String?           @db.Text
-  locationName   String?           // WHAT: Freeform location (e.g., "Uhaul Unit #AA5929N")
-  status         ContainerStatus   @default(ACTIVE)
-  currentSlotId  String?           @unique
-  currentSlot    Slot?
-  tags           String[]          @default([])
-  items          Item[]
-  movementsFrom  Movement[]        @relation("containerFrom")
-  movementsTo    Movement[]        @relation("containerTo")
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id              String         @id @default(cuid())
+  containerTypeId String?        // WHAT: Reference to container type
+  containerType   ContainerType? @relation(fields: [containerTypeId], references: [id])
+  type            String?        // WHAT: Deprecated - keeping for backward compatibility
+  code            String         @unique // WHY: QR code-friendly unique identifier (e.g., "Tote #01")
+  label           String?        // WHAT: Optional custom label/description
+  description     String?        @db.Text
+  locationName    String?        // WHAT: Freeform location (e.g., "Uhaul Unit #AA5929N")
+  status          ContainerStatus @default(ACTIVE)
+  currentSlotId   String?        @unique
+  currentSlot     Slot?
+  tags            String[]       @default([])
+  items           Item[]
+  movementsFrom   Movement[]     @relation("containerFrom")
+  movementsTo     Movement[]     @relation("containerTo")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@index([status])
   @@index([code])
+  @@index([containerTypeId])
   @@map("containers")
 }
 
