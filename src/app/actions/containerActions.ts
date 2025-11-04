@@ -14,6 +14,10 @@ const containerSchema = z.object({
   status: z.nativeEnum(ContainerStatus).default(ContainerStatus.ACTIVE),
   slotId: z.string().optional(),
   tags: z.string().array().optional(),
+  // New optional fields to carry type info without requiring migrations
+  typeName: z.string().optional(),
+  codePrefix: z.string().optional(),
+  suggestedNextNumber: z.string().optional(),
 });
 
 export async function createContainer(formData: FormData) {
@@ -24,6 +28,9 @@ export async function createContainer(formData: FormData) {
     status: formData.get("status") || ContainerStatus.ACTIVE,
     slotId: formData.get("slotId") || undefined,
     tags: formData.getAll("tags") as string[],
+    typeName: (formData.get("typeName") || undefined) as string | undefined,
+    codePrefix: (formData.get("codePrefix") || undefined) as string | undefined,
+    suggestedNextNumber: (formData.get("suggestedNextNumber") || undefined) as string | undefined,
   });
   if (!parsed.success) {
     return { error: "Validation failed: " + parsed.error.errors[0].message };
@@ -49,14 +56,22 @@ export async function createContainer(formData: FormData) {
           throw new Error("Selected slot is already occupied");
       }
 
+      // If code was provided, use it. Otherwise, try to build from prefix + next number.
+      let codeToUse = parsed.data.code;
+      if (!codeToUse && parsed.data.codePrefix && parsed.data.suggestedNextNumber) {
+        codeToUse = `${parsed.data.codePrefix}-${Number(parsed.data.suggestedNextNumber)}`;
+      }
+
       const container = await tx.container.create({
         data: {
-          code: parsed.data.code,
+          code: codeToUse,
           label: parsed.data.label,
           description: parsed.data.description,
           status: parsed.data.status,
           tags: parsed.data.tags,
           currentSlotId: parsed.data.slotId,
+          // Legacy string type for now (until migrations add relation/number)
+          type: parsed.data.typeName,
         },
       });
 
