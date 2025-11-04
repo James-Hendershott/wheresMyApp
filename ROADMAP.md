@@ -30,6 +30,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] No item photo upload UI yet (database ready)
 - [ ] No QR code generation UI yet (database has codes ready, but need generation button)
 - [ ] Container capacity not enforced or tracked
+- [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location
 
 ### Low Priority
 
