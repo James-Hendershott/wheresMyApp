@@ -7,13 +7,13 @@ import { Navbar } from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WheresMy App",
+  title: "Where's My...? - Inventory Tracking",
   description: "Track storage totes, items, and locations with QR codes",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "WheresMy",
+    title: "Where's My...?",
   },
 };
 

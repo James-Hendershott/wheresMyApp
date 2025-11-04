@@ -1,7 +1,7 @@
 {
-  "name": "WheresMy App",
-  "short_name": "WheresMy",
-  "description": "Track storage totes, items, and locations with QR codes",
+  "name": "Where's My...? - Inventory Tracker",
+  "short_name": "Where's My?",
+  "description": "Track storage containers, items, and locations with QR codes and visual rack maps",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

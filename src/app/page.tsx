@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Package, QrCode, MapPin } from "lucide-react";
 
 /**
- * WHY: Landing page introducing WheresMy App
+ * WHY: Landing page introducing Where's My...? App
  * WHAT: Hero section with navigation to main features
  */
 export default function HomePage() {
@@ -16,7 +16,7 @@ export default function HomePage() {
         </div>
         
         <h1 className="mb-4 text-5xl font-bold tracking-tight text-gray-900">
-          WheresMy App
+          Where&apos;s My...? 📦
         </h1>
         
         <p className="mb-8 text-xl text-gray-600">
@@ -25,23 +25,29 @@ export default function HomePage() {
           your stuff again.
         </p>
 
-        {/* Feature Cards */}
+        {/* Feature Cards - Now Clickable */}
         <div className="mb-12 grid gap-6 md:grid-cols-3">
-          <FeatureCard
-            icon={<QrCode className="h-8 w-8" />}
-            title="QR Scanning"
-            description="Scan tote codes instantly with your phone camera"
-          />
-          <FeatureCard
-            icon={<MapPin className="h-8 w-8" />}
-            title="Visual Rack Map"
-            description="See exactly where each container is located"
-          />
-          <FeatureCard
-            icon={<Package className="h-8 w-8" />}
-            title="Item Tracking"
-            description="Check items in/out with photos and history"
-          />
+          <Link href="/scan" className="block">
+            <FeatureCard
+              icon={<QrCode className="h-8 w-8" />}
+              title="QR Scanning"
+              description="Scan tote codes instantly with your phone camera"
+            />
+          </Link>
+          <Link href="/racks" className="block">
+            <FeatureCard
+              icon={<MapPin className="h-8 w-8" />}
+              title="Visual Rack Map"
+              description="See exactly where each container is located"
+            />
+          </Link>
+          <Link href="/containers" className="block">
+            <FeatureCard
+              icon={<Package className="h-8 w-8" />}
+              title="Item Tracking"
+              description="Browse all containers and track items"
+            />
+          </Link>
         </div>
 
         {/* CTA Buttons */}
@@ -63,7 +69,7 @@ export default function HomePage() {
 }
 
 /**
- * WHAT: Reusable feature card component
+ * WHAT: Reusable feature card component - now with hover effects for clickability
  */
 function FeatureCard({
   icon,
@@ -75,9 +81,9 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-      <div className="mb-3 flex justify-center text-blue-600">{icon}</div>
-      <h3 className="mb-2 text-lg font-semibold">{title}</h3>
+    <div className="group cursor-pointer rounded-lg border bg-white p-6 shadow-sm transition-all hover:scale-105 hover:shadow-lg hover:border-blue-500">
+      <div className="mb-3 flex justify-center text-blue-600 transition-transform group-hover:scale-110">{icon}</div>
+      <h3 className="mb-2 text-lg font-semibold group-hover:text-blue-600">{title}</h3>
       <p className="text-sm text-gray-600">{description}</p>
     </div>
   );

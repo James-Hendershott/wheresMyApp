@@ -12,7 +12,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold text-blue-600">
           <Package className="h-6 w-6" />
-          <span>WheresMy</span>
+          <span>Where&apos;s My...?</span>
         </Link>
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-1 text-gray-700 hover:text-blue-600">
