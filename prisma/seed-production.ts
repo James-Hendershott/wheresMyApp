@@ -2,7 +2,8 @@
 // WHAT: Parse CSV, extract container types/codes, map categories, handle conditions
 
 import { PrismaClient } from '@prisma/client';
-import type { ItemCategory, ItemCondition, Container } from '@prisma/client';
+import type { Container } from '@prisma/client';
+import { ItemCategory, ItemCondition } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -195,8 +196,8 @@ async function main() {
           type: data.type,
           code: data.code,
           label: data.label,
-          description: data.description,
-          locationName: data.locationName,
+          description: data.description || null,
+          locationName: data.locationName || null,
           status: 'ACTIVE'
         }
       });
