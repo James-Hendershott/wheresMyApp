@@ -29,13 +29,20 @@ export async function ensureContainerTypesSchema() {
       ADD COLUMN IF NOT EXISTS "containerTypeId" text NULL;
     `);
 
-    // Add FK if missing
+    // Add number column if missing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma as unknown as any).$executeRawUnsafe(`
+      ALTER TABLE "containers"
+      ADD COLUMN IF NOT EXISTS "number" integer NULL;
+    `);
+
+    // Add FK if missing (check case-insensitively)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (prisma as unknown as any).$executeRawUnsafe(`
       DO $$
       BEGIN
         IF NOT EXISTS (
-          SELECT 1 FROM pg_constraint WHERE conname = 'containers_containerTypeId_fkey'
+          SELECT 1 FROM pg_constraint WHERE conname ILIKE 'containers_containertypeid_fkey'
         ) THEN
           ALTER TABLE "containers"
           ADD CONSTRAINT containers_containerTypeId_fkey

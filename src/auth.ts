@@ -11,7 +11,7 @@ export const {
   signOut,
 } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "database" },
+  session: { strategy: "jwt" }, // Changed from database to jwt to support Credentials provider
   providers: [
     // Developer-only credentials login (for local testing)
     ...(process.env.NODE_ENV !== "production"
