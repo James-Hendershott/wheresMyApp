@@ -13,7 +13,7 @@ export function ContainerTypeIcon({
   iconKey?: string | null;
   className?: string;
 }) {
-  const keyRaw = (iconKey || typeName || "");
+  const keyRaw = iconKey || typeName || "";
   const key = keyRaw.toLowerCase();
 
   // Try dynamic lucide icon by name if provided

@@ -16,6 +16,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## � Known Issues
 
 ### High Priority
+
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
@@ -24,11 +25,13 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Add modal buttons to Locations page header (Location, Rack, Container, Item quick adds)
 
 ### Medium Priority
+
 - [ ] No item photo upload UI yet (database ready)
 - [ ] No QR code generation UI yet (database has codes ready, but need generation button)
 - [ ] Container capacity not enforced or tracked
 
 ### Low Priority
+
 - Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
 - Dev server requires host binding for mobile access (documented workaround)
 - Rack visualization could be more interactive
@@ -38,6 +41,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 💡 Improvement Ideas
 
 ### User Experience
+
 - Add loading states and skeleton screens
 - Implement optimistic UI updates
 - Add keyboard shortcuts for power users
@@ -45,12 +49,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - Add onboarding/tutorial for first-time users
 
 ### Performance
+
 - Implement pagination for large container lists
 - Add virtual scrolling for items list
 - Optimize images with Next.js Image component
 - Add service worker for offline caching
 
 ### Developer Experience
+
 - Add Storybook for component development
 - Implement automated visual regression testing
 - Add API documentation with Swagger/OpenAPI
@@ -58,6 +64,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - Add performance monitoring
 
 ### Data Management
+
 - Implement soft deletes for containers/items
 - Add data export/import functionality
 - Create backup and restore system
@@ -68,6 +75,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## �🚀 Planned Features
 
 ### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
+
 - [x] Next.js 14 with App Router and TypeScript
 - [x] PostgreSQL database with Prisma ORM
 - [x] Authentication setup (NextAuth.js)
@@ -78,6 +86,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Production seed script with real data (23 containers, 308 items)
 
 ### Milestone 1: Database Schema & Seed ✅ COMPLETE
+
 - [x] Prisma schema finalized with all relationships
 - [x] Comprehensive seed data (containers, items, photos)
 - [x] Schema includes Container Types with tapered dimensions
@@ -85,6 +94,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Migration tool to link legacy containers to Container Types
 
 ### Milestone 2: Rack Visualization 🔄 IN PROGRESS
+
 - [x] Basic rack grid visualization on locations and racks pages
 - [x] Visual slot occupancy indicators (filled/empty)
 - [x] Collapsible location cards for space management
@@ -95,6 +105,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] E2E tests for rack functionality
 
 ### Milestone 3: Container & QR System 🔄 IN PROGRESS
+
 - [x] Container CRUD pages with type grouping
 - [x] Container types admin interface with icons
 - [x] Auto-populated container naming based on type
@@ -106,6 +117,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Batch label printing (Avery 5160 format)
 
 ### Milestone 4: Item Management & Photos 🔄 IN PROGRESS
+
 - [x] Item CRUD with basic forms
 - [x] Item listing on container detail pages
 - [x] Check-in/check-out status tracking
@@ -117,6 +129,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Tag management with autocomplete
 
 ### Milestone 5: History & Search ⏳ PLANNED
+
 - [ ] Movement history page with filters
 - [ ] Global search across containers/items/locations
 - [ ] Fuzzy search support
@@ -124,6 +137,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Advanced filtering and sorting
 
 ### Milestone 6: PWA & Deployment 🔄 IN PROGRESS
+
 - [x] PWA configuration (manifest, icons)
 - [x] GitHub Actions CI/CD pipeline
 - [ ] Enhanced offline support with service workers
@@ -133,6 +147,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Custom domain and SSL configuration
 
 ### Phase 7: Enhanced UX (Future)
+
 - [x] Collapsible locations for better space management
 - [x] Uniform card sizing across containers page
 - [x] Visual indicators for containers with checked-out items
@@ -143,6 +158,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Keyboard shortcuts for power users
 
 ### Phase 8: Organization & Analytics (Future)
+
 - [ ] Dashboard with inventory statistics
 - [ ] Container capacity visualization
 - [ ] Low stock alerts for items with quantities
@@ -152,6 +168,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Location hierarchy (Building → Room → Rack → Slot)
 
 ### Phase 9: Collaboration (Future)
+
 - [ ] Multi-user support with permissions
 - [ ] Shared inventories (family/team access)
 - [ ] Item checkout system with user tracking
@@ -159,6 +176,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Audit logs for all changes
 
 ### Phase 10: Advanced Features (Future)
+
 - [ ] AI-powered item recognition from photos
 - [ ] Voice search and commands
 - [ ] Smart suggestions for container organization
@@ -171,6 +189,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 📊 Metrics & Goals
 
 ### Short-term Goals (Current Sprint - Nov 2025)
+
 - [x] Complete Container Types system with tapered dimensions
 - [x] Implement collapsible locations UI
 - [x] Add A1-style slot labeling across app
@@ -180,12 +199,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Complete migration of legacy container data
 
 ### Medium-term Goals (Dec 2025 - Jan 2026) - Milestones 2-3
+
 - [ ] Interactive rack drag-and-drop system
 - [ ] QR label generation and batch printing
 - [ ] Complete item photo uploads to cloud storage
 - [ ] Deploy alpha version for personal testing
 
 ### Long-term Goals (Feb - Apr 2026) - Milestones 4-6
+
 - [ ] Movement history and global search functional
 - [ ] Mobile app fully responsive with PWA features
 - [ ] Production deployment on Vercel + Neon
@@ -271,4 +292,4 @@ See `CONTRIBUTING.md` for detailed guidelines.
 
 ---
 
-*This roadmap is a living document and will be updated as the project evolves.*
+_This roadmap is a living document and will be updated as the project evolves._

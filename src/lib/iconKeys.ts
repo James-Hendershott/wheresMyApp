@@ -10,4 +10,6 @@ export const ICON_OPTIONS = [
   { value: "carry-on", label: "Carry-on" },
 ] as const;
 
-export const ICON_VALUES = ICON_OPTIONS.map((o) => o.value).filter(Boolean) as Array<string>;
+export const ICON_VALUES = ICON_OPTIONS.map((o) => o.value).filter(
+  Boolean
+) as Array<string>;

@@ -13,12 +13,14 @@ export default async function MigrateContainersPage() {
       <section className="mb-6 rounded border bg-blue-50 p-4">
         <h2 className="mb-2 text-lg font-semibold">About This Tool</h2>
         <p className="mb-2 text-sm text-gray-700">
-          This tool migrates existing containers from the legacy <code>type</code> string field
-          to the new <code>ContainerType</code> system with <code>containerTypeId</code> references.
+          This tool migrates existing containers from the legacy{" "}
+          <code>type</code> string field to the new <code>ContainerType</code>{" "}
+          system with <code>containerTypeId</code> references.
         </p>
         <p className="text-sm text-gray-700">
-          <strong>How it works:</strong> The tool matches containers by name (e.g., "27 Gallon Tote")
-          or by code prefix (e.g., "TOTE27-1" → TOTE27 type). Unmatched containers are listed for manual review.
+          <strong>How it works:</strong> The tool matches containers by name
+          (e.g., "27 Gallon Tote") or by code prefix (e.g., "TOTE27-1" → TOTE27
+          type). Unmatched containers are listed for manual review.
         </p>
       </section>
 

@@ -29,7 +29,9 @@ export async function seedContainerTypes() {
       else updated += 1;
     }
     revalidatePath("/admin/container-types");
-    return { success: `Seed complete: ${created} created, ${updated} updated.` };
+    return {
+      success: `Seed complete: ${created} created, ${updated} updated.`,
+    };
   } catch (e) {
     return { error: String((e as Error).message) };
   }

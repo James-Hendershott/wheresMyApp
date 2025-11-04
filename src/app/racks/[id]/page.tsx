@@ -82,9 +82,13 @@ export default async function RackPage({ params }: RackPageProps) {
               .filter((s) => s.container)
               .map((s) => (
                 <li key={s!.id} className="flex items-center gap-2">
-                  <ContainerTypeIcon typeName={s!.container!.type as string | undefined} />
+                  <ContainerTypeIcon
+                    typeName={s!.container!.type as string | undefined}
+                  />
                   <span className="font-medium">{s!.container!.label}</span>
-                  <span className="text-gray-500">{formatSlotLabel(s!.row, s!.col)}</span>
+                  <span className="text-gray-500">
+                    {formatSlotLabel(s!.row, s!.col)}
+                  </span>
                 </li>
               ))}
           </ul>

@@ -47,7 +47,7 @@ export function Navbar() {
             <Package className="h-5 w-5" />
             <span className="hidden sm:inline">Containers</span>
           </Link>
-          <div className="relative group">
+          <div className="group relative">
             <button className="hidden items-center gap-1 text-gray-500 hover:text-blue-600 sm:flex">
               <span className="text-xs">Admin</span>
             </button>
@@ -58,12 +58,12 @@ export function Navbar() {
               >
                 Container Types
               </Link>
-                <Link
-                  href="/admin/migrate-containers"
-                  className="block px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  Migrate Containers
-                </Link>
+              <Link
+                href="/admin/migrate-containers"
+                className="block px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                Migrate Containers
+              </Link>
               <Link
                 href="/admin/pending-users"
                 className="block px-4 py-2 text-sm hover:bg-gray-100"

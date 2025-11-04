@@ -94,12 +94,18 @@ export default async function ContainersPage() {
         <h1 className="text-4xl font-bold">All Containers</h1>
         <AddContainerModalButton
           slots={slotOptions}
-          containerTypes={containerTypes.map((t) => ({ id: t.id, name: t.name, codePrefix: t.codePrefix }))}
+          containerTypes={containerTypes.map((t) => ({
+            id: t.id,
+            name: t.name,
+            codePrefix: t.codePrefix,
+          }))}
           typeCounts={(() => {
             const counts: Record<string, number> = {};
             for (const t of containerTypes) counts[t.id] = 0;
             for (const c of containers) {
-              const ctId = (c as { containerTypeId?: string | null }).containerTypeId ?? null;
+              const ctId =
+                (c as { containerTypeId?: string | null }).containerTypeId ??
+                null;
               if (ctId && counts[ctId] !== undefined) counts[ctId] += 1;
             }
             return counts;
@@ -135,7 +141,8 @@ export default async function ContainersPage() {
               <div
                 className="grid gap-4"
                 style={{
-                  gridTemplateColumns: "repeat(auto-fill, minmax(240px, min(300px, 1fr)))",
+                  gridTemplateColumns:
+                    "repeat(auto-fill, minmax(240px, min(300px, 1fr)))",
                 }}
               >
                 {typeContainers.map((container) => {
@@ -143,7 +150,10 @@ export default async function ContainersPage() {
                     container.currentSlot?.rack?.location?.name || "Unassigned";
                   const rack = container.currentSlot?.rack?.name || null;
                   const slot = container.currentSlot
-                    ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
+                    ? formatSlotLabel(
+                        container.currentSlot.row,
+                        container.currentSlot.col
+                      )
                     : null;
 
                   return (

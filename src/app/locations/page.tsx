@@ -25,8 +25,8 @@ export default async function LocationsPage() {
         <div>
           <h1 className="text-3xl font-bold">Locations</h1>
           <p className="mt-2 text-gray-600">
-            Visual overview of all storage locations and their racks. Click a rack
-            to view details.
+            Visual overview of all storage locations and their racks. Click a
+            rack to view details.
           </p>
         </div>
         <div className="flex gap-2">

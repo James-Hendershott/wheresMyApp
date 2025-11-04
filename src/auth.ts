@@ -26,11 +26,17 @@ export const {
               const email = creds?.email as string | undefined;
               if (!email) return null;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              return { id: `dev-${email}`, email, name: (creds?.name as string) || "Dev User" } as any;
+              return {
+                id: `dev-${email}`,
+                email,
+                name: (creds?.name as string) || "Dev User",
+              } as any;
             },
           }),
         ]
       : []),
   ],
-  secret: process.env.NEXTAUTH_SECRET || (process.env.NODE_ENV !== "production" ? "dev-secret" : undefined),
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    (process.env.NODE_ENV !== "production" ? "dev-secret" : undefined),
 });

@@ -20,7 +20,9 @@ export type MigrationResult = {
   }>;
 };
 
-export async function migrateContainersToTypes(dryRun = true): Promise<MigrationResult> {
+export async function migrateContainersToTypes(
+  dryRun = true
+): Promise<MigrationResult> {
   const tx = prisma as any;
 
   // 1. Fetch all containers that don't have a containerTypeId yet
@@ -43,8 +45,18 @@ export async function migrateContainersToTypes(dryRun = true): Promise<Migration
   });
 
   // Build lookup maps
-    const typesByName = new Map(allTypes.map((t: any) => [t.name.toLowerCase(), t as { id: string; name: string; codePrefix: string }]));
-    const typesByPrefix = new Map(allTypes.map((t: any) => [t.codePrefix.toLowerCase(), t as { id: string; name: string; codePrefix: string }]));
+  const typesByName = new Map(
+    allTypes.map((t: any) => [
+      t.name.toLowerCase(),
+      t as { id: string; name: string; codePrefix: string },
+    ])
+  );
+  const typesByPrefix = new Map(
+    allTypes.map((t: any) => [
+      t.codePrefix.toLowerCase(),
+      t as { id: string; name: string; codePrefix: string },
+    ])
+  );
 
   const details: MigrationResult["details"] = [];
   let matched = 0;
@@ -55,14 +67,18 @@ export async function migrateContainersToTypes(dryRun = true): Promise<Migration
     let matchedType: { id: string; name: string } | undefined;
 
     // Try to match by exact name
-      matchedType = typesByName.get(legacyType.toLowerCase()) as { id: string; name: string; codePrefix: string } | undefined;
+    matchedType = typesByName.get(legacyType.toLowerCase()) as
+      | { id: string; name: string; codePrefix: string }
+      | undefined;
 
     // Try to match by code prefix (e.g., TOTE27-1 → TOTE27)
     if (!matchedType && container.code) {
       const parts = container.code.split("-");
       if (parts.length > 0) {
         const prefix = parts[0]?.toUpperCase() || "";
-          matchedType = typesByPrefix.get(prefix.toLowerCase()) as { id: string; name: string; codePrefix: string } | undefined;
+        matchedType = typesByPrefix.get(prefix.toLowerCase()) as
+          | { id: string; name: string; codePrefix: string }
+          | undefined;
       }
     }
 
@@ -70,7 +86,9 @@ export async function migrateContainersToTypes(dryRun = true): Promise<Migration
     if (!matchedType) {
       const catalogMatch = CATALOG_BY_NAME.get(legacyType.toLowerCase());
       if (catalogMatch) {
-          matchedType = typesByName.get(catalogMatch.name.toLowerCase()) as { id: string; name: string; codePrefix: string } | undefined;
+        matchedType = typesByName.get(catalogMatch.name.toLowerCase()) as
+          | { id: string; name: string; codePrefix: string }
+          | undefined;
       }
     }
 

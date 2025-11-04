@@ -7,7 +7,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 export function AuthMenu() {
   const { data: session, status } = useSession();
   const loading = status === "loading";
-  const name = useMemo(() => session?.user?.name || session?.user?.email, [session]);
+  const name = useMemo(
+    () => session?.user?.name || session?.user?.email,
+    [session]
+  );
 
   return (
     <div className="flex items-center gap-3">
@@ -15,7 +18,10 @@ export function AuthMenu() {
         <span className="text-xs text-gray-500">Loading…</span>
       ) : session ? (
         <>
-          <Link href="/account" className="text-sm text-gray-700 hover:text-blue-600">
+          <Link
+            href="/account"
+            className="text-sm text-gray-700 hover:text-blue-600"
+          >
             {name ? `Hi, ${name}` : "Account"}
           </Link>
           <button

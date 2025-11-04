@@ -1,7 +1,11 @@
 // WHY: Admin page to review and approve registration requests
 // WHAT: List pending users; approve or reject
 
-import { listPendingUsers, approvePendingUser, rejectPendingUser } from "@/app/actions/userActions";
+import {
+  listPendingUsers,
+  approvePendingUser,
+  rejectPendingUser,
+} from "@/app/actions/userActions";
 import { PendingUserRow } from "@/components/admin/PendingUserRow";
 
 export const dynamic = "force-dynamic";

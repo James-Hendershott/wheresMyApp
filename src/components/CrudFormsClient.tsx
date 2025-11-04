@@ -143,7 +143,9 @@ export function AddRackForm({
           min={1}
           max={26}
           value={rows}
-          onChange={(e) => setRows(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))}
+          onChange={(e) =>
+            setRows(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))
+          }
           placeholder="Rows"
           className={inputClass}
           required
@@ -154,19 +156,21 @@ export function AddRackForm({
           min={1}
           max={20}
           value={cols}
-          onChange={(e) => setCols(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+          onChange={(e) =>
+            setCols(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))
+          }
           placeholder="Columns"
           className={inputClass}
           required
         />
       </div>
-      
+
       {/* Visual Preview */}
       <div className="my-4 rounded-md bg-gray-50 p-4">
         <h3 className="mb-2 text-sm font-semibold text-gray-700">
           Preview: {rows} rows × {cols} columns ({rows * cols} slots)
         </h3>
-        <div 
+        <div
           className="grid gap-1"
           style={{
             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
@@ -269,7 +273,11 @@ export function AddContainerForm({
       {selectedType && (
         <>
           <input type="hidden" name="typeName" value={selectedType.name} />
-          <input type="hidden" name="codePrefix" value={selectedType.codePrefix} />
+          <input
+            type="hidden"
+            name="codePrefix"
+            value={selectedType.codePrefix}
+          />
           <input
             type="hidden"
             name="suggestedNextNumber"

@@ -30,7 +30,9 @@ export async function createContainer(formData: FormData) {
     tags: formData.getAll("tags") as string[],
     typeName: (formData.get("typeName") || undefined) as string | undefined,
     codePrefix: (formData.get("codePrefix") || undefined) as string | undefined,
-    suggestedNextNumber: (formData.get("suggestedNextNumber") || undefined) as string | undefined,
+    suggestedNextNumber: (formData.get("suggestedNextNumber") || undefined) as
+      | string
+      | undefined,
   });
   if (!parsed.success) {
     return { error: "Validation failed: " + parsed.error.errors[0].message };
@@ -58,7 +60,11 @@ export async function createContainer(formData: FormData) {
 
       // If code was provided, use it. Otherwise, try to build from prefix + next number.
       let codeToUse = parsed.data.code;
-      if (!codeToUse && parsed.data.codePrefix && parsed.data.suggestedNextNumber) {
+      if (
+        !codeToUse &&
+        parsed.data.codePrefix &&
+        parsed.data.suggestedNextNumber
+      ) {
         codeToUse = `${parsed.data.codePrefix}-${Number(parsed.data.suggestedNextNumber)}`;
       }
 
@@ -88,7 +94,8 @@ export async function createContainer(formData: FormData) {
     return { success: `Container "${result.label}" created successfully!` };
   } catch (error) {
     return {
-      error: error instanceof Error ? error.message : "Failed to create container",
+      error:
+        error instanceof Error ? error.message : "Failed to create container",
     };
   }
 }

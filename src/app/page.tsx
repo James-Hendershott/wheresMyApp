@@ -19,8 +19,10 @@ export default function HomePage() {
         </h1>
 
         <p className="mb-8 text-xl text-gray-600">
-          Track every storage tote, random box, or misc container including its location on real racks, with details of the items
-          inside. Scan QR codes, check items in/out, and never lose track of your stuff you have stowed away ever again... Hopefully!
+          Track every storage tote, random box, or misc container including its
+          location on real racks, with details of the items inside. Scan QR
+          codes, check items in/out, and never lose track of your stuff you have
+          stowed away ever again... Hopefully!
         </p>
 
         {/* Feature Cards - Now Clickable */}

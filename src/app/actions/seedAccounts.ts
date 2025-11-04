@@ -48,6 +48,8 @@ export async function seedTestAccounts() {
       accounts: { admin, user },
     };
   } catch (e) {
-    return { error: String((e as Error)?.message) || "Failed to seed accounts" };
+    return {
+      error: String((e as Error)?.message) || "Failed to seed accounts",
+    };
   }
 }

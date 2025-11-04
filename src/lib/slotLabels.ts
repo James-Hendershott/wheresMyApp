@@ -9,13 +9,13 @@
 export function rowToLetter(row: number): string {
   let result = "";
   let remaining = row;
-  
+
   while (remaining >= 0) {
     result = String.fromCharCode(65 + (remaining % 26)) + result;
     remaining = Math.floor(remaining / 26) - 1;
     if (remaining < 0) break;
   }
-  
+
   return result;
 }
 

@@ -39,7 +39,7 @@ export async function createRegistrationRequest(formData: FormData) {
     `);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tx = (prisma as any);
+    const tx = prisma as any;
     await tx.pendingUser.create({
       data: {
         name: parsed.data.name,
@@ -67,7 +67,7 @@ export async function listPendingUsers() {
   if (currentUser?.role !== "ADMIN") return [];
 
   try {
-    const tx = (prisma as any);
+    const tx = prisma as any;
     const pending = await tx.pendingUser.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "asc" },
@@ -97,7 +97,7 @@ export async function approvePendingUser(id: string) {
   }
 
   try {
-    const tx = (prisma as any);
+    const tx = prisma as any;
     const pending = await tx.pendingUser.findUnique({ where: { id } });
     if (!pending) return { error: "Request not found" };
     if (pending.status !== "PENDING") {
@@ -138,7 +138,7 @@ export async function rejectPendingUser(id: string) {
   }
 
   try {
-    const tx = (prisma as any);
+    const tx = prisma as any;
     await tx.pendingUser.update({
       where: { id },
       data: { status: "REJECTED" },

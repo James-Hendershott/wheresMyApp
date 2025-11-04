@@ -7,8 +7,8 @@ import { prisma } from "@/lib/prisma";
 export async function ensureContainerTypesSchema() {
   try {
     // Create container_types table if missing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "container_types" (
         "id" text PRIMARY KEY,
         "name" text UNIQUE NOT NULL,
@@ -27,8 +27,8 @@ export async function ensureContainerTypesSchema() {
     `);
 
     // Add new dimension columns if missing (for tapered containers)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       ALTER TABLE "container_types"
       ADD COLUMN IF NOT EXISTS "topLength" integer NULL,
       ADD COLUMN IF NOT EXISTS "topWidth" integer NULL,
@@ -37,22 +37,22 @@ export async function ensureContainerTypesSchema() {
     `);
 
     // Add containerTypeId column if missing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       ALTER TABLE "containers"
       ADD COLUMN IF NOT EXISTS "containerTypeId" text NULL;
     `);
 
     // Add number column if missing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       ALTER TABLE "containers"
       ADD COLUMN IF NOT EXISTS "number" integer NULL;
     `);
 
     // Add FK if missing (check case-insensitively)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -67,8 +67,8 @@ export async function ensureContainerTypesSchema() {
     `);
 
     // Add index if missing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (prisma as unknown as any).$executeRawUnsafe(`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as unknown as any).$executeRawUnsafe(`
       CREATE INDEX IF NOT EXISTS "containers_containerTypeId_idx"
       ON "containers" ("containerTypeId");
     `);

@@ -56,7 +56,9 @@ export default async function RacksPage() {
   const typeCounts: Record<string, number> = {};
   for (const t of containerTypes) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const count = containers.filter((c) => (c as any).containerTypeId === t.id || c.type === t.name).length;
+    const count = containers.filter(
+      (c) => (c as any).containerTypeId === t.id || c.type === t.name
+    ).length;
     typeCounts[t.id] = count;
   }
 

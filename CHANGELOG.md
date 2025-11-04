@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Admin Container Types: create/list UI with optional dimensions (L×W×H) and icon key
 - Admin Container Types: inline edit and delete with toasts
 - Admin Container Types: icon key dropdown (tote, box, bin, suitcase, carry-on) with server-side validation
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Location-based organization with collapsible rack groups
 
 ### Changed
+
 - Rack detail page includes a legend listing placed containers with type icons
 - Containers list redesigned per type grouping for faster browsing
 - Inventory Map page reorganized: Rack visualization now displayed first, CRUD forms moved below
@@ -42,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repository hygiene: ignore Obsidian workspace files (`Obsidian_Notes/.obsidian`, `.trash`)
 
 ### Fixed
+
 - QR code labels now downloadable as PNG (alongside print)
 - CRUD forms now show proper feedback when creating locations, racks, containers, and items
 - Duplicate entries prevented with user-friendly error messages
@@ -88,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript cache issues with Prisma Client types explained
 
 ### Documentation
+
 - Learning docs updated: Prisma model additions (ContainerType), server actions patterns, and UI flows for Container Types
 
 - Created 5-folder Obsidian_Notes structure (Getting Started, Learning, Development, Planning, Reference)

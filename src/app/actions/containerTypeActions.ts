@@ -57,7 +57,7 @@ export async function createContainerType(formData: FormData) {
 
   try {
     // NOTE: Using 'as any' to avoid TS errors if Prisma Client hasn't been regenerated yet
-    const tx = (prisma as any);
+    const tx = prisma as any;
     await tx.containerType.create({
       data: {
         name: parsed.data.name,
@@ -82,24 +82,24 @@ export async function createContainerType(formData: FormData) {
 
 export async function listContainerTypes() {
   // NOTE: Using 'as any' until Prisma Client is regenerated
-  const tx = (prisma as any);
+  const tx = prisma as any;
   try {
     const types = await tx.containerType.findMany({
       orderBy: { name: "asc" },
     });
     return types as Array<{
-    id: string;
-    name: string;
-    codePrefix: string;
-    iconKey?: string | null;
-    length?: number | null;
-    width?: number | null;
-    height?: number | null;
-    topLength?: number | null;
-    topWidth?: number | null;
-    bottomLength?: number | null;
-    bottomWidth?: number | null;
-  }>;
+      id: string;
+      name: string;
+      codePrefix: string;
+      iconKey?: string | null;
+      length?: number | null;
+      width?: number | null;
+      height?: number | null;
+      topLength?: number | null;
+      topWidth?: number | null;
+      bottomLength?: number | null;
+      bottomWidth?: number | null;
+    }>;
   } catch (e: any) {
     // If the table doesn't exist yet, return an empty list gracefully
     if (/(does not exist|rel\s+"container_types")/i.test(e?.message || "")) {
@@ -138,7 +138,7 @@ export async function updateContainerType(id: string, formData: FormData) {
     return { error: parsed.error.errors[0]?.message ?? "Invalid input" };
   }
   try {
-    const tx = (prisma as any);
+    const tx = prisma as any;
     await tx.containerType.update({
       where: { id },
       data: {
@@ -164,7 +164,7 @@ export async function updateContainerType(id: string, formData: FormData) {
 
 export async function deleteContainerType(id: string) {
   try {
-    const tx = (prisma as any);
+    const tx = prisma as any;
     await tx.containerType.delete({ where: { id } });
     revalidatePath("/admin/container-types");
     return { success: true };

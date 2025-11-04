@@ -24,5 +24,9 @@ export const CONTAINER_CATALOG: readonly CatalogType[] = [
   { name: "Suitcase", codePrefix: "SUITCASE", iconKey: "suitcase" },
 ] as const;
 
-export const CATALOG_BY_NAME = new Map(CONTAINER_CATALOG.map((t) => [t.name.toLowerCase(), t]));
-export const CATALOG_BY_PREFIX = new Map(CONTAINER_CATALOG.map((t) => [t.codePrefix.toLowerCase(), t]));
+export const CATALOG_BY_NAME = new Map(
+  CONTAINER_CATALOG.map((t) => [t.name.toLowerCase(), t])
+);
+export const CATALOG_BY_PREFIX = new Map(
+  CONTAINER_CATALOG.map((t) => [t.codePrefix.toLowerCase(), t])
+);
