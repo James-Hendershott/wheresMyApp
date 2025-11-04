@@ -134,7 +134,7 @@ async function main() {
   console.log('✅ Old data cleared');
   
   // Step 2: Read and parse CSV
-  const csvPath = path.join(__dirname, '..', 'Obsidian_Notes', 'files', 'Tote Inventory Intake Form (Responses) - Form Responses 1.csv');
+  const csvPath = path.join(__dirname, '..', 'Obsidian_Notes', 'files', 'Tote Inventory Intake Form (Responses) - Form Responses 1 (1).csv');
   const csvContent = fs.readFileSync(csvPath, 'utf-8');
   
   const rows = parse(csvContent, {
