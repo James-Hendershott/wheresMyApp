@@ -4,20 +4,44 @@
 import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { CollapsibleLocation } from "@/components/CollapsibleLocation";
+import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
+import { listContainerTypes } from "@/app/actions/containerTypeActions";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 export const dynamic = "force-dynamic";
 
 export default async function LocationsPage() {
   await ensureContainerTypesSchema();
-  const locations = await prisma.location.findMany({
-    include: {
-      racks: {
-        include: { slots: { include: { container: true } } },
-        orderBy: { name: "asc" },
+  const [locations, slots, containerTypes, containers] = await Promise.all([
+    prisma.location.findMany({
+      include: {
+        racks: {
+          include: { slots: { include: { container: true } } },
+          orderBy: { name: "asc" },
+        },
       },
-    },
-    orderBy: { name: "asc" },
-  });
+      orderBy: { name: "asc" },
+    }),
+    prisma.slot.findMany({
+      include: { rack: true },
+      orderBy: [{ rack: { name: "asc" } }, { row: "asc" }, { col: "asc" }],
+    }),
+    listContainerTypes(),
+    prisma.container.findMany({ select: { id: true, containerTypeId: true } }),
+  ]);
+
+  const slotOptions = slots.map((slot) => ({
+    id: slot.id,
+    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
+  }));
+  const typeCounts: Record<string, number> = Object.fromEntries(
+    containerTypes.map((t) => [t.id, 0])
+  );
+  for (const c of containers) {
+    if (c.containerTypeId && typeCounts[c.containerTypeId] !== undefined) {
+      typeCounts[c.containerTypeId] += 1;
+    }
+  }
 
   return (
     <main className="mx-auto max-w-7xl p-6">
@@ -30,7 +54,15 @@ export default async function LocationsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          {/* TODO: Add modal buttons for Location, Rack, Container, Item */}
+          <AddContainerModalButton
+            slots={slotOptions}
+            containerTypes={containerTypes.map((t) => ({
+              id: t.id,
+              name: t.name,
+              codePrefix: t.codePrefix,
+            }))}
+            typeCounts={typeCounts}
+          />
         </div>
       </div>
 

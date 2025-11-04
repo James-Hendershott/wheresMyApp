@@ -139,7 +139,7 @@ export default async function ContainersPage() {
               </div>
 
               <div
-                className="grid gap-4"
+                className="grid justify-items-start gap-4"
                 style={{
                   gridTemplateColumns:
                     "repeat(auto-fill, minmax(240px, min(300px, 1fr)))",
@@ -160,7 +160,7 @@ export default async function ContainersPage() {
                     <Link
                       key={container.id}
                       href={`/containers/${container.id}`}
-                      className={`block rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
+                      className={`block max-w-sm rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
                         container.itemsCheckedOut > 0
                           ? "border-orange-400 bg-orange-50"
                           : "border-gray-200 bg-gray-50"

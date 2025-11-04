@@ -67,7 +67,12 @@ export function CollapsibleLocation({
               No racks in this location yet.
             </p>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div
+              className="grid justify-items-start gap-4"
+              style={{
+                gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+              }}
+            >
               {location.racks.map((rack) => {
                 const filledSlots = rack.slots.filter(
                   (s) => s.container
@@ -82,7 +87,7 @@ export function CollapsibleLocation({
                   <a
                     key={rack.id}
                     href={`/racks/${rack.id}`}
-                    className="block max-w-xs rounded-lg border bg-gray-50 p-4 transition hover:border-blue-500 hover:shadow-md"
+                    className="block max-w-sm justify-self-start rounded-lg border bg-gray-50 p-4 transition hover:border-blue-500 hover:shadow-md"
                   >
                     <div className="mb-2 flex items-start justify-between">
                       <div className="font-semibold text-gray-900">
