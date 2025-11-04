@@ -4,6 +4,7 @@
 
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import {
   AddLocationForm,
   AddRackForm,
@@ -16,6 +17,8 @@ import { listContainerTypes } from "@/app/actions/containerTypeActions";
 export const dynamic = "force-dynamic";
 
 export default async function RacksPage() {
+  // Defensive: ensure container types schema exists to avoid runtime errors
+  await ensureContainerTypesSchema();
   // Fetch all locations with their racks, and containers/slots for CRUD forms
   const [locations, containers, slots, containerTypes] = await Promise.all([
     prisma.location.findMany({

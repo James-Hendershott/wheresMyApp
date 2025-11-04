@@ -5,6 +5,7 @@
 "use client";
 import Link from "next/link";
 import { Package, QrCode, MapPin, Home } from "lucide-react";
+import { AuthMenu } from "@/components/auth/AuthMenu";
 
 export function Navbar() {
   return (
@@ -46,6 +47,14 @@ export function Navbar() {
             <Package className="h-5 w-5" />
             <span className="hidden sm:inline">Containers</span>
           </Link>
+          <Link
+            href="/admin/container-types"
+            className="hidden items-center gap-1 text-gray-500 hover:text-blue-600 sm:flex"
+            title="Admin: Container Types"
+          >
+            <span className="text-xs">Admin</span>
+          </Link>
+          <AuthMenu />
         </div>
       </div>
     </nav>

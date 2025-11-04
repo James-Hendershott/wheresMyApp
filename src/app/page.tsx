@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Package, QrCode, MapPin } from "lucide-react";
 
 /**
@@ -20,9 +19,8 @@ export default function HomePage() {
         </h1>
 
         <p className="mb-8 text-xl text-gray-600">
-          Track every storage tote, its location on real racks, and the items
-          inside. Scan QR codes, check items in/out, and never lose track of
-          your stuff again.
+          Track every storage tote, random box, or misc container including its location on real racks, with details of the items
+          inside. Scan QR codes, check items in/out, and never lose track of your stuff you have stowed away ever again... Hopefully!
         </p>
 
         {/* Feature Cards - Now Clickable */}
@@ -50,19 +48,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <Link href="/racks">
-            <Button size="lg" className="w-full sm:w-auto">
-              View Inventory Map
-            </Button>
-          </Link>
-          <Link href="/scan">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              Scan QR Code
-            </Button>
-          </Link>
-        </div>
+        {/* CTAs removed to keep only primary feature cards per priority cleanup */}
       </div>
     </main>
   );

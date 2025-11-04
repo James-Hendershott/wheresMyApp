@@ -23,6 +23,9 @@ const containerTypeSchema = z.object({
 export type ContainerTypeInput = z.infer<typeof containerTypeSchema>;
 
 export async function createContainerType(formData: FormData) {
+  // Ensure schema exists before attempting to create a type
+  const { ensureContainerTypesSchema } = await import("@/lib/dbEnsure");
+  await ensureContainerTypesSchema();
   const parsed = containerTypeSchema.safeParse({
     name: formData.get("name"),
     codePrefix: (formData.get("codePrefix") || "").toString().toUpperCase(),
@@ -60,10 +63,11 @@ export async function createContainerType(formData: FormData) {
 export async function listContainerTypes() {
   // NOTE: Using 'as any' until Prisma Client is regenerated
   const tx = (prisma as any);
-  const types = await tx.containerType.findMany({
-    orderBy: { name: "asc" },
-  });
-  return types as Array<{
+  try {
+    const types = await tx.containerType.findMany({
+      orderBy: { name: "asc" },
+    });
+    return types as Array<{
     id: string;
     name: string;
     codePrefix: string;
@@ -72,4 +76,63 @@ export async function listContainerTypes() {
     width?: number | null;
     height?: number | null;
   }>;
+  } catch (e: any) {
+    // If the table doesn't exist yet, return an empty list gracefully
+    if (/(does not exist|rel\s+"container_types")/i.test(e?.message || "")) {
+      return [] as Array<{
+        id: string;
+        name: string;
+        codePrefix: string;
+        iconKey?: string | null;
+        length?: number | null;
+        width?: number | null;
+        height?: number | null;
+      }>;
+    }
+    throw e;
+  }
+}
+
+export async function updateContainerType(id: string, formData: FormData) {
+  const parsed = containerTypeSchema.safeParse({
+    name: formData.get("name"),
+    codePrefix: (formData.get("codePrefix") || "").toString().toUpperCase(),
+    iconKey: (formData.get("iconKey") || undefined) as string | undefined,
+    length: formData.get("length") ?? undefined,
+    width: formData.get("width") ?? undefined,
+    height: formData.get("height") ?? undefined,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.errors[0]?.message ?? "Invalid input" };
+  }
+  try {
+    const tx = (prisma as any);
+    await tx.containerType.update({
+      where: { id },
+      data: {
+        name: parsed.data.name,
+        codePrefix: parsed.data.codePrefix,
+        iconKey: parsed.data.iconKey ?? null,
+        length: parsed.data.length ?? null,
+        width: parsed.data.width ?? null,
+        height: parsed.data.height ?? null,
+      },
+    });
+    revalidatePath("/admin/container-types");
+    return { success: `Type "${parsed.data.name}" updated.` };
+  } catch (e: any) {
+    const msg = e?.code === "P2002" ? "Name must be unique" : e?.message;
+    return { error: msg || "Failed to update type" };
+  }
+}
+
+export async function deleteContainerType(id: string) {
+  try {
+    const tx = (prisma as any);
+    await tx.containerType.delete({ where: { id } });
+    revalidatePath("/admin/container-types");
+    return { success: true };
+  } catch (e: any) {
+    return { error: e?.message || "Failed to delete type" };
+  }
 }
