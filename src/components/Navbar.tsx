@@ -27,11 +27,11 @@ export function Navbar() {
             <span className="hidden sm:inline">Home</span>
           </Link>
           <Link
-            href="/racks"
+            href="/locations"
             className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
           >
             <MapPin className="h-5 w-5" />
-            <span className="hidden sm:inline">Inventory</span>
+            <span className="hidden sm:inline">Locations</span>
           </Link>
           <Link
             href="/scan"

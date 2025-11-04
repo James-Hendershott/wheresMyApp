@@ -9,28 +9,24 @@ import {
 } from "@/app/actions/containerTypeActions";
 import { AddContainerTypeForm } from "@/components/admin/AddContainerTypeForm";
 import { ContainerTypeRow } from "@/components/admin/ContainerTypeRow";
+import { SeedCatalogButton } from "@/components/admin/SeedCatalogButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function ContainerTypesAdminPage() {
   const types = await listContainerTypes();
 
-  async function updateAction(id: string, formData: FormData) {
-    "use server";
-    return await updateContainerType(id, formData);
-  }
-
-  async function deleteAction(id: string) {
-    "use server";
-    return await deleteContainerType(id);
-  }
-
   return (
     <main className="mx-auto max-w-4xl p-6">
       <h1 className="mb-6 text-3xl font-bold">Container Types</h1>
 
       <section className="mb-8 rounded border bg-white p-4 shadow-sm">
-        <h2 className="mb-2 text-xl font-semibold">Add New Type</h2>
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Add New Type</h2>
+          <div className="flex items-center gap-2">
+            <SeedCatalogButton />
+          </div>
+        </div>
         <AddContainerTypeForm action={createContainerType} />
       </section>
 
@@ -55,8 +51,8 @@ export default async function ContainerTypesAdminPage() {
                   <ContainerTypeRow
                     key={t.id}
                     type={t}
-                    onUpdate={updateAction}
-                    onDelete={deleteAction}
+                    onUpdate={updateContainerType}
+                    onDelete={deleteContainerType}
                   />
                 ))}
               </tbody>

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
+import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
+import { listContainerTypes } from "@/app/actions/containerTypeActions";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
@@ -13,7 +15,7 @@ export const dynamic = "force-dynamic";
 export default async function ContainersPage() {
   // Defensive: ensure schema pieces exist to match current Prisma Client
   await ensureContainerTypesSchema();
-  const [containers] = await Promise.all([
+  const [containers, slots, containerTypes] = await Promise.all([
     prisma.container.findMany({
       include: {
         currentSlot: {
@@ -35,7 +37,16 @@ export default async function ContainersPage() {
       },
       orderBy: { label: "asc" },
     }),
+    prisma.slot.findMany({
+      include: { rack: true },
+      orderBy: [{ rack: { name: "asc" } }, { row: "asc" }, { col: "asc" }],
+    }),
+    listContainerTypes(),
   ]);
+  const slotOptions = slots.map((slot) => ({
+    id: slot.id,
+    label: `${slot.rack?.name || "Rack"} [${slot.row},${slot.col}]`,
+  }));
 
   // Group containers by type
   type GroupedContainer = (typeof containers)[0] & {
@@ -79,13 +90,20 @@ export default async function ContainersPage() {
   return (
     <main className="mx-auto max-w-6xl p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">All Containers</h1>
-        <Link
-          href="/racks"
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          + Add Container
-        </Link>
+        <h1 className="text-4xl font-bold">All Containers</h1>
+        <AddContainerModalButton
+          slots={slotOptions}
+          containerTypes={containerTypes.map((t) => ({ id: t.id, name: t.name, codePrefix: t.codePrefix }))}
+          typeCounts={(() => {
+            const counts: Record<string, number> = {};
+            for (const t of containerTypes) counts[t.id] = 0;
+            for (const c of containers) {
+              const ctId = (c as { containerTypeId?: string | null }).containerTypeId ?? null;
+              if (ctId && counts[ctId] !== undefined) counts[ctId] += 1;
+            }
+            return counts;
+          })()}
+        />
       </div>
 
       {sortedGroups.length === 0 ? (
@@ -106,14 +124,19 @@ export default async function ContainersPage() {
                   typeName={typeName}
                   className="h-6 w-6 text-gray-700"
                 />
-                <h2 className="text-xl font-semibold">{typeName}</h2>
+                <h2 className="text-2xl font-semibold">{typeName}</h2>
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600">
                   {typeContainers.length} container
                   {typeContainers.length !== 1 ? "s" : ""}
                 </span>
               </div>
 
-              <div className="space-y-3">
+              <div
+                className="grid gap-4"
+                style={{
+                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                }}
+              >
                 {typeContainers.map((container) => {
                   const location =
                     container.currentSlot?.rack?.location?.name || "Unassigned";
@@ -131,11 +154,8 @@ export default async function ContainersPage() {
                       <div className="mb-2 flex items-start justify-between">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900">
+                            <span className="text-lg font-semibold text-gray-900">
                               {container.label}
-                            </span>
-                            <span className="text-sm text-gray-500">
-                              #{container.code}
                             </span>
                           </div>
                           {container.description && (
