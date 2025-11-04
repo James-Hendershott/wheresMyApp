@@ -13,112 +13,25 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ---
 
-## 🚀 Planned Features
-
-### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
-- [x] Next.js 14 with App Router and TypeScript
-- [x] PostgreSQL database with Prisma ORM
-- [x] Authentication setup (NextAuth.js)
-- [x] Tailwind CSS + Shadcn/ui components
-- [x] GitHub Actions CI/CD pipeline
-- [x] Testing infrastructure (Vitest + Playwright)
-- [x] PWA configuration
-- [x] Production seed script with real data (23 containers, 308 items)
-
-### Milestone 1: Database Schema & Seed 🔄 IN PROGRESS
-- [x] Prisma schema finalized with all relationships
-- [x] Comprehensive seed data (containers, items, photos)
-- [ ] Schema documentation in database docs
-- [ ] Migration strategy documented
-
-### Milestone 2: Rack Visualization ⏳ PLANNED
-- [ ] Interactive SVG rack grid system
-- [ ] Visual slot management (place/move/remove containers)
-- [ ] Responsive design for mobile rack viewing
-- [ ] Server Actions for rack operations
-- [ ] E2E tests for rack functionality
-
-### Milestone 3: Container & QR System ⏳ PLANNED
-- [ ] Container CRUD pages with search/filter
-- [ ] QR code scanner using ZXing library
-- [ ] Deep link support (scan → container detail)
-- [ ] QR label generation and printing
-- [ ] Batch label printing (Avery 5160 format)
-
-### Milestone 4: Item Management & Photos ⏳ PLANNED
-- [ ] Item CRUD with React Hook Form validation
-- [ ] Photo upload to S3/MinIO with presigned URLs
-- [ ] Multiple photos per item
-- [ ] Check-in/check-out flow for item movement
-- [ ] Item movement history tracking
-- [ ] Tag management with autocomplete
-
-### Milestone 5: History & Search ⏳ PLANNED
-- [ ] Movement history page with filters
-- [ ] Global search across containers/items/locations
-- [ ] Fuzzy search support
-- [ ] Export history to CSV
-- [ ] Advanced filtering and sorting
-
-### Milestone 6: PWA & Deployment ⏳ PLANNED
-- [ ] Enhanced offline support with service workers
-- [ ] Background sync for movements
-- [ ] Production deployment to Vercel + Neon
-- [ ] Docker Compose setup for self-hosting (Unraid)
-- [ ] Custom domain and SSL configuration
-
-### Phase 7: Enhanced UX (Future)
-- [ ] Mobile-optimized responsive design improvements
-- [ ] Dark mode support
-- [ ] Bulk item operations (move, delete, update)
-- [ ] Recently accessed containers/items
-- [ ] Keyboard shortcuts for power users
-
-### Phase 8: Organization & Analytics (Future)
-- [ ] Dashboard with inventory statistics
-- [ ] Container capacity visualization
-- [ ] Low stock alerts for items with quantities
-- [ ] Expiration date notifications
-- [ ] Tag-based organization system
-- [ ] Custom categories and conditions
-- [ ] Location hierarchy (Building → Room → Rack → Slot)
-
-### Phase 9: Collaboration (Future)
-- [ ] Multi-user support with permissions
-- [ ] Shared inventories (family/team access)
-- [ ] Item checkout system with user tracking
-- [ ] Movement history with user attribution
-- [ ] Audit logs for all changes
-
-### Phase 10: Advanced Features (Future)
-- [ ] AI-powered item recognition from photos
-- [ ] Voice search and commands
-- [ ] Smart suggestions for container organization
-- [ ] Integration with shopping lists
-- [ ] API for third-party integrations
-- [ ] Mobile native app (React Native)
-
----
-
-## 🐛 Known Issues
+## � Known Issues
 
 ### High Priority
-- Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
-- Dev server requires host binding for mobile access (documented workaround)
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
 - [ ] In the admin add new container type, support unit toggle (mm/in), larger wireframe visuals, and correct tapered orientation.
 - [ ] Icon selector should reset/show all options after a selection.
+- [ ] Add modal buttons to Locations page header (Location, Rack, Container, Item quick adds)
 
 ### Medium Priority
-- No item photo upload UI yet (database ready)
-- No QR code generation yet (database has codes ready)
-- Container capacity not enforced or tracked
+- [ ] No item photo upload UI yet (database ready)
+- [ ] No QR code generation UI yet (database has codes ready, but need generation button)
+- [ ] Container capacity not enforced or tracked
 
 ### Low Priority
+- Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
+- Dev server requires host binding for mobile access (documented workaround)
 - Rack visualization could be more interactive
-- No keyboard shortcuts implemented
 
 ---
 
@@ -152,25 +65,132 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ---
 
+## �🚀 Planned Features
+
+### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
+- [x] Next.js 14 with App Router and TypeScript
+- [x] PostgreSQL database with Prisma ORM
+- [x] Authentication setup (NextAuth.js)
+- [x] Tailwind CSS + Shadcn/ui components
+- [x] GitHub Actions CI/CD pipeline
+- [x] Testing infrastructure (Vitest + Playwright)
+- [x] PWA configuration
+- [x] Production seed script with real data (23 containers, 308 items)
+
+### Milestone 1: Database Schema & Seed ✅ COMPLETE
+- [x] Prisma schema finalized with all relationships
+- [x] Comprehensive seed data (containers, items, photos)
+- [x] Schema includes Container Types with tapered dimensions
+- [x] Production seed script with real data (23 containers, 308 items)
+- [x] Migration tool to link legacy containers to Container Types
+
+### Milestone 2: Rack Visualization 🔄 IN PROGRESS
+- [x] Basic rack grid visualization on locations and racks pages
+- [x] Visual slot occupancy indicators (filled/empty)
+- [x] Collapsible location cards for space management
+- [x] A1-style slot labeling (row 0 → A, col 1 → 1)
+- [ ] Interactive SVG rack grid with drag-and-drop
+- [ ] Rack editing (move containers, change location/name)
+- [ ] Server Actions for rack operations
+- [ ] E2E tests for rack functionality
+
+### Milestone 3: Container & QR System 🔄 IN PROGRESS
+- [x] Container CRUD pages with type grouping
+- [x] Container types admin interface with icons
+- [x] Auto-populated container naming based on type
+- [x] QR codes stored in database
+- [x] QR codes downloadable as PNG
+- [ ] QR code scanner using ZXing library (camera access needs fix)
+- [ ] Deep link support (scan → container detail)
+- [ ] QR label generation button/UI
+- [ ] Batch label printing (Avery 5160 format)
+
+### Milestone 4: Item Management & Photos 🔄 IN PROGRESS
+- [x] Item CRUD with basic forms
+- [x] Item listing on container detail pages
+- [x] Check-in/check-out status tracking
+- [x] Database schema ready for photos
+- [ ] Photo upload UI (camera or file upload)
+- [ ] Photo upload to S3/MinIO with presigned URLs
+- [ ] Multiple photos per item
+- [ ] Item movement history tracking
+- [ ] Tag management with autocomplete
+
+### Milestone 5: History & Search ⏳ PLANNED
+- [ ] Movement history page with filters
+- [ ] Global search across containers/items/locations
+- [ ] Fuzzy search support
+- [ ] Export history to CSV
+- [ ] Advanced filtering and sorting
+
+### Milestone 6: PWA & Deployment 🔄 IN PROGRESS
+- [x] PWA configuration (manifest, icons)
+- [x] GitHub Actions CI/CD pipeline
+- [ ] Enhanced offline support with service workers
+- [ ] Background sync for movements
+- [ ] Production deployment to Vercel + Neon
+- [ ] Docker Compose setup for self-hosting (Unraid)
+- [ ] Custom domain and SSL configuration
+
+### Phase 7: Enhanced UX (Future)
+- [x] Collapsible locations for better space management
+- [x] Uniform card sizing across containers page
+- [x] Visual indicators for containers with checked-out items
+- [ ] Mobile-optimized responsive design improvements
+- [ ] Dark mode support
+- [ ] Bulk item operations (move, delete, update)
+- [ ] Recently accessed containers/items
+- [ ] Keyboard shortcuts for power users
+
+### Phase 8: Organization & Analytics (Future)
+- [ ] Dashboard with inventory statistics
+- [ ] Container capacity visualization
+- [ ] Low stock alerts for items with quantities
+- [ ] Expiration date notifications
+- [ ] Tag-based organization system
+- [ ] Custom categories and conditions
+- [ ] Location hierarchy (Building → Room → Rack → Slot)
+
+### Phase 9: Collaboration (Future)
+- [ ] Multi-user support with permissions
+- [ ] Shared inventories (family/team access)
+- [ ] Item checkout system with user tracking
+- [ ] Movement history with user attribution
+- [ ] Audit logs for all changes
+
+### Phase 10: Advanced Features (Future)
+- [ ] AI-powered item recognition from photos
+- [ ] Voice search and commands
+- [ ] Smart suggestions for container organization
+- [ ] Integration with shopping lists
+- [ ] API for third-party integrations
+- [ ] Mobile native app (React Native)
+
+---
+
 ## 📊 Metrics & Goals
 
-### Short-term Goals (1-2 months) - Milestones 1-3
-- [ ] Complete database schema documentation
-- [ ] Implement rack visualization system
-- [ ] Add QR code scanning and generation
+### Short-term Goals (Current Sprint - Nov 2025)
+- [x] Complete Container Types system with tapered dimensions
+- [x] Implement collapsible locations UI
+- [x] Add A1-style slot labeling across app
+- [ ] Fix QR camera access for scanning
+- [ ] Add photo upload UI (camera + file)
+- [ ] Add rack editing capabilities
+- [ ] Complete migration of legacy container data
+
+### Medium-term Goals (Dec 2025 - Jan 2026) - Milestones 2-3
+- [ ] Interactive rack drag-and-drop system
+- [ ] QR label generation and batch printing
+- [ ] Complete item photo uploads to cloud storage
 - [ ] Deploy alpha version for personal testing
 
-### Medium-term Goals (3-4 months) - Milestones 4-5
-- [ ] Item photo uploads working
-- [ ] Movement history and search functional
-- [ ] Mobile app fully responsive
-- [ ] Beta testing with 5-10 users
-
-### Long-term Goals (5-6 months) - Milestone 6+
-- [ ] Production deployment on Vercel
-- [ ] PWA offline capabilities
+### Long-term Goals (Feb - Apr 2026) - Milestones 4-6
+- [ ] Movement history and global search functional
+- [ ] Mobile app fully responsive with PWA features
+- [ ] Production deployment on Vercel + Neon
 - [ ] Self-hosting documentation complete
-- [ ] 50+ active users (if opened to public)
+- [ ] Beta testing with 5-10 users
 
 ---
 
@@ -230,6 +250,12 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~Locations page introduced for inventory map (moved from Racks)~~ — <span style="color:#16a34a">Shipped</span>
 - [x] ~~Container Types enhanced with tapered dimensions and 3D visuals~~ — <span style="color:#16a34a">Shipped</span>
 - [x] ~~Migration tool to link legacy containers to Container Types~~ — <span style="color:#16a34a">Shipped: dry-run + apply under Admin</span>
+- [x] ~~Collapsible location cards with expand/collapse~~ — <span style="color:#16a34a">Shipped: Nov 4, 2025</span>
+- [x] ~~Uniform container card sizing~~ — <span style="color:#16a34a">Shipped: prevents wide cards from spanning full row</span>
+- [x] ~~A1-style slot labeling (A1, B2, etc.)~~ — <span style="color:#16a34a">Shipped: replaced [0,1] format across app</span>
+- [x] ~~Auto-populate container fields on type selection~~ — <span style="color:#16a34a">Shipped: removed manual Autofill button</span>
+- [x] ~~Visual indicator for containers with checked-out items~~ — <span style="color:#16a34a">Shipped: orange border/background</span>
+- [x] ~~Normalized rack card sizes on locations page~~ — <span style="color:#16a34a">Shipped: max-width constraint</span>
 
 ---
 
