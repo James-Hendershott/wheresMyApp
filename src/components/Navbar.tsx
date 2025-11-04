@@ -58,6 +58,12 @@ export function Navbar() {
               >
                 Container Types
               </Link>
+                <Link
+                  href="/admin/migrate-containers"
+                  className="block px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  Migrate Containers
+                </Link>
               <Link
                 href="/admin/pending-users"
                 className="block px-4 py-2 text-sm hover:bg-gray-100"
