@@ -47,13 +47,31 @@ export function Navbar() {
             <Package className="h-5 w-5" />
             <span className="hidden sm:inline">Containers</span>
           </Link>
-          <Link
-            href="/admin/container-types"
-            className="hidden items-center gap-1 text-gray-500 hover:text-blue-600 sm:flex"
-            title="Admin: Container Types"
-          >
-            <span className="text-xs">Admin</span>
-          </Link>
+          <div className="relative group">
+            <button className="hidden items-center gap-1 text-gray-500 hover:text-blue-600 sm:flex">
+              <span className="text-xs">Admin</span>
+            </button>
+            <div className="absolute right-0 hidden w-48 rounded border bg-white shadow-lg group-hover:block">
+              <Link
+                href="/admin/container-types"
+                className="block px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                Container Types
+              </Link>
+              <Link
+                href="/admin/pending-users"
+                className="block px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                Pending Users
+              </Link>
+              <Link
+                href="/admin/seed-accounts"
+                className="block px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                Seed Test Accounts
+              </Link>
+            </div>
+          </div>
           <AuthMenu />
         </div>
       </div>

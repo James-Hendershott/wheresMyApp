@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Admin Container Types: create/list UI with optional dimensions (L×W×H) and icon key
 - Admin Container Types: inline edit and delete with toasts
+- Admin Container Types: icon key dropdown (tote, box, bin, suitcase, carry-on) with server-side validation
+- Auth.js (NextAuth v5) integration with Prisma adapter and dev credentials login
+- User registration flow with admin approval: /register page captures name/email/reason; admin approves via /admin/pending-users
+- Test account seeding: admin@test.local and user@test.local via /admin/seed-accounts
+- Account page for profile editing: update name and avatar URL
+- Admin menu in navbar with links to Container Types, Pending Users, and Seed Accounts
+- Auth menu: Sign in/out, Register link, and account link with user name display
+- Defensive DB schema ensure helper for container_types table and containers.containerTypeId column to avoid runtime errors
+- PWA icon route handlers to stop 404 for /icon-192.png and /icon-512.png
 - Add Container form: Type dropdown with next-number suggestion and Autofill for code/label
 - Type-specific icons displayed on rack detail page (tote/suitcase/box/bin)
 - Containers list grouped by Type with current/total item counts and checked-out breakdown

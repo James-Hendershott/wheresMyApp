@@ -26,12 +26,20 @@ export function AuthMenu() {
           </button>
         </>
       ) : (
-        <button
-          onClick={() => signIn()}
-          className="rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
-        >
-          Sign in
-        </button>
+        <>
+          <Link
+            href="/register"
+            className="rounded border px-2 py-1 text-xs text-gray-700 hover:bg-gray-100"
+          >
+            Register
+          </Link>
+          <button
+            onClick={() => signIn()}
+            className="rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
+          >
+            Sign in
+          </button>
+        </>
       )}
     </div>
   );

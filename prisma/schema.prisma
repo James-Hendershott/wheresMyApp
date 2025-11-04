@@ -72,6 +72,23 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model PendingUser {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  reason    String?  @db.Text
+  status    PendingUserStatus @default(PENDING)
+  createdAt DateTime @default(now())
+
+  @@map("pending_users")
+}
+
+enum PendingUserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // ───────────────────── Physical Locations ─────────────────────
 
 model Location {

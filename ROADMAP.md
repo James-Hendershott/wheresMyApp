@@ -114,7 +114,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] ~~Racks page error: "Unsupported Server Component Type: Undefined"~~ FIXED (implemented `CollapsibleLocation`)
 - [x] ~~Production seed script risk of data wipe if CSV invalid~~ FIXED (validate CSV before any deletes)
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
-- [x] Admin functionality to add new Container Types — Initial version (Create/List) DONE; Edit/Delete next
+- [x] Admin functionality to add new Container Types — Create/List/Edit/Delete DONE; icon dropdown with validation DONE
 - [x] Container Type dimensions (L×W×H) — Supported in admin create form
 - [x] Container Type dropdown with auto-number suggestion when adding containers (with Autofill)
 - [x] Specific icons for each container TYPE (tote/suitcase/box/bin) shown on rack detail page
@@ -122,8 +122,13 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Rack Creation visual preview during creation (live grid, labeled slots)
 - [x] Toast notifications for create/update/delete actions
 - [x] QR codes downloadable as PNG (alongside print)
-- [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [x] The home page should not have the little Scan QR button or the View Inventory Map in addition to the 3 larger feature cards — cleaned up to avoid confusion.
+- [x] Auth.js (NextAuth v5) integration with Prisma adapter and dev credentials login
+- [x] User registration flow with admin approval: /register page; admin review at /admin/pending-users
+- [x] Test account seeding: admin@test.local and user@test.local via /admin/seed-accounts
+- [x] Account page for profile editing: update name and avatar URL
+- [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
+- [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
 
 ### Medium Priority
