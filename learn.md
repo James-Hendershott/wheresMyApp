@@ -36,7 +36,7 @@ Without Prisma, talking to a database looks like this:
 
 ```javascript
 // Raw SQL - error-prone, no autocomplete, hard to maintain
-const result = await db.query('SELECT * FROM containers WHERE id = $1', [id]);
+const result = await db.query("SELECT * FROM containers WHERE id = $1", [id]);
 // What fields does result have? Who knows! 🤷
 ```
 
@@ -46,7 +46,7 @@ With Prisma:
 // Type-safe, autocomplete works, catches errors at compile time
 const container = await prisma.container.findUnique({
   where: { id: id },
-  include: { items: true }
+  include: { items: true },
 });
 // container. ← Your editor shows all available fields! ✨
 ```
@@ -97,26 +97,26 @@ This generates TypeScript code you can use:
 // Create
 const box = await prisma.container.create({
   data: {
-    code: 'BIN-01',
-    label: 'Holiday Decor'
-  }
+    code: "BIN-01",
+    label: "Holiday Decor",
+  },
 });
 
 // Read
 const boxes = await prisma.container.findMany({
-  where: { code: { startsWith: 'BIN' } },
-  include: { items: true } // Include related items
+  where: { code: { startsWith: "BIN" } },
+  include: { items: true }, // Include related items
 });
 
 // Update
 await prisma.container.update({
   where: { id: box.id },
-  data: { label: 'Updated Label' }
+  data: { label: "Updated Label" },
 });
 
 // Delete
 await prisma.container.delete({
-  where: { id: box.id }
+  where: { id: box.id },
 });
 ```
 
@@ -141,15 +141,16 @@ Excel Spreadsheet          PostgreSQL Database
 
 You asked about this early on! Here's why we chose Postgres:
 
-| Feature | PostgreSQL | MongoDB | MariaDB |
-|---------|-----------|---------|---------|
-| **Data Structure** | Tables with relationships | JSON documents | Tables |
-| **Best For** | Complex relationships (containers → items → photos) | Flexible schemas | MySQL compatibility |
-| **Type Safety** | Strong types | Flexible types | Strong types |
-| **Prisma Support** | Excellent | Good | Good |
-| **Learning Curve** | Medium | Easy | Medium |
+| Feature            | PostgreSQL                                          | MongoDB          | MariaDB             |
+| ------------------ | --------------------------------------------------- | ---------------- | ------------------- |
+| **Data Structure** | Tables with relationships                           | JSON documents   | Tables              |
+| **Best For**       | Complex relationships (containers → items → photos) | Flexible schemas | MySQL compatibility |
+| **Type Safety**    | Strong types                                        | Flexible types   | Strong types        |
+| **Prisma Support** | Excellent                                           | Good             | Good                |
+| **Learning Curve** | Medium                                              | Easy             | Medium              |
 
 **For this app**, PostgreSQL wins because:
+
 - ✅ Containers have items (relationships)
 - ✅ Items have photos (more relationships)
 - ✅ We need transactions (move item + update slot atomically)
@@ -158,6 +159,7 @@ You asked about this early on! Here's why we chose Postgres:
 #### Your Postgres Setup
 
 You're running Postgres on your **Unraid server** at:
+
 ```
 Host: 192.168.1.153
 Port: 5433
@@ -167,6 +169,7 @@ Password: postgres
 ```
 
 This is great for learning! In production, you'd use a service like:
+
 - [Neon](https://neon.tech) - Serverless Postgres
 - [Railway](https://railway.app) - Postgres hosting
 - [Supabase](https://supabase.com) - Postgres + APIs
@@ -184,6 +187,7 @@ npm run db:studio
 ```
 
 This opens a **web UI** at `http://localhost:5555` where you can:
+
 - ✅ Browse all tables visually
 - ✅ Edit data directly (like Excel)
 - ✅ See relationships (click to jump to related items)
@@ -220,6 +224,7 @@ Install a visual database client:
 - **[pgAdmin](https://www.pgadmin.org/)** (Official Postgres tool)
 
 Setup example for DBeaver:
+
 1. Download and install
 2. New Connection → PostgreSQL
 3. Enter: `192.168.1.153:5433`, database `wheresMyApp`, user `postgres`
@@ -265,24 +270,27 @@ items
 When you run this command, it:
 
 1. **Checks for mistakes**:
+
    ```typescript
    // ❌ Lint error: Variable 'x' is never used
    const x = 5;
-   
+
    // ❌ Lint error: Using 'any' defeats type safety
    function process(data: any) { ... }
    ```
 
 2. **Enforces style rules**:
+
    ```typescript
    // ❌ Lint error: Prefer const over let
    let name = "James";
-   
+
    // ✅ Lint passes
    const name = "James";
    ```
 
 3. **Catches React mistakes**:
+
    ```typescript
    // ❌ Lint error: useEffect missing dependency
    useEffect(() => {
@@ -291,10 +299,11 @@ When you run this command, it:
    ```
 
 4. **Next.js specific issues**:
+
    ```typescript
    // ⚠️ Warning: Use next/image instead of img
    <img src="/photo.jpg" alt="Item" />
-   
+
    // ✅ Better performance
    <Image src="/photo.jpg" alt="Item" width={500} height={500} />
    ```
@@ -319,12 +328,12 @@ We use **ESLint** with these configurations:
 ```json
 // .eslintrc.json
 {
-  "extends": "next/core-web-vitals",  // Next.js best practices
-  "plugins": ["@typescript-eslint"],   // TypeScript rules
+  "extends": "next/core-web-vitals", // Next.js best practices
+  "plugins": ["@typescript-eslint"], // TypeScript rules
   "rules": {
-    "@typescript-eslint/no-unused-vars": "warn",  // Warn about unused variables
+    "@typescript-eslint/no-unused-vars": "warn", // Warn about unused variables
     "@typescript-eslint/no-explicit-any": "warn", // Warn about 'any' types
-    "react/no-unescaped-entities": "off"         // Allow quotes in JSX
+    "react/no-unescaped-entities": "off" // Allow quotes in JSX
   }
 }
 ```
@@ -333,10 +342,10 @@ We use **ESLint** with these configurations:
 
 People often confuse these:
 
-| Tool | Purpose | Example |
-|------|---------|---------|
-| **ESLint** (Linting) | Finds bugs, enforces patterns | "This variable is never used" |
-| **Prettier** (Formatting) | Makes code pretty | "Add space after comma" |
+| Tool                      | Purpose                       | Example                       |
+| ------------------------- | ----------------------------- | ----------------------------- |
+| **ESLint** (Linting)      | Finds bugs, enforces patterns | "This variable is never used" |
+| **Prettier** (Formatting) | Makes code pretty             | "Add space after comma"       |
 
 ```bash
 npm run lint     # Check for bugs/mistakes (ESLint)
@@ -346,19 +355,21 @@ npm run format   # Auto-fix spacing/formatting (Prettier)
 #### Common Lint Warnings You'll See
 
 1. **Unused Variables**
+
    ```typescript
    // ⚠️ Warning
-   const result = await fetch('/api/data');
+   const result = await fetch("/api/data");
    // Fix: Remove it or use it
    ```
 
 2. **Missing Dependencies in useEffect**
+
    ```typescript
    // ⚠️ Warning
    useEffect(() => {
-     fetchData(id);  // 'id' should be in dependency array
+     fetchData(id); // 'id' should be in dependency array
    }, []);
-   
+
    // ✅ Fixed
    useEffect(() => {
      fetchData(id);
@@ -366,10 +377,11 @@ npm run format   # Auto-fix spacing/formatting (Prettier)
    ```
 
 3. **Using <img> Instead of <Image>**
+
    ```typescript
    // ⚠️ Warning (acceptable for QR codes though!)
    <img src={qrCode} alt="QR" />
-   
+
    // ✅ For regular images
    <Image src="/photo.jpg" alt="Item" width={400} height={300} />
    ```
@@ -385,6 +397,7 @@ You've been running commands like `npm run lint` - let's demystify these!
 **npm** = **N**ode **P**ackage **M**anager
 
 It's a tool that:
+
 1. Installs libraries (like `prisma`, `react`, etc.)
 2. Runs scripts defined in `package.json`
 3. Manages dependencies
@@ -409,18 +422,18 @@ When you run `npm run lint`, it executes `next lint`.
 
 #### Common Commands Explained
 
-| Command | What It Does | When to Use It |
-|---------|-------------|----------------|
-| `npm run dev` | Starts development server | While coding (auto-reloads on changes) |
-| `npm run build` | Creates production build | Before deploying to production |
-| `npm run start` | Runs production build | After building, to test production version |
-| `npm run lint` | Checks code for errors | Before committing code |
-| `npm run format` | Auto-fixes formatting | To make code pretty |
-| `npm run type-check` | Checks TypeScript types | To catch type errors |
-| `npm run db:push` | Updates database schema | After changing `schema.prisma` |
-| `npm run db:seed` | Fills database with test data | To get sample data |
-| `npm run db:seed:prod` | Imports your CSV data | To load real inventory |
-| `npm run db:studio` | Opens database UI | To view/edit database |
+| Command                | What It Does                  | When to Use It                             |
+| ---------------------- | ----------------------------- | ------------------------------------------ |
+| `npm run dev`          | Starts development server     | While coding (auto-reloads on changes)     |
+| `npm run build`        | Creates production build      | Before deploying to production             |
+| `npm run start`        | Runs production build         | After building, to test production version |
+| `npm run lint`         | Checks code for errors        | Before committing code                     |
+| `npm run format`       | Auto-fixes formatting         | To make code pretty                        |
+| `npm run type-check`   | Checks TypeScript types       | To catch type errors                       |
+| `npm run db:push`      | Updates database schema       | After changing `schema.prisma`             |
+| `npm run db:seed`      | Fills database with test data | To get sample data                         |
+| `npm run db:seed:prod` | Imports your CSV data         | To load real inventory                     |
+| `npm run db:studio`    | Opens database UI             | To view/edit database                      |
 
 #### The Workflow
 
@@ -449,6 +462,7 @@ They all do the same thing! We use **npm** because it comes with Node.js.
 ### What is it?
 
 Next.js 14's App Router is a new paradigm for building React applications with:
+
 - File-system based routing
 - Server Components by default
 - Streaming and Suspense
@@ -472,6 +486,7 @@ src/app/
 #### 2. Server vs Client Components
 
 **Server Components** (default):
+
 ```tsx
 // src/app/page.tsx
 // WHY: Runs on server, reduces bundle size, can access DB directly
@@ -482,10 +497,11 @@ export default async function HomePage() {
 ```
 
 **Client Components** (when needed):
+
 ```tsx
-'use client'
+"use client";
 // WHY: Needs interactivity, browser APIs, or React hooks
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Counter() {
   const [count, setCount] = useState(0);
@@ -525,8 +541,11 @@ export default function Loading() {
 }
 
 // src/app/error.tsx - Error boundaries
-'use client'
-export default function Error({ error, reset }: {
+("use client");
+export default function Error({
+  error,
+  reset,
+}: {
   error: Error;
   reset: () => void;
 }) {
@@ -617,11 +636,13 @@ async function getContainer(id: string): Promise<Container | null> {
 ### Common Pitfalls
 
 ❌ **Don't use `any`**:
+
 ```tsx
 function processData(data: any) { ... } // Bad!
 ```
 
 ✅ **Use proper types**:
+
 ```tsx
 function processData(data: CreateItemInput) { ... } // Good!
 ```
@@ -646,9 +667,7 @@ Utility-first CSS framework. Instead of writing custom CSS:
 Use utility classes:
 
 ```tsx
-<button className="px-4 py-2 bg-blue-500 rounded">
-  Click me
-</button>
+<button className="rounded bg-blue-500 px-4 py-2">Click me</button>
 ```
 
 ### Key Benefits
@@ -661,11 +680,7 @@ Use utility classes:
 ### Responsive Design
 
 ```tsx
-<div className="
-  w-full          // Mobile: 100% width
-  md:w-1/2        // Tablet: 50% width
-  lg:w-1/3        // Desktop: 33% width
-">
+<div className="// Mobile: 100% width // Tablet: 50% width // Desktop: 33% width w-full md:w-1/2 lg:w-1/3">
   Content
 </div>
 ```
@@ -690,7 +705,7 @@ import { Button } from "@/components/ui/button";
 
 <Button variant="destructive" size="lg">
   Delete
-</Button>
+</Button>;
 ```
 
 ### Custom Utilities
@@ -700,11 +715,13 @@ Use `cn()` helper to merge classes:
 ```tsx
 import { cn } from "@/lib/utils";
 
-<div className={cn(
-  "base-class",
-  isActive && "active-class",
-  className // Allow external overrides
-)} />
+<div
+  className={cn(
+    "base-class",
+    isActive && "active-class",
+    className // Allow external overrides
+  )}
+/>;
 ```
 
 ---
@@ -715,7 +732,7 @@ import { cn } from "@/lib/utils";
 
 Type-safe database ORM that generates a client from your schema.
 
-*Note: For beginner explanation, see [Beginner Essentials → What is Prisma?](#what-is-prisma)*
+_Note: For beginner explanation, see [Beginner Essentials → What is Prisma?](#what-is-prisma)_
 
 ### The Schema
 
@@ -726,7 +743,7 @@ model Container {
   code    String @unique
   label   String
   items   Item[]
-  
+
   @@map("containers")
 }
 
@@ -735,7 +752,7 @@ model Item {
   name        String
   containerId String?
   container   Container? @relation(fields: [containerId], references: [id])
-  
+
   @@map("items")
 }
 ```
@@ -750,10 +767,7 @@ const container = await prisma.container.create({
     code: "BOX-001",
     label: "Holiday Decor",
     items: {
-      create: [
-        { name: "Wreath" },
-        { name: "Lights" },
-      ],
+      create: [{ name: "Wreath" }, { name: "Lights" }],
     },
   },
 });
@@ -828,6 +842,7 @@ pnpm db:studio
 ### What is Auth.js?
 
 Authentication library for Next.js with support for:
+
 - Email magic links
 - OAuth (Google, GitHub, etc.)
 - Credentials
@@ -862,11 +877,11 @@ import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
-  
+
   if (!session?.user) {
     redirect("/");
   }
-  
+
   return <div>Hello {session.user.name}!</div>;
 }
 ```
@@ -874,16 +889,16 @@ export default async function DashboardPage() {
 #### Server Action
 
 ```tsx
-'use server'
+"use server";
 import { auth } from "@/server/auth";
 
 export async function deleteItem(id: string) {
   const session = await auth();
-  
+
   if (!session?.user) {
     throw new Error("Unauthorized");
   }
-  
+
   await prisma.item.delete({ where: { id } });
 }
 ```
@@ -914,7 +929,7 @@ Functions that run on the server, callable from Client Components. No API routes
 ### Basic Pattern
 
 ```tsx
-'use server'
+"use server";
 import { z } from "zod";
 
 // WHY: Define schema for validation
@@ -930,10 +945,10 @@ export async function createItem(formData: FormData) {
     name: formData.get("name"),
     containerId: formData.get("containerId"),
   });
-  
+
   // GOTCHA: Always validate! Never trust client input
   const item = await prisma.item.create({ data });
-  
+
   return { success: true, item };
 }
 ```
@@ -941,7 +956,7 @@ export async function createItem(formData: FormData) {
 ### Using in Forms
 
 ```tsx
-'use client'
+"use client";
 import { createItem } from "@/server/actions/items";
 
 export function AddItemForm() {
@@ -951,7 +966,7 @@ export function AddItemForm() {
       alert("Item added!");
     }
   }
-  
+
   return (
     <form action={handleSubmit}>
       <input name="name" required />
@@ -964,7 +979,7 @@ export function AddItemForm() {
 ### Error Handling
 
 ```tsx
-'use server'
+"use server";
 export async function updateContainer(id: string, data: unknown) {
   try {
     const validated = UpdateContainerSchema.parse(data);
@@ -992,7 +1007,7 @@ export async function updateContainer(id: string, data: unknown) {
 ### Basic Example
 
 ```tsx
-'use client'
+"use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -1005,21 +1020,25 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function ItemForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-  
+
   const onSubmit = async (data: FormData) => {
     await createItem(data);
   };
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("name")} />
       {errors.name && <span>{errors.name.message}</span>}
-      
+
       <textarea {...register("description")} />
-      
+
       <button type="submit">Submit</button>
     </form>
   );
@@ -1029,7 +1048,14 @@ export function ItemForm() {
 ### With shadcn/ui
 
 ```tsx
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 <Form {...form}>
@@ -1048,7 +1074,7 @@ import { Input } from "@/components/ui/input";
       )}
     />
   </form>
-</Form>
+</Form>;
 ```
 
 ---
@@ -1062,7 +1088,7 @@ Never upload directly from client with credentials!
 #### Server Action
 
 ```tsx
-'use server'
+"use server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -1077,17 +1103,17 @@ const s3 = new S3Client({
 
 export async function getUploadUrl(filename: string) {
   const key = `items/${Date.now()}-${filename}`;
-  
+
   const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET,
     Key: key,
     ContentType: "image/jpeg",
   });
-  
+
   // WHY: Presigned URL lets client upload directly to S3
   const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
   const publicUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`;
-  
+
   return { uploadUrl, publicUrl };
 }
 ```
@@ -1095,20 +1121,20 @@ export async function getUploadUrl(filename: string) {
 #### Client Component
 
 ```tsx
-'use client'
+"use client";
 import { getUploadUrl } from "@/server/actions/upload";
 
 async function uploadImage(file: File) {
   // 1. Get presigned URL
   const { uploadUrl, publicUrl } = await getUploadUrl(file.name);
-  
+
   // 2. Upload directly to S3
   await fetch(uploadUrl, {
     method: "PUT",
     body: file,
     headers: { "Content-Type": file.type },
   });
-  
+
   // 3. Save publicUrl to database
   await createItemPhoto(publicUrl);
 }
@@ -1134,25 +1160,25 @@ export async function generateQR(code: string) {
 ### Scanning (Client-Side)
 
 ```tsx
-'use client'
+"use client";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useRef, useEffect } from "react";
 
 export function QRScanner({ onScan }: { onScan: (code: string) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+
   useEffect(() => {
     const reader = new BrowserMultiFormatReader();
-    
+
     reader.decodeFromVideoDevice(null, videoRef.current!, (result) => {
       if (result) {
         onScan(result.getText());
       }
     });
-    
+
     return () => reader.reset();
   }, [onScan]);
-  
+
   return <video ref={videoRef} />;
 }
 ```
@@ -1164,6 +1190,7 @@ export function QRScanner({ onScan }: { onScan: (code: string) => void }) {
 ### What is a PWA?
 
 Web apps that feel like native apps:
+
 - Installable to home screen
 - Offline functionality
 - Background sync
@@ -1218,7 +1245,7 @@ describe("generateContainerCode", () => {
     const code2 = generateContainerCode();
     expect(code1).not.toBe(code2);
   });
-  
+
   it("follows format BOX-XXXX", () => {
     const code = generateContainerCode();
     expect(code).toMatch(/^BOX-[A-Z0-9]{4}$/);
@@ -1234,11 +1261,11 @@ import { test, expect } from "@playwright/test";
 
 test("can create a container", async ({ page }) => {
   await page.goto("/dashboard");
-  
+
   await page.click("text=Add Container");
   await page.fill("input[name=label]", "Test Box");
   await page.click("button[type=submit]");
-  
+
   await expect(page.locator("text=Test Box")).toBeVisible();
 });
 ```

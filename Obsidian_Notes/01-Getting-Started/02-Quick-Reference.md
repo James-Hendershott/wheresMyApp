@@ -32,6 +32,7 @@ pnpm dev             # http://localhost:3000
 ## 🔧 Development Commands
 
 ### Running the App
+
 ```bash
 pnpm dev             # Development mode with hot reload
 pnpm build           # Production build
@@ -39,6 +40,7 @@ pnpm start           # Run production build
 ```
 
 ### Code Quality
+
 ```bash
 pnpm lint            # Run ESLint
 pnpm format          # Format with Prettier
@@ -47,6 +49,7 @@ pnpm type-check      # TypeScript type checking
 ```
 
 ### Testing
+
 ```bash
 pnpm test            # Run unit tests (Vitest)
 pnpm test:ui         # Run tests with UI
@@ -55,6 +58,7 @@ pnpm test:e2e:ui     # Run E2E tests with UI
 ```
 
 ### Database
+
 ```bash
 pnpm db:generate     # Generate Prisma Client
 pnpm db:push         # Push schema without migration
@@ -183,9 +187,9 @@ npx shadcn-ui@latest add dialog
 
 ```typescript
 // src/server/actions/my-actions.ts
-'use server'
+"use server";
 
-import { z } from 'zod';
+import { z } from "zod";
 
 const MySchema = z.object({
   field: z.string(),
@@ -378,21 +382,25 @@ lsof -ti:3000 | xargs kill
 ## 💡 Tips & Tricks
 
 1. **Use `pnpm dlx`** instead of global installs:
+
    ```bash
    pnpm dlx prisma studio
    ```
 
 2. **Watch mode for tests**:
+
    ```bash
    pnpm test -- --watch
    ```
 
 3. **Run single test file**:
+
    ```bash
    pnpm test src/lib/utils.test.ts
    ```
 
 4. **Git commit with ticket**:
+
    ```bash
    git commit -m "feat(rack): add grid (#42)"
    ```

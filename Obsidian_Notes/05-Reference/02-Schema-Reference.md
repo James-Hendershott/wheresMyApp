@@ -31,17 +31,17 @@ Photo (Visual documentation)
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | String (cuid) | ✅ | Unique identifier |
-| `name` | String | ✅ | Display name (e.g., "Tote #1") |
-| `type` | String | ❌ | Container type (Tote, Suitcase, Box) |
-| `size` | String | ❌ | Physical size (Small, Medium, Large) |
-| `color` | String | ❌ | Container color |
-| `qrCode` | String | ❌ | QR code for scanning |
-| `description` | String | ❌ | Additional notes |
-| `createdAt` | DateTime | ✅ | When created (auto) |
-| `updatedAt` | DateTime | ✅ | Last modified (auto) |
+| Field         | Type          | Required | Description                          |
+| ------------- | ------------- | -------- | ------------------------------------ |
+| `id`          | String (cuid) | ✅       | Unique identifier                    |
+| `name`        | String        | ✅       | Display name (e.g., "Tote #1")       |
+| `type`        | String        | ❌       | Container type (Tote, Suitcase, Box) |
+| `size`        | String        | ❌       | Physical size (Small, Medium, Large) |
+| `color`       | String        | ❌       | Container color                      |
+| `qrCode`      | String        | ❌       | QR code for scanning                 |
+| `description` | String        | ❌       | Additional notes                     |
+| `createdAt`   | DateTime      | ✅       | When created (auto)                  |
+| `updatedAt`   | DateTime      | ✅       | Last modified (auto)                 |
 
 ### Relationships
 
@@ -68,7 +68,7 @@ const container = await prisma.container.findUnique({
   include: {
     items: true,
     location: {
-      include: { rack: true }
+      include: { rack: true },
     },
     photos: true,
   },
@@ -83,16 +83,16 @@ const container = await prisma.container.findUnique({
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | String (cuid) | ✅ | Unique identifier |
-| `name` | String | ✅ | Item name |
-| `description` | String | ❌ | Detailed description |
-| `category` | String | ❌ | Item category/type |
-| `quantity` | Int | ✅ | How many (default: 1) |
-| `createdAt` | DateTime | ✅ | When created (auto) |
-| `updatedAt` | DateTime | ✅ | Last modified (auto) |
-| `containerId` | String | ✅ | Which container holds this item |
+| Field         | Type          | Required | Description                     |
+| ------------- | ------------- | -------- | ------------------------------- |
+| `id`          | String (cuid) | ✅       | Unique identifier               |
+| `name`        | String        | ✅       | Item name                       |
+| `description` | String        | ❌       | Detailed description            |
+| `category`    | String        | ❌       | Item category/type              |
+| `quantity`    | Int           | ✅       | How many (default: 1)           |
+| `createdAt`   | DateTime      | ✅       | When created (auto)             |
+| `updatedAt`   | DateTime      | ✅       | Last modified (auto)            |
+| `containerId` | String        | ✅       | Which container holds this item |
 
 ### Relationships
 
@@ -114,11 +114,11 @@ photos      Photo[]     // Photos of this item
 // Search items across all containers
 const items = await prisma.item.findMany({
   where: {
-    name: { contains: 'charger', mode: 'insensitive' },
+    name: { contains: "charger", mode: "insensitive" },
   },
   include: {
     container: {
-      include: { location: { include: { rack: true } } }
+      include: { location: { include: { rack: true } } },
     },
   },
 });
@@ -132,15 +132,15 @@ const items = await prisma.item.findMany({
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | String (cuid) | ✅ | Unique identifier |
-| `row` | Int | ✅ | Vertical position (0-based) |
-| `column` | Int | ✅ | Horizontal position (0-based) |
-| `label` | String | ❌ | Human-readable label (e.g., "A1") |
-| `createdAt` | DateTime | ✅ | When created (auto) |
-| `updatedAt` | DateTime | ✅ | Last modified (auto) |
-| `rackId` | String | ✅ | Which rack this slot belongs to |
+| Field       | Type          | Required | Description                       |
+| ----------- | ------------- | -------- | --------------------------------- |
+| `id`        | String (cuid) | ✅       | Unique identifier                 |
+| `row`       | Int           | ✅       | Vertical position (0-based)       |
+| `column`    | Int           | ✅       | Horizontal position (0-based)     |
+| `label`     | String        | ❌       | Human-readable label (e.g., "A1") |
+| `createdAt` | DateTime      | ✅       | When created (auto)               |
+| `updatedAt` | DateTime      | ✅       | Last modified (auto)              |
+| `rackId`    | String        | ✅       | Which rack this slot belongs to   |
 
 ### Relationships
 
@@ -167,7 +167,7 @@ const occupiedSlots = await prisma.rackSlot.findMany({
   },
   include: {
     container: {
-      include: { items: true }
+      include: { items: true },
     },
   },
 });
@@ -181,15 +181,15 @@ const occupiedSlots = await prisma.rackSlot.findMany({
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | String (cuid) | ✅ | Unique identifier |
-| `name` | String | ✅ | Rack name (e.g., "Rack A") |
-| `rows` | Int | ✅ | Number of vertical positions |
-| `columns` | Int | ✅ | Number of horizontal positions |
-| `location` | String | ❌ | Physical location description |
-| `createdAt` | DateTime | ✅ | When created (auto) |
-| `updatedAt` | DateTime | ✅ | Last modified (auto) |
+| Field       | Type          | Required | Description                    |
+| ----------- | ------------- | -------- | ------------------------------ |
+| `id`        | String (cuid) | ✅       | Unique identifier              |
+| `name`      | String        | ✅       | Rack name (e.g., "Rack A")     |
+| `rows`      | Int           | ✅       | Number of vertical positions   |
+| `columns`   | Int           | ✅       | Number of horizontal positions |
+| `location`  | String        | ❌       | Physical location description  |
+| `createdAt` | DateTime      | ✅       | When created (auto)            |
+| `updatedAt` | DateTime      | ✅       | Last modified (auto)           |
 
 ### Relationships
 
@@ -213,10 +213,10 @@ const rack = await prisma.rack.findUnique({
     slots: {
       include: {
         container: {
-          include: { items: true }
+          include: { items: true },
         },
       },
-      orderBy: [{ row: 'asc' }, { column: 'asc' }],
+      orderBy: [{ row: "asc" }, { column: "asc" }],
     },
   },
 });
@@ -230,15 +230,15 @@ const rack = await prisma.rack.findUnique({
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | String (cuid) | ✅ | Unique identifier |
-| `url` | String | ✅ | Path or URL to image |
-| `description` | String | ❌ | Photo caption/notes |
-| `createdAt` | DateTime | ✅ | When uploaded (auto) |
-| `updatedAt` | DateTime | ✅ | Last modified (auto) |
-| `containerId` | String | ❌ | Container in photo |
-| `itemId` | String | ❌ | Item in photo |
+| Field         | Type          | Required | Description          |
+| ------------- | ------------- | -------- | -------------------- |
+| `id`          | String (cuid) | ✅       | Unique identifier    |
+| `url`         | String        | ✅       | Path or URL to image |
+| `description` | String        | ❌       | Photo caption/notes  |
+| `createdAt`   | DateTime      | ✅       | When uploaded (auto) |
+| `updatedAt`   | DateTime      | ✅       | Last modified (auto) |
+| `containerId` | String        | ❌       | Container in photo   |
+| `itemId`      | String        | ❌       | Item in photo        |
 
 ### Relationships
 
@@ -259,10 +259,7 @@ item        Item?        // Item this photo shows
 // Get all photos for a container and its items
 const photos = await prisma.photo.findMany({
   where: {
-    OR: [
-      { containerId: containerId },
-      { item: { containerId: containerId } },
-    ],
+    OR: [{ containerId: containerId }, { item: { containerId: containerId } }],
   },
 });
 ```
@@ -317,11 +314,11 @@ const item = await prisma.item.findUnique({
     container: {
       include: {
         location: {
-          include: { rack: true }
-        }
-      }
-    }
-  }
+          include: { rack: true },
+        },
+      },
+    },
+  },
 });
 
 // Access: item.container.location.rack.name
@@ -336,15 +333,15 @@ const itemsInRack = await prisma.item.findMany({
   where: {
     container: {
       location: {
-        rackId: rackId
-      }
-    }
+        rackId: rackId,
+      },
+    },
   },
   include: {
     container: {
-      include: { location: true }
-    }
-  }
+      include: { location: true },
+    },
+  },
 });
 ```
 
@@ -353,11 +350,11 @@ const itemsInRack = await prisma.item.findMany({
 ```typescript
 const unplacedContainers = await prisma.container.findMany({
   where: {
-    locationId: null
+    locationId: null,
   },
   include: {
-    items: true
-  }
+    items: true,
+  },
 });
 ```
 
@@ -371,22 +368,22 @@ const results = await prisma.$transaction([
   prisma.container.findMany({
     where: {
       OR: [
-        { name: { contains: searchTerm, mode: 'insensitive' } },
-        { description: { contains: searchTerm, mode: 'insensitive' } }
-      ]
-    }
+        { name: { contains: searchTerm, mode: "insensitive" } },
+        { description: { contains: searchTerm, mode: "insensitive" } },
+      ],
+    },
   }),
   // Search items
   prisma.item.findMany({
     where: {
       OR: [
-        { name: { contains: searchTerm, mode: 'insensitive' } },
-        { description: { contains: searchTerm, mode: 'insensitive' } },
-        { category: { contains: searchTerm, mode: 'insensitive' } }
-      ]
+        { name: { contains: searchTerm, mode: "insensitive" } },
+        { description: { contains: searchTerm, mode: "insensitive" } },
+        { category: { contains: searchTerm, mode: "insensitive" } },
+      ],
     },
-    include: { container: true }
-  })
+    include: { container: true },
+  }),
 ]);
 ```
 

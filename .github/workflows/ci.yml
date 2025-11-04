@@ -12,19 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run ESLint
         run: npm run lint
-        
+
       - name: Check formatting
         run: npm run format:check
 
@@ -33,19 +33,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate Prisma Client
         run: npm run db:generate
-        
+
       - name: Run type check
         run: npm run type-check
 
@@ -54,19 +54,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate Prisma Client
         run: npm run db:generate
-        
+
       - name: Run unit tests
         run: npm run test
 
@@ -75,19 +75,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate Prisma Client
         run: npm run db:generate
-        
+
       - name: Build application
         run: npm run build
         env:
@@ -112,30 +112,30 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-          
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-        
+
       - name: Generate Prisma Client
         run: npm run db:generate
-        
+
       - name: Run migrations
         run: npm run db:migrate:deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/wheresmy_test
-          
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:
@@ -143,9 +143,9 @@ jobs:
           AUTH_SECRET: test-secret-for-ci
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
           CI: true
-          
+
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report

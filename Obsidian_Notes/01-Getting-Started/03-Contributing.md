@@ -24,23 +24,27 @@ Thank you for your interest in contributing! This document outlines our developm
 
 1. **Fork the repository** (for external contributors)
 2. **Clone your fork**:
+
    ```bash
    git clone https://github.com/your-username/wheresmy-app.git
    cd wheresmy-app
    ```
 
 3. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
 4. **Set up environment**:
+
    ```bash
    cp .env.example .env
    # Edit .env with your local values
    ```
 
 5. **Set up database**:
+
    ```bash
    pnpm db:migrate
    pnpm db:seed
@@ -72,13 +76,13 @@ git checkout -b feat/your-feature-name
 
 #### Branch Naming Convention
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Feature | `feat/description` | `feat/qr-scanner` |
-| Bug Fix | `fix/description` | `fix/container-duplication` |
-| Chore | `chore/description` | `chore/update-deps` |
-| Docs | `docs/description` | `docs/api-guide` |
-| Refactor | `refactor/description` | `refactor/prisma-queries` |
+| Type     | Pattern                | Example                     |
+| -------- | ---------------------- | --------------------------- |
+| Feature  | `feat/description`     | `feat/qr-scanner`           |
+| Bug Fix  | `fix/description`      | `fix/container-duplication` |
+| Chore    | `chore/description`    | `chore/update-deps`         |
+| Docs     | `docs/description`     | `docs/api-guide`            |
+| Refactor | `refactor/description` | `refactor/prisma-queries`   |
 
 ### Workflow Example
 
@@ -169,6 +173,7 @@ BREAKING CHANGE: Auth.js v5 requires new environment variables
 ### Writing Good Commits
 
 ✅ **Do**:
+
 - Use imperative mood ("add" not "added")
 - Start with lowercase
 - No period at the end
@@ -176,6 +181,7 @@ BREAKING CHANGE: Auth.js v5 requires new environment variables
 - Reference issue numbers: `fix(item): resolve photo upload bug (#42)`
 
 ❌ **Don't**:
+
 - "Fixed stuff"
 - "WIP"
 - "asdfasdf"
@@ -186,6 +192,7 @@ BREAKING CHANGE: Auth.js v5 requires new environment variables
 ### Before Opening a PR
 
 1. **Update from develop**:
+
    ```bash
    git checkout develop
    git pull origin develop
@@ -194,6 +201,7 @@ BREAKING CHANGE: Auth.js v5 requires new environment variables
    ```
 
 2. **Run all checks**:
+
    ```bash
    pnpm lint           # ESLint
    pnpm format:check   # Prettier
@@ -210,20 +218,24 @@ Use this template when creating a PR:
 
 ```markdown
 ## 🎯 Context
+
 Brief explanation of what and why.
 
 ## 📦 Changes
+
 - Added X feature
 - Fixed Y bug
 - Refactored Z component
 
 ## 🧪 Test Plan
+
 - [ ] Unit tests pass (`pnpm test`)
 - [ ] E2E tests pass (`pnpm test:e2e`)
 - [ ] Manual testing completed
 - [ ] Screenshots/GIF attached (for UI changes)
 
 ## 📝 Notes
+
 - Any follow-up work needed?
 - Known issues?
 - Breaking changes?
@@ -299,6 +311,7 @@ src/
 ### Unit Tests
 
 Write unit tests for:
+
 - Utility functions
 - Business logic
 - Data transformations
@@ -311,11 +324,7 @@ import { generateCode } from "./utils";
 
 describe("generateCode", () => {
   it("generates unique codes", () => {
-    const codes = new Set([
-      generateCode(),
-      generateCode(),
-      generateCode(),
-    ]);
+    const codes = new Set([generateCode(), generateCode(), generateCode()]);
     expect(codes.size).toBe(3);
   });
 });
@@ -324,6 +333,7 @@ describe("generateCode", () => {
 ### E2E Tests
 
 Write E2E tests for:
+
 - Critical user flows
 - Multi-step processes
 - Form submissions
@@ -335,12 +345,12 @@ import { test, expect } from "@playwright/test";
 
 test("complete container workflow", async ({ page }) => {
   await page.goto("/dashboard");
-  
+
   // Create container
   await page.click("text=Add Container");
   await page.fill("[name=label]", "Test Box");
   await page.click("button[type=submit]");
-  
+
   // Verify creation
   await expect(page.locator("text=Test Box")).toBeVisible();
 });

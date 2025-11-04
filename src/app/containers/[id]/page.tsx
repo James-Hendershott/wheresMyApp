@@ -45,20 +45,30 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
   return (
     <main className="mx-auto max-w-4xl p-6">
       <div className="mb-6">
-        <Link href="/containers" className="mb-2 inline-block text-blue-600 hover:underline">
+        <Link
+          href="/containers"
+          className="mb-2 inline-block text-blue-600 hover:underline"
+        >
           ← Back to Containers
         </Link>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold">{container.label}</h1>
             <div className="mt-2 text-gray-600">
-              <div>Code: <span className="font-mono font-semibold">{container.code}</span></div>
+              <div>
+                Code:{" "}
+                <span className="font-mono font-semibold">
+                  {container.code}
+                </span>
+              </div>
               <div>
                 Location: {location}
                 {rack && ` → ${rack}`}
                 {slot && ` ${slot}`}
               </div>
-              {container.description && <div className="mt-2 text-sm">{container.description}</div>}
+              {container.description && (
+                <div className="mt-2 text-sm">{container.description}</div>
+              )}
             </div>
           </div>
           <QRCodeDisplay code={container.code} label={container.label} />
@@ -67,7 +77,9 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
 
       {/* Items List */}
       <div className="mb-8">
-        <h2 className="mb-4 text-2xl font-semibold">Items ({container.items.length})</h2>
+        <h2 className="mb-4 text-2xl font-semibold">
+          Items ({container.items.length})
+        </h2>
         {container.items.length === 0 ? (
           <p className="text-gray-500">No items yet. Add one below!</p>
         ) : (
@@ -78,11 +90,16 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                   <div>
                     <div className="font-semibold">{item.name}</div>
                     {item.description && (
-                      <div className="mt-1 text-sm text-gray-600">{item.description}</div>
+                      <div className="mt-1 text-sm text-gray-600">
+                        {item.description}
+                      </div>
                     )}
                     <div className="mt-2 flex flex-wrap gap-1">
                       {item.tags.map((tag) => (
-                        <span key={tag} className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700">
+                        <span
+                          key={tag}
+                          className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700"
+                        >
                           {tag}
                         </span>
                       ))}

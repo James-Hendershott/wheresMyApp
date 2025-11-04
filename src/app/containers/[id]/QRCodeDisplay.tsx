@@ -7,7 +7,13 @@ import { useEffect, useState } from "react";
 import { generateQRCode } from "@/app/actions/qrActions";
 import { Printer } from "lucide-react";
 
-export function QRCodeDisplay({ code, label }: { code: string; label: string }) {
+export function QRCodeDisplay({
+  code,
+  label,
+}: {
+  code: string;
+  label: string;
+}) {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   useEffect(() => {

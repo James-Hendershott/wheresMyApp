@@ -47,7 +47,8 @@ function normalizeItemStatus(cond?: string | null): ItemStatus {
   // WHAT: Map free-form condition/status to ItemStatus enum; default to IN_STORAGE
   const v = (cond || "").toLowerCase();
   if (v.includes("discard")) return ItemStatus.DISCARDED;
-  if (v.includes("checked out") || v.includes("check out")) return ItemStatus.CHECKED_OUT;
+  if (v.includes("checked out") || v.includes("check out"))
+    return ItemStatus.CHECKED_OUT;
   return ItemStatus.IN_STORAGE;
 }
 
@@ -56,7 +57,7 @@ function normalizeItemStatus(cond?: string | null): ItemStatus {
 async function main() {
   if (!process.env.DATABASE_URL) {
     throw new Error(
-      'DATABASE_URL is not set. Create a .env with DATABASE_URL pointing to your Postgres instance (see .env.example).'
+      "DATABASE_URL is not set. Create a .env with DATABASE_URL pointing to your Postgres instance (see .env.example)."
     );
   }
 
@@ -103,14 +104,20 @@ async function main() {
 
   // First pass: collect unique locations and containers
   for (const r of rows) {
-    const toteNumber = (r["Tote Number"] || r["Tote Description"] || "Unknown Tote").trim();
+    const toteNumber = (
+      r["Tote Number"] ||
+      r["Tote Description"] ||
+      "Unknown Tote"
+    ).trim();
     const toteCode = sanitizeCode(toteNumber || "tote-unknown");
     const toteDesc = (r["Tote Description"] || "").trim();
     const locName = (r["Tote Location"] || "Unassigned").trim();
 
     // Upsert Location by name
     if (locName && !locationCache.has(locName)) {
-      const existing = await prisma.location.findFirst({ where: { name: locName } });
+      const existing = await prisma.location.findFirst({
+        where: { name: locName },
+      });
       if (existing) {
         locationCache.set(locName, existing.id);
       } else {
@@ -153,7 +160,11 @@ async function main() {
     const itemName = (r["Item Name"] || "").trim();
     if (!itemName) continue; // skip rows without an item
 
-    const toteNumber = (r["Tote Number"] || r["Tote Description"] || "Unknown Tote").trim();
+    const toteNumber = (
+      r["Tote Number"] ||
+      r["Tote Description"] ||
+      "Unknown Tote"
+    ).trim();
     const toteCode = sanitizeCode(toteNumber || "tote-unknown");
     const containerId = containerCache.get(toteCode);
     if (!containerId) continue;
@@ -207,7 +218,9 @@ async function main() {
         }));
 
       if (photo && /^https?:\/\//i.test(photo)) {
-        const existingPhoto = await prisma.itemPhoto.findFirst({ where: { itemId: item.id, url: photo } });
+        const existingPhoto = await prisma.itemPhoto.findFirst({
+          where: { itemId: item.id, url: photo },
+        });
         if (!existingPhoto) {
           await prisma.itemPhoto.create({
             data: {
@@ -228,7 +241,9 @@ async function main() {
     prisma.location.count(),
   ]);
 
-  console.log(`Seed complete → Containers: ${containers}, Items: ${items}, Photos: ${photos}, Locations: ${locations}`);
+  console.log(
+    `Seed complete → Containers: ${containers}, Items: ${items}, Photos: ${photos}, Locations: ${locations}`
+  );
 }
 
 main()

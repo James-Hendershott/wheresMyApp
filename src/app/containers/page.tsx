@@ -29,13 +29,17 @@ export default async function ContainersPage() {
     <main className="mx-auto max-w-6xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">All Containers</h1>
-        <Link href="/racks" className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+        <Link
+          href="/racks"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
           + Add Container
         </Link>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {containers.map((container) => {
-          const location = container.currentSlot?.rack?.location?.name || "Unassigned";
+          const location =
+            container.currentSlot?.rack?.location?.name || "Unassigned";
           const rack = container.currentSlot?.rack?.name || null;
           const slot = container.currentSlot
             ? `[${container.currentSlot.row},${container.currentSlot.col}]`
@@ -63,13 +67,17 @@ export default async function ContainersPage() {
                   {container.status}
                 </span>
               </div>
-              <div className="mb-1 text-sm text-gray-500">Code: {container.code}</div>
+              <div className="mb-1 text-sm text-gray-500">
+                Code: {container.code}
+              </div>
               <div className="mb-1 text-sm text-gray-600">
                 Location: {location}
                 {rack && ` → ${rack}`}
                 {slot && ` ${slot}`}
               </div>
-              <div className="text-sm text-gray-500">{container._count.items} items</div>
+              <div className="text-sm text-gray-500">
+                {container._count.items} items
+              </div>
             </Link>
           );
         })}

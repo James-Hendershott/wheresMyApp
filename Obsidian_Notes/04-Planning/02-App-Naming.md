@@ -10,6 +10,7 @@
 # App Naming Ideas 🏷️
 
 ## Current Name
+
 **"WheresMy App"** - Play on "Where's my stuff?" + "it's an app"
 
 ---
@@ -19,25 +20,25 @@
 ### Playful & Memorable
 
 1. **"Where's My...?"** ⭐ Original idea
-   - Tagline: *"Never ask 'Where's my...' again!"*
+   - Tagline: _"Never ask 'Where's my...' again!"_
    - Domain: `wheresmystuff.app`
    - Pro: Memorable, conversational
    - Con: Ellipsis might be confusing in URLs
 
 2. **"FindMyStuff"**
-   - Tagline: *"Find anything, instantly"*
+   - Tagline: _"Find anything, instantly"_
    - Domain: `findmystuff.app`
    - Pro: Clear purpose, SEO-friendly
    - Con: Similar to Apple's "Find My"
 
 3. **"ToteFinder"**
-   - Tagline: *"Your totes, tracked"*
+   - Tagline: _"Your totes, tracked"_
    - Domain: `totefinder.app`
    - Pro: Specific to tote tracking
    - Con: Limited if you expand beyond totes
 
 4. **"BoxSpot"**
-   - Tagline: *"Spot your box, find your stuff"*
+   - Tagline: _"Spot your box, find your stuff"_
    - Domain: `boxspot.app`
    - Pro: Short, catchy
    - Con: Generic
@@ -45,25 +46,25 @@
 ### Clever Wordplay
 
 5. **"InvenTrack"**
-   - Tagline: *"Inventory tracking made simple"*
+   - Tagline: _"Inventory tracking made simple"_
    - Domain: `inventrack.app`
    - Pro: Professional, descriptive
    - Con: Corporate-sounding
 
 6. **"StoryShelves"** (Story + Shelves)
-   - Tagline: *"Every item has a story, every shelf has a place"*
+   - Tagline: _"Every item has a story, every shelf has a place"_
    - Domain: `storyshelves.app`
    - Pro: Unique, memorable
    - Con: Less obvious purpose
 
 7. **"RackTracker"**
-   - Tagline: *"Track racks, find facts"*
+   - Tagline: _"Track racks, find facts"_
    - Domain: `racktracker.app`
    - Pro: Rhymes, clear purpose
    - Con: Sounds industrial
 
 8. **"ToteNote"** (Tote + Note)
-   - Tagline: *"Take note of every tote"*
+   - Tagline: _"Take note of every tote"_
    - Domain: `totenote.app`
    - Pro: Rhymes, catchy
    - Con: Similar to other "note" apps
@@ -71,13 +72,13 @@
 ### Direct & Professional
 
 9. **"ItemVault"**
-   - Tagline: *"Your items, safely tracked"*
+   - Tagline: _"Your items, safely tracked"_
    - Domain: `itemvault.app`
    - Pro: Secure-sounding, professional
    - Con: Less playful
 
 10. **"ShelfScan"**
-    - Tagline: *"Scan, find, done"*
+    - Tagline: _"Scan, find, done"_
     - Domain: `shelfscan.app`
     - Pro: Action-oriented
     - Con: Generic
@@ -85,13 +86,13 @@
 ### Tech-Forward
 
 11. **"QRganize"** (QR + Organize)
-    - Tagline: *"Organize with QR codes"*
+    - Tagline: _"Organize with QR codes"_
     - Domain: `qrganize.app`
     - Pro: Highlights QR feature
     - Con: Spelling might confuse users
 
 12. **"ScanStash"**
-    - Tagline: *"Scan it, stash it, find it"*
+    - Tagline: _"Scan it, stash it, find it"_
     - Domain: `scanstash.app`
     - Pro: Alliterative, tech-forward
     - Con: Informal
@@ -99,13 +100,13 @@
 ### Home Organization Focus
 
 13. **"HomeBin"**
-    - Tagline: *"Bin tracking for the organized home"*
+    - Tagline: _"Bin tracking for the organized home"_
     - Domain: `homebin.app`
     - Pro: Clear audience (homeowners)
     - Con: Limiting if expanding
 
 14. **"Tidy Track"**
-    - Tagline: *"Keep your space tidy, your mind clear"*
+    - Tagline: _"Keep your space tidy, your mind clear"_
     - Domain: `tidytrack.app`
     - Pro: Lifestyle-focused
     - Con: Generic
@@ -116,26 +117,28 @@
 
 ### Top 3 Picks
 
-| Name | Vibe | Best For |
-|------|------|----------|
+| Name                 | Vibe                    | Best For                    |
+| -------------------- | ----------------------- | --------------------------- |
 | **"Where's My...?"** | Playful, conversational | Personal projects, home use |
-| **"FindMyStuff"** | Clear, direct | General audience, SEO |
-| **"QRganize"** | Tech-savvy, unique | Developer audience |
+| **"FindMyStuff"**    | Clear, direct           | General audience, SEO       |
+| **"QRganize"**       | Tech-savvy, unique      | Developer audience          |
 
 ### If I Had to Choose: **"Where's My...?"**
 
 **Reasons:**
+
 1. ✅ Matches your original vision
 2. ✅ Memorable and relatable (everyone asks this!)
-3. ✅ Works well with tagline: *"Never ask again"*
+3. ✅ Works well with tagline: _"Never ask again"_
 4. ✅ The ellipsis creates curiosity
 5. ✅ Domain available: `wheresmystuff.app`
 
 **Branding Ideas:**
+
 - Logo: A magnifying glass over a question mark
 - Color scheme: Friendly blues and greens (trustworthy + organized)
 - Mascot: A detective character searching through boxes
-- Slogan: *"Where's My...? Found it!"*
+- Slogan: _"Where's My...? Found it!"_
 
 ---
 
@@ -176,15 +179,16 @@ git commit -m "chore: rebrand to 'Where's My...?'"
 
 Checked popular TLDs:
 
-| Domain | Status | Price |
-|--------|--------|-------|
+| Domain            | Status       | Price     |
+| ----------------- | ------------ | --------- |
 | wheresmystuff.app | ✅ Available | ~$15/year |
-| wheresmystuff.com | ❌ Taken | - |
-| findmystuff.app | ✅ Available | ~$15/year |
-| qrganize.app | ✅ Available | ~$15/year |
-| wheresmyapp.com | ❌ Taken | - |
+| wheresmystuff.com | ❌ Taken     | -         |
+| findmystuff.app   | ✅ Available | ~$15/year |
+| qrganize.app      | ✅ Available | ~$15/year |
+| wheresmyapp.com   | ❌ Taken     | -         |
 
 **Recommendation**: Register `wheresmystuff.app` via:
+
 - Namecheap
 - Google Domains
 - Cloudflare Registrar (cheapest)
@@ -198,27 +202,30 @@ Checked popular TLDs:
 **Target Audience**: Homeowners with lots of storage (garage, basement, storage units)
 
 **Pain Points**:
-- 😤 "I know I have it *somewhere*..."
+
+- 😤 "I know I have it _somewhere_..."
 - 😤 "Which box did I put that in?"
 - 😤 "Was that in the garage or storage unit?"
 
 **Solution**:
+
 - ✅ Scan QR code → see contents instantly
 - ✅ Visual rack map shows exact location
 - ✅ Check-in/out system prevents loss
 
 **Tagline Options**:
-1. *"Never ask 'Where's my...?' again"*
-2. *"Lost something? Find it in seconds"*
-3. *"Your stuff, organized. Finally."*
-4. *"Storage that makes sense"*
+
+1. _"Never ask 'Where's my...?' again"_
+2. _"Lost something? Find it in seconds"_
+3. _"Your stuff, organized. Finally."_
+4. _"Storage that makes sense"_
 
 ---
 
 ## Next Steps
 
 1. **Decide on name** (vote with team/family)
-2. **Register domain** 
+2. **Register domain**
 3. **Update branding** (logo, colors)
 4. **Rebrand codebase** (see implementation above)
 5. **Update social media** (if applicable)

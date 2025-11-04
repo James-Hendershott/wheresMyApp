@@ -29,17 +29,19 @@ export default async function RackPage({ params }: RackPageProps) {
   const height = rack.rows * cellSize;
 
   return (
-    <main className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-2">{rack.name}</h1>
-      <div className="mb-4 text-gray-500">Location: {rack.location?.name || "Unknown"}</div>
-      <svg width={width} height={height} className="border rounded bg-gray-50">
+    <main className="mx-auto max-w-3xl p-6">
+      <h1 className="mb-2 text-2xl font-bold">{rack.name}</h1>
+      <div className="mb-4 text-gray-500">
+        Location: {rack.location?.name || "Unknown"}
+      </div>
+      <svg width={width} height={height} className="rounded border bg-gray-50">
         {/* Draw grid */}
         {[...Array(rack.rows)].map((_, row) =>
           [...Array(rack.cols)].map((_, col) => {
             const slot = rack.slots.find((s) => s.row === row && s.col === col);
             const hasContainer = slot && slot.container;
             return (
-              <g key={`${row}-${col}`}> 
+              <g key={`${row}-${col}`}>
                 <rect
                   x={col * cellSize}
                   y={row * cellSize}
@@ -68,7 +70,9 @@ export default async function RackPage({ params }: RackPageProps) {
         )}
       </svg>
       <div className="mt-6">
-        <a href="/racks" className="text-blue-600 hover:underline">← Back to Inventory Map</a>
+        <a href="/racks" className="text-blue-600 hover:underline">
+          ← Back to Inventory Map
+        </a>
       </div>
     </main>
   );

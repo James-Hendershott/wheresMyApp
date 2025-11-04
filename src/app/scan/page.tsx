@@ -46,7 +46,9 @@ export default function ScanPage() {
         );
       } catch (err) {
         console.error(err);
-        setError("Camera access denied or unavailable. Please allow camera access.");
+        setError(
+          "Camera access denied or unavailable. Please allow camera access."
+        );
         setScanning(false);
       }
     };
@@ -63,7 +65,9 @@ export default function ScanPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md">
-        <h1 className="mb-4 text-center text-2xl font-bold text-white">Scan QR Code</h1>
+        <h1 className="mb-4 text-center text-2xl font-bold text-white">
+          Scan QR Code
+        </h1>
         {error && (
           <div className="mb-4 rounded bg-red-600 p-3 text-white">{error}</div>
         )}
@@ -82,7 +86,8 @@ export default function ScanPage() {
           )}
         </div>
         <p className="mt-4 text-center text-sm text-gray-400">
-          Position the QR code within the frame. Scanning will happen automatically.
+          Position the QR code within the frame. Scanning will happen
+          automatically.
         </p>
       </div>
     </main>

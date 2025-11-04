@@ -9,6 +9,7 @@
 ## 📂 Documentation Structure
 
 ### 01 - Getting Started
+
 Quick-start guides and essential information to get the app running.
 
 - **[Project Overview](./01-Getting-Started/01-Project-Overview.md)** - What this app does and how it works
@@ -16,6 +17,7 @@ Quick-start guides and essential information to get the app running.
 - **[Contributing Guide](./01-Getting-Started/03-Contributing.md)** - How to contribute to the project
 
 ### 02 - Learning
+
 Educational materials explaining technologies and concepts.
 
 - **[Complete Learning Guide](./02-Learning/01-Complete-Learning-Guide.md)** - Full beginner-to-advanced guide
@@ -23,6 +25,7 @@ Educational materials explaining technologies and concepts.
 - **[Prisma & PostgreSQL](./02-Learning/03-Prisma-PostgreSQL.md)** - Database concepts (extracted from learning guide)
 
 ### 03 - Development
+
 Day-to-day development documentation and workflows.
 
 - **[Development Workflow](./03-Development/01-Development-Workflow.md)** - Daily dev tasks and Git workflow
@@ -30,6 +33,7 @@ Day-to-day development documentation and workflows.
 - **[Technical Decisions](./03-Development/03-Technical-Decisions.md)** - Why we chose these technologies
 
 ### 04 - Planning
+
 Roadmaps, milestones, and future planning documents.
 
 - **[Roadmap](./04-Planning/01-Roadmap.md)** - Development milestones and GitHub issues
@@ -37,6 +41,7 @@ Roadmaps, milestones, and future planning documents.
 - **[Feature Ideas](./04-Planning/03-Feature-Ideas.md)** - Future enhancements
 
 ### 05 - Reference
+
 Quick lookup guides and technical references.
 
 - **[Command Reference](./05-Reference/01-Command-Reference.md)** - All npm/database/git commands
@@ -105,18 +110,22 @@ Obsidian_Notes/
 ## 🚀 Common Tasks
 
 ### Start Development
+
 ```bash
 npm run dev              # Start development server
 npm run db:studio        # View database
 ```
 
 ### View Documentation
+
 - Open any `.md` file in Obsidian or VS Code
 - Files are organized by purpose (numbered folders)
 - Each file has a clear explanation at the top
 
 ### Update Documentation
+
 When adding new features:
+
 1. Update relevant files in this folder
 2. Add entries to this README if needed
 3. Keep explanations beginner-friendly

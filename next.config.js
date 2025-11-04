@@ -9,7 +9,7 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   // WHY: Enable React strict mode for better development experience
   reactStrictMode: true,
-  
+
   // WHY: Configure image domains for S3/MinIO uploads
   images: {
     remotePatterns: [
@@ -23,7 +23,7 @@ const nextConfig = {
       },
     ],
   },
-  
+
   // WHY: Enable experimental features for Server Actions
   experimental: {
     serverActions: {

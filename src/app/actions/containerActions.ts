@@ -31,9 +31,12 @@ export async function createContainer(formData: FormData) {
   // Create container, and if slotId provided, ensure the slot is empty and link both sides
   const result = await prisma.$transaction(async (tx) => {
     if (parsed.data.slotId) {
-      const slot = await tx.slot.findUnique({ where: { id: parsed.data.slotId } });
+      const slot = await tx.slot.findUnique({
+        where: { id: parsed.data.slotId },
+      });
       if (!slot) throw new Error("Selected slot not found");
-      if (slot.containerId) throw new Error("Selected slot is already occupied");
+      if (slot.containerId)
+        throw new Error("Selected slot is already occupied");
     }
 
     const container = await tx.container.create({
@@ -48,7 +51,10 @@ export async function createContainer(formData: FormData) {
     });
 
     if (parsed.data.slotId) {
-      await tx.slot.update({ where: { id: parsed.data.slotId }, data: { containerId: container.id } });
+      await tx.slot.update({
+        where: { id: parsed.data.slotId },
+        data: { containerId: container.id },
+      });
     }
 
     return container;
@@ -78,13 +84,22 @@ export async function updateContainer(id: string, formData: FormData) {
     // If slotId changed, free previous and occupy new
     if (parsed.data.slotId !== existing.currentSlotId) {
       if (existing.currentSlotId) {
-        await tx.slot.update({ where: { id: existing.currentSlotId }, data: { containerId: null } });
+        await tx.slot.update({
+          where: { id: existing.currentSlotId },
+          data: { containerId: null },
+        });
       }
       if (parsed.data.slotId) {
-        const newSlot = await tx.slot.findUnique({ where: { id: parsed.data.slotId } });
+        const newSlot = await tx.slot.findUnique({
+          where: { id: parsed.data.slotId },
+        });
         if (!newSlot) throw new Error("Selected slot not found");
-        if (newSlot.containerId && newSlot.containerId !== id) throw new Error("Selected slot is already occupied");
-        await tx.slot.update({ where: { id: parsed.data.slotId }, data: { containerId: id } });
+        if (newSlot.containerId && newSlot.containerId !== id)
+          throw new Error("Selected slot is already occupied");
+        await tx.slot.update({
+          where: { id: parsed.data.slotId },
+          data: { containerId: id },
+        });
       }
     }
 
@@ -110,7 +125,10 @@ export async function deleteContainer(id: string) {
   await prisma.$transaction(async (tx) => {
     const existing = await tx.container.findUnique({ where: { id } });
     if (existing?.currentSlotId) {
-      await tx.slot.update({ where: { id: existing.currentSlotId }, data: { containerId: null } });
+      await tx.slot.update({
+        where: { id: existing.currentSlotId },
+        data: { containerId: null },
+      });
     }
     await tx.container.delete({ where: { id } });
   });

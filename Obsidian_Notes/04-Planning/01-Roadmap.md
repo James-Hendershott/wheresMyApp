@@ -13,15 +13,15 @@ This document outlines the development milestones and initial issues for WheresM
 
 ## 📊 Milestones Overview
 
-| Milestone | Focus | Status | Target |
-|-----------|-------|--------|--------|
-| **M0** | Bootstrap & Foundation | ✅ Complete | Week 1 |
-| **M1** | Database Schema & Seed | 🔄 Next | Week 2 |
-| **M2** | Rack Visualization | ⏳ Planned | Week 3-4 |
-| **M3** | Container & QR System | ⏳ Planned | Week 5-6 |
-| **M4** | Item Management & Photos | ⏳ Planned | Week 7-8 |
-| **M5** | History & Search | ⏳ Planned | Week 9 |
-| **M6** | PWA & Deployment | ⏳ Planned | Week 10 |
+| Milestone | Focus                    | Status      | Target   |
+| --------- | ------------------------ | ----------- | -------- |
+| **M0**    | Bootstrap & Foundation   | ✅ Complete | Week 1   |
+| **M1**    | Database Schema & Seed   | 🔄 Next     | Week 2   |
+| **M2**    | Rack Visualization       | ⏳ Planned  | Week 3-4 |
+| **M3**    | Container & QR System    | ⏳ Planned  | Week 5-6 |
+| **M4**    | Item Management & Photos | ⏳ Planned  | Week 7-8 |
+| **M5**    | History & Search         | ⏳ Planned  | Week 9   |
+| **M6**    | PWA & Deployment         | ⏳ Planned  | Week 10  |
 
 ---
 
@@ -30,6 +30,7 @@ This document outlines the development milestones and initial issues for WheresM
 **Goal**: Set up project infrastructure and tooling
 
 ### Completed ✓
+
 - [x] Next.js 14 with App Router
 - [x] TypeScript configuration
 - [x] Tailwind CSS + shadcn/ui
@@ -51,14 +52,17 @@ This document outlines the development milestones and initial issues for WheresM
 ### Issues to Create
 
 #### Issue #1: Prisma Schema Migration & Validation
+
 **Labels**: `db`, `M1`  
 **Description**:
+
 - Review and validate the Prisma schema
 - Create initial migration
 - Test all relationships and constraints
 - Document any schema decisions
 
 **Acceptance Criteria**:
+
 - [ ] `pnpm db:migrate` creates first migration
 - [ ] All models have proper indexes
 - [ ] Foreign keys and cascade rules tested
@@ -67,9 +71,11 @@ This document outlines the development milestones and initial issues for WheresM
 ---
 
 #### Issue #2: Seed Script with Realistic Data
+
 **Labels**: `db`, `M1`  
 **Description**:
 Create a comprehensive seed script that generates:
+
 - 1 admin user + 2 regular users
 - 3 locations (Garage, Basement, Storage Room)
 - 4 racks with varying dimensions
@@ -79,6 +85,7 @@ Create a comprehensive seed script that generates:
 - 10 movement history entries
 
 **Acceptance Criteria**:
+
 - [ ] `pnpm db:seed` populates database
 - [ ] Seed script is idempotent (can run multiple times)
 - [ ] Generated QR codes follow pattern: `BOX-XXXX`
@@ -96,9 +103,11 @@ Create a comprehensive seed script that generates:
 ### Issues to Create
 
 #### Issue #3: SVG Rack Grid Component
+
 **Labels**: `ui`, `rack`, `M2`  
 **Description**:
 Build `/racks/[id]` page with:
+
 - SVG grid rendering based on `rows × cols`
 - Empty cells show "+" button
 - Occupied cells show container label
@@ -106,21 +115,25 @@ Build `/racks/[id]` page with:
 - Hover states and tooltips
 
 **Acceptance Criteria**:
+
 - [ ] Grid renders correctly for any rows/cols
 - [ ] Mobile-friendly touch targets
 - [ ] Accessible (keyboard navigation)
 - [ ] Loading/error states handled
 
 **Files**:
+
 - `src/app/racks/[id]/page.tsx`
 - `src/components/features/rack-grid.tsx`
 
 ---
 
 #### Issue #4: Rack Slot Management - Server Actions
+
 **Labels**: `backend`, `rack`, `M2`  
 **Description**:
 Implement Server Actions for:
+
 - `placeContainer(containerId, slotId)` - Place container in slot
 - `moveContainer(containerId, newSlotId)` - Move to different slot
 - `removeContainer(slotId)` - Remove from rack
@@ -128,6 +141,7 @@ Implement Server Actions for:
 - Prevent double-occupancy
 
 **Acceptance Criteria**:
+
 - [ ] All actions use Zod validation
 - [ ] Duplicate placement prevented
 - [ ] Movement history created automatically
@@ -135,15 +149,18 @@ Implement Server Actions for:
 - [ ] Unit tests for validation logic
 
 **Files**:
+
 - `src/server/actions/racks.ts`
 - `src/lib/validators/rack.ts`
 
 ---
 
 #### Issue #5: E2E Tests - Rack Operations
+
 **Labels**: `test`, `e2e`, `M2`  
 **Description**:
 Playwright tests covering:
+
 - View empty rack
 - Place container in slot
 - Move container to different slot
@@ -151,11 +168,13 @@ Playwright tests covering:
 - Remove container from slot
 
 **Acceptance Criteria**:
+
 - [ ] Tests pass in CI/CD
 - [ ] Cover happy and error paths
 - [ ] Use proper test data fixtures
 
 **Files**:
+
 - `src/test/e2e/racks.spec.ts`
 
 ---
@@ -167,14 +186,17 @@ Playwright tests covering:
 ### Issues to Create
 
 #### Issue #6: Container CRUD Pages
+
 **Labels**: `ui`, `container`, `M3`  
 **Description**:
 Build pages:
+
 - `/containers` - List all containers with search/filter
 - `/containers/[id]` - Container detail page
 - `/c/[code]` - QR code deep link (redirects to detail)
 
 **Acceptance Criteria**:
+
 - [ ] List shows status, location, item count
 - [ ] Detail shows all items, photos, history
 - [ ] Deep link works for QR codes
@@ -182,6 +204,7 @@ Build pages:
 - [ ] Error boundaries for 404s
 
 **Files**:
+
 - `src/app/containers/page.tsx`
 - `src/app/containers/[id]/page.tsx`
 - `src/app/c/[code]/page.tsx`
@@ -189,9 +212,11 @@ Build pages:
 ---
 
 #### Issue #7: QR Code Scanner (ZXing)
+
 **Labels**: `ui`, `qr`, `M3`  
 **Description**:
 Build `/scan` route with:
+
 - Camera access (requires HTTPS)
 - Real-time QR code detection using ZXing
 - Redirect to `/c/[code]` on successful scan
@@ -199,6 +224,7 @@ Build `/scan` route with:
 - Works on mobile devices
 
 **Acceptance Criteria**:
+
 - [ ] Camera opens in viewport
 - [ ] Detects QR codes in <2 seconds
 - [ ] Handles permission errors gracefully
@@ -206,27 +232,32 @@ Build `/scan` route with:
 - [ ] PWA-friendly
 
 **Files**:
+
 - `src/app/scan/page.tsx`
 - `src/components/features/qr-scanner.tsx`
 
 ---
 
 #### Issue #8: QR Label Generation & Printing
+
 **Labels**: `backend`, `qr`, `M3`  
 **Description**:
 Create API endpoints for:
+
 - `/api/labels/generate` - Single label (2x2)
 - `/api/labels/batch` - Multiple labels (Avery 5160)
 - Use `qrcode` library to generate QR images
 - Render printable PDFs
 
 **Acceptance Criteria**:
+
 - [ ] Labels include QR code + container code
 - [ ] Print-friendly CSS
 - [ ] Works in browser print dialog
 - [ ] Both formats (2x2 and Avery) tested
 
 **Files**:
+
 - `src/app/api/labels/generate/route.ts`
 - `src/lib/qr-generator.ts`
 
@@ -239,9 +270,11 @@ Create API endpoints for:
 ### Issues to Create
 
 #### Issue #9: Item CRUD with React Hook Form
+
 **Labels**: `ui`, `item`, `M4`  
 **Description**:
 Build item management on container page:
+
 - Add item form with validation (React Hook Form + Zod)
 - Edit item inline
 - Delete item (with confirmation)
@@ -249,21 +282,25 @@ Build item management on container page:
 - Status updates (IN_STORAGE, CHECKED_OUT, DISCARDED)
 
 **Acceptance Criteria**:
+
 - [ ] Form validates client-side (Zod)
 - [ ] Server Action validates server-side
 - [ ] Optimistic updates for better UX
 - [ ] Tags autocomplete from existing tags
 
 **Files**:
+
 - `src/components/features/item-form.tsx`
 - `src/server/actions/items.ts`
 
 ---
 
 #### Issue #10: S3 Photo Upload with Presigned URLs
+
 **Labels**: `backend`, `storage`, `M4`  
 **Description**:
 Implement secure photo upload:
+
 - Server Action generates presigned upload URL
 - Client uploads directly to S3/MinIO
 - Progress indicator during upload
@@ -271,6 +308,7 @@ Implement secure photo upload:
 - Support multiple photos per item
 
 **Acceptance Criteria**:
+
 - [ ] No S3 credentials exposed to client
 - [ ] Upload progress shown
 - [ ] Image previews work
@@ -278,6 +316,7 @@ Implement secure photo upload:
 - [ ] Works with MinIO (local) and R2 (production)
 
 **Files**:
+
 - `src/server/actions/upload.ts`
 - `src/components/features/photo-upload.tsx`
 - `src/lib/s3-client.ts`
@@ -285,30 +324,36 @@ Implement secure photo upload:
 ---
 
 #### Issue #11: Check-In/Check-Out Flow
+
 **Labels**: `backend`, `item`, `M4`  
 **Description**:
 Implement item movement actions:
+
 - Check out: Set status=CHECKED_OUT, remove from container
 - Check in: Show dialog to select destination container
 - Create `Movement` records for audit trail
 - Update container item counts
 
 **Acceptance Criteria**:
+
 - [ ] Check-out updates status immediately
 - [ ] Check-in dialog shows recent containers
 - [ ] Movement history accurate
 - [ ] Optimistic UI updates
 
 **Files**:
+
 - `src/server/actions/items.ts`
 - `src/components/features/checkout-dialog.tsx`
 
 ---
 
 #### Issue #12: E2E Tests - Item Lifecycle
+
 **Labels**: `test`, `e2e`, `M4`  
 **Description**:
 Playwright test covering:
+
 1. Create container
 2. Add item to container
 3. Upload photo
@@ -317,11 +362,13 @@ Playwright test covering:
 6. Verify movement history
 
 **Acceptance Criteria**:
+
 - [ ] Full flow tested end-to-end
 - [ ] Uses mock S3 for uploads
 - [ ] Verifies database state
 
 **Files**:
+
 - `src/test/e2e/item-lifecycle.spec.ts`
 
 ---
@@ -333,42 +380,50 @@ Playwright test covering:
 ### Issues to Create
 
 #### Issue #13: Movement History Page
+
 **Labels**: `ui`, `history`, `M5`  
 **Description**:
 Build `/history` page showing:
+
 - All movements in reverse chronological order
 - Filter by user, action type, date range
 - Pagination (10 per page)
 - Export to CSV
 
 **Acceptance Criteria**:
+
 - [ ] Infinite scroll or pagination
 - [ ] Filters work correctly
 - [ ] Shows user, item, containers, timestamp
 - [ ] Export includes all filtered results
 
 **Files**:
+
 - `src/app/history/page.tsx`
 - `src/server/actions/movements.ts`
 
 ---
 
 #### Issue #14: Global Search
+
 **Labels**: `ui`, `search`, `M5`  
 **Description**:
 Implement search across:
+
 - Containers (by code, label, tags)
 - Items (by name, description, tags)
 - Locations/Racks
 - Fuzzy search support
 
 **Acceptance Criteria**:
+
 - [ ] Search bar in nav (always accessible)
 - [ ] Instant results (debounced)
 - [ ] Keyboard navigation (arrow keys)
 - [ ] Shows result type (container vs item)
 
 **Files**:
+
 - `src/components/features/global-search.tsx`
 - `src/server/actions/search.ts`
 
@@ -381,9 +436,11 @@ Implement search across:
 ### Issues to Create
 
 #### Issue #15: PWA Offline Support
+
 **Labels**: `pwa`, `M6`  
 **Description**:
 Enhance PWA:
+
 - Cache critical pages for offline access
 - Background sync for movements
 - Add to home screen prompt
@@ -391,12 +448,14 @@ Enhance PWA:
 - Splash screens for iOS
 
 **Acceptance Criteria**:
+
 - [ ] Works offline (view cached data)
 - [ ] Lighthouse PWA score >90
 - [ ] Install prompt shown appropriately
 - [ ] Icons render correctly on all devices
 
 **Files**:
+
 - `public/manifest.json`
 - `public/icon-*.png`
 - `next.config.js` (PWA config)
@@ -404,9 +463,11 @@ Enhance PWA:
 ---
 
 #### Issue #16: Production Deployment - Vercel + Neon
+
 **Labels**: `deploy`, `infra`, `M6`  
 **Description**:
 Deploy to production:
+
 - Set up Vercel project
 - Connect Neon PostgreSQL
 - Configure environment variables
@@ -414,6 +475,7 @@ Deploy to production:
 - Enable CI/CD auto-deploys
 
 **Acceptance Criteria**:
+
 - [ ] App accessible at production URL
 - [ ] Database migrations run automatically
 - [ ] Environment variables secured
@@ -421,14 +483,17 @@ Deploy to production:
 - [ ] PR preview deployments work
 
 **Docs**:
+
 - `docs/deployment-vercel.md`
 
 ---
 
 #### Issue #17: Unraid Self-Hosted Deployment
+
 **Labels**: `deploy`, `infra`, `docker`, `M6`  
 **Description**:
 Create Docker Compose setup for Unraid:
+
 - Next.js app container
 - PostgreSQL container
 - MinIO container
@@ -436,6 +501,7 @@ Create Docker Compose setup for Unraid:
 - Environment variable template
 
 **Acceptance Criteria**:
+
 - [ ] `docker-compose.yml` runs all services
 - [ ] Data persists in volumes
 - [ ] Accessible via NPM reverse proxy
@@ -443,6 +509,7 @@ Create Docker Compose setup for Unraid:
 - [ ] Backup/restore scripts included
 
 **Files**:
+
 - `docker-compose.yml`
 - `Dockerfile`
 - `docs/deployment-unraid.md`

@@ -31,10 +31,13 @@ export async function createRack(formData: FormData) {
       rows: parsed.data.rows,
       cols: parsed.data.cols,
       slots: {
-        create: Array.from({ length: parsed.data.rows * parsed.data.cols }, (_, i) => ({
-          row: Math.floor(i / parsed.data.cols),
-          col: i % parsed.data.cols,
-        })),
+        create: Array.from(
+          { length: parsed.data.rows * parsed.data.cols },
+          (_, i) => ({
+            row: Math.floor(i / parsed.data.cols),
+            col: i % parsed.data.cols,
+          })
+        ),
       },
     },
     include: { slots: true },

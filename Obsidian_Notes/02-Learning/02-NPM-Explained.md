@@ -23,6 +23,7 @@ npm install prisma
 ```
 
 Just like:
+
 - App Store downloads apps to your phone
 - Steam downloads games to your PC
 - npm downloads libraries to your project
@@ -35,6 +36,7 @@ npm run dev
 ```
 
 Think of it like:
+
 - Desktop shortcuts on Windows
 - Aliases in your terminal
 - Quick actions on your phone
@@ -47,6 +49,7 @@ npm install
 ```
 
 Like when:
+
 - A game requires DirectX 12
 - A program needs .NET Framework
 - npm ensures all your libraries are present
@@ -58,6 +61,7 @@ Like when:
 ### 1. **package.json** - The Recipe Book 📖
 
 This file lists:
+
 - What your project is called
 - What libraries it needs
 - What commands you can run
@@ -66,12 +70,12 @@ This file lists:
 {
   "name": "wheresmy-app",
   "scripts": {
-    "dev": "next dev",           // ← These are your shortcuts!
+    "dev": "next dev", // ← These are your shortcuts!
     "lint": "next lint",
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "prisma": "^5.20.0",        // ← Libraries your app needs
+    "prisma": "^5.20.0", // ← Libraries your app needs
     "next": "^14.2.13"
   }
 }
@@ -84,6 +88,7 @@ This file lists:
 ### 2. **package-lock.json** - The Detailed Receipt 🧾
 
 This file locks EXACT versions:
+
 - Ensures everyone gets the same versions
 - Prevents "works on my machine" problems
 - Auto-generated, don't edit manually
@@ -91,9 +96,9 @@ This file locks EXACT versions:
 ```json
 {
   "prisma": {
-    "version": "5.20.0",           // Exact version
-    "resolved": "https://...",      // Where it came from
-    "integrity": "sha512-..."       // Security checksum
+    "version": "5.20.0", // Exact version
+    "resolved": "https://...", // Where it came from
+    "integrity": "sha512-..." // Security checksum
   }
 }
 ```
@@ -105,6 +110,7 @@ This file locks EXACT versions:
 ### 3. **node_modules/** - The Warehouse 📦
 
 This folder contains:
+
 - All downloaded libraries
 - Their dependencies (libraries they need)
 - Can be HUGE (hundreds of MBs)
@@ -121,6 +127,7 @@ node_modules/
 **Analogy**: Like the Program Files folder on Windows - where installed software lives.
 
 **Why it's so big**: Libraries depend on other libraries!
+
 ```
 prisma needs → @prisma/client
              → @prisma/engines
@@ -175,7 +182,7 @@ npm install
 # - Reads package.json
 # - Downloads all dependencies to node_modules/
 # - Creates package-lock.json (if missing)
-# 
+#
 # When to use: After cloning a project, or when package.json changes
 ```
 
@@ -395,6 +402,7 @@ npm run dev          # ✅ CORRECT - reads from package.json scripts
 ```
 
 **Rule of thumb**:
+
 - ✅ `npm <built-in-command>` for npm's own commands
 - ✅ `npm run <script-name>` for commands in package.json
 
@@ -408,33 +416,33 @@ Let's look at YOUR package.json scripts:
 {
   "scripts": {
     // Development
-    "dev": "next dev",                           // Start dev server
-    "build": "next build",                       // Build for production
-    "start": "next start",                       // Run production build
-    
+    "dev": "next dev", // Start dev server
+    "build": "next build", // Build for production
+    "start": "next start", // Run production build
+
     // Code Quality
-    "lint": "next lint",                         // Check code
-    "format": "prettier --write .",              // Format code
-    "format:check": "prettier --check .",        // Check formatting
-    "type-check": "tsc --noEmit",               // Check types
-    
+    "lint": "next lint", // Check code
+    "format": "prettier --write .", // Format code
+    "format:check": "prettier --check .", // Check formatting
+    "type-check": "tsc --noEmit", // Check types
+
     // Testing
-    "test": "vitest",                            // Unit tests
-    "test:ui": "vitest --ui",                    // Unit tests with UI
-    "test:e2e": "playwright test",               // E2E tests
-    "test:e2e:ui": "playwright test --ui",       // E2E with UI
-    
+    "test": "vitest", // Unit tests
+    "test:ui": "vitest --ui", // Unit tests with UI
+    "test:e2e": "playwright test", // E2E tests
+    "test:e2e:ui": "playwright test --ui", // E2E with UI
+
     // Database
-    "db:generate": "prisma generate",            // Generate Prisma Client
-    "db:push": "prisma db push",                 // Sync schema to DB
-    "db:migrate": "prisma migrate dev",          // Create migration
+    "db:generate": "prisma generate", // Generate Prisma Client
+    "db:push": "prisma db push", // Sync schema to DB
+    "db:migrate": "prisma migrate dev", // Create migration
     "db:migrate:deploy": "prisma migrate deploy", // Apply migrations
-    "db:seed": "tsx prisma/seed.ts",            // Seed test data
+    "db:seed": "tsx prisma/seed.ts", // Seed test data
     "db:seed:prod": "tsx prisma/seed-production.ts", // Seed CSV data
-    "db:studio": "prisma studio",                // Open DB UI
-    
+    "db:studio": "prisma studio", // Open DB UI
+
     // Automatic
-    "postinstall": "prisma generate"             // Runs after npm install
+    "postinstall": "prisma generate" // Runs after npm install
   }
 }
 ```
@@ -446,11 +454,11 @@ npm recognizes certain script names:
 ```json
 {
   "scripts": {
-    "predev": "echo 'Before dev'",      // Runs BEFORE "dev"
-    "dev": "next dev",                  // Main command
-    "postdev": "echo 'After dev'",      // Runs AFTER "dev"
-    
-    "postinstall": "prisma generate"    // Runs automatically after npm install
+    "predev": "echo 'Before dev'", // Runs BEFORE "dev"
+    "dev": "next dev", // Main command
+    "postdev": "echo 'After dev'", // Runs AFTER "dev"
+
+    "postinstall": "prisma generate" // Runs automatically after npm install
   }
 }
 ```
@@ -462,34 +470,42 @@ npm recognizes certain script names:
 You might see these in tutorials:
 
 ### npm
+
 ```bash
 npm install package-name
 npm run dev
 ```
+
 - Standard, comes with Node.js
 - What we're using
 
 ### npx
+
 ```bash
 npx prisma studio
 ```
+
 - Runs commands without installing globally
 - Good for one-off commands
 
 ### pnpm
+
 ```bash
 pnpm install
 pnpm run dev
 ```
+
 - Faster than npm
 - Saves disk space (shared packages)
 - Alternative package manager
 
 ### yarn
+
 ```bash
 yarn install
 yarn dev
 ```
+
 - Created by Facebook
 - Alternative package manager
 - Similar to npm
@@ -508,6 +524,7 @@ npm: command not found
 ```
 
 **Solution**: Node.js isn't installed
+
 ```bash
 # Check if Node.js is installed
 node --version
@@ -524,6 +541,7 @@ Error: Cannot find module 'next'
 ```
 
 **Solution**: Dependencies not installed
+
 ```bash
 npm install
 ```
@@ -537,6 +555,7 @@ node_modules/  # 500 MB!
 ```
 
 **Solution**: This is normal!
+
 - Can safely delete and regenerate
 - Add to .gitignore (already done)
 - Don't commit to Git
@@ -555,6 +574,7 @@ npm ERR! Could not resolve dependency
 ```
 
 **Solution**: Delete lock file and reinstall
+
 ```bash
 rm package-lock.json
 rm -rf node_modules

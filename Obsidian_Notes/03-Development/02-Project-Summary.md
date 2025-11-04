@@ -68,21 +68,21 @@ wheresMyApp/
 
 ### 📦 Technology Stack
 
-| Category | Technology | Purpose |
-|----------|-----------|---------|
-| **Framework** | Next.js 14 App Router | Modern React framework |
-| **Language** | TypeScript | Type safety |
-| **Styling** | Tailwind CSS | Utility-first CSS |
-| **Components** | shadcn/ui | Accessible UI components |
-| **Database** | PostgreSQL + Prisma | Type-safe ORM |
-| **Auth** | Auth.js (NextAuth v5) | Authentication |
-| **Validation** | Zod | Schema validation |
-| **Forms** | React Hook Form | Performant forms |
-| **QR** | ZXing + qrcode | Scan & generate QR codes |
-| **Storage** | S3-compatible (MinIO/R2) | File uploads |
-| **PWA** | next-pwa | Installable app |
-| **Testing** | Vitest + Playwright | Unit + E2E tests |
-| **CI/CD** | GitHub Actions | Automated pipeline |
+| Category       | Technology               | Purpose                  |
+| -------------- | ------------------------ | ------------------------ |
+| **Framework**  | Next.js 14 App Router    | Modern React framework   |
+| **Language**   | TypeScript               | Type safety              |
+| **Styling**    | Tailwind CSS             | Utility-first CSS        |
+| **Components** | shadcn/ui                | Accessible UI components |
+| **Database**   | PostgreSQL + Prisma      | Type-safe ORM            |
+| **Auth**       | Auth.js (NextAuth v5)    | Authentication           |
+| **Validation** | Zod                      | Schema validation        |
+| **Forms**      | React Hook Form          | Performant forms         |
+| **QR**         | ZXing + qrcode           | Scan & generate QR codes |
+| **Storage**    | S3-compatible (MinIO/R2) | File uploads             |
+| **PWA**        | next-pwa                 | Installable app          |
+| **Testing**    | Vitest + Playwright      | Unit + E2E tests         |
+| **CI/CD**      | GitHub Actions           | Automated pipeline       |
 
 ### 📚 Documentation Created
 
@@ -333,9 +333,10 @@ Use this checklist to track milestones:
 
 ## 🎉 Celebrate!
 
-You now have a **production-grade foundation** for your WheresMy App! 
+You now have a **production-grade foundation** for your WheresMy App!
 
 This is not a tutorial project—it's architected like a real-world application with:
+
 - Proper separation of concerns
 - Type safety throughout
 - Comprehensive testing
@@ -345,6 +346,7 @@ This is not a tutorial project—it's architected like a real-world application 
 ## 🤝 Contributing
 
 This is your personal project, but if you want to:
+
 - Share it with others
 - Accept contributions
 - Build it publicly
@@ -354,6 +356,7 @@ Everything is ready! Just push to GitHub and start coding.
 ## 📞 Support
 
 If you need help:
+
 1. Check `QUICK_REFERENCE.md` for common issues
 2. Review `learn.md` for stack-specific questions
 3. Open a GitHub Issue (after pushing to GitHub)
@@ -379,4 +382,4 @@ Before you start coding:
 
 **Happy Coding! 🚀**
 
-*You're all set to build an amazing inventory management system. Take it one step at a time, learn as you go, and enjoy the journey!*
+_You're all set to build an amazing inventory management system. Take it one step at a time, learn as you go, and enjoy the journey!_

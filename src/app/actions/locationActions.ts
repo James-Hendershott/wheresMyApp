@@ -32,7 +32,10 @@ export async function updateLocation(id: string, formData: FormData) {
   if (!parsed.success) {
     return { error: parsed.error.flatten() };
   }
-  const loc = await prisma.location.update({ where: { id }, data: parsed.data });
+  const loc = await prisma.location.update({
+    where: { id },
+    data: parsed.data,
+  });
   revalidatePath("/racks");
   return { location: loc };
 }

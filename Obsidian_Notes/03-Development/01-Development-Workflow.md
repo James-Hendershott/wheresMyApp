@@ -120,19 +120,20 @@ git pull origin main
 
 ### Types
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| `feat` | New feature | `feat(qr): add QR code scanner` |
-| `fix` | Bug fix | `fix(container): prevent null pointer` |
-| `docs` | Documentation | `docs(readme): add setup guide` |
-| `style` | Formatting, no code change | `style: format with Prettier` |
-| `refactor` | Code refactor | `refactor(db): extract prisma singleton` |
-| `test` | Add/update tests | `test(items): add CRUD tests` |
-| `chore` | Maintenance | `chore(deps): update dependencies` |
+| Type       | Purpose                    | Example                                  |
+| ---------- | -------------------------- | ---------------------------------------- |
+| `feat`     | New feature                | `feat(qr): add QR code scanner`          |
+| `fix`      | Bug fix                    | `fix(container): prevent null pointer`   |
+| `docs`     | Documentation              | `docs(readme): add setup guide`          |
+| `style`    | Formatting, no code change | `style: format with Prettier`            |
+| `refactor` | Code refactor              | `refactor(db): extract prisma singleton` |
+| `test`     | Add/update tests           | `test(items): add CRUD tests`            |
+| `chore`    | Maintenance                | `chore(deps): update dependencies`       |
 
 ### Scopes
 
 Common scopes in this project:
+
 - `rack` - Rack grid functionality
 - `container` - Container management
 - `item` - Item tracking
@@ -174,6 +175,7 @@ npm run test:ui
 ```
 
 **What to test**:
+
 - Utility functions
 - Business logic
 - Data transformations
@@ -193,6 +195,7 @@ npm run test:e2e:ui
 ```
 
 **What to test**:
+
 - Critical user flows
 - Form submissions
 - Navigation
@@ -275,17 +278,20 @@ git push origin main
 ### Common Issues
 
 **Port already in use**:
+
 ```bash
 # Kill process on port 3000
 npx kill-port 3000
 ```
 
 **Prisma Client out of sync**:
+
 ```bash
 npm run db:push
 ```
 
 **node_modules corrupted**:
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
@@ -299,8 +305,8 @@ npm install
 
 ```typescript
 // 1. Imports (external, then internal)
-import { PrismaClient } from '@prisma/client';
-import { MyComponent } from '@/components/my-component';
+import { PrismaClient } from "@prisma/client";
+import { MyComponent } from "@/components/my-component";
 
 // 2. Types/Interfaces
 interface MyProps {

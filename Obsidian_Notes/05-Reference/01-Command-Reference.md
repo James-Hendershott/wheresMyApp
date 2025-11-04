@@ -18,6 +18,7 @@ npm run start        # Run production build locally
 ```
 
 **When to use**:
+
 - `dev` - Daily development (auto-reloads on changes)
 - `build` - Before deploying or testing production build
 - `start` - Test production build locally
@@ -43,6 +44,7 @@ npm run db:generate  # Generate Prisma Client (auto-runs after db:push)
 ```
 
 **When to use**:
+
 - `db:push` - During development after schema changes
 - `db:migrate` - When you want migration history
 - `db:generate` - Rarely needed (runs automatically)
@@ -55,6 +57,7 @@ npm run db:seed:prod # Import CSV production data
 ```
 
 **What they do**:
+
 - `db:seed` - Creates fake data for testing
 - `db:seed:prod` - Imports your real inventory from CSV
 
@@ -77,6 +80,7 @@ npm run lint         # Check code for errors/style issues
 ```
 
 **What it checks**:
+
 - Unused variables
 - Missing dependencies in useEffect
 - Using `<img>` instead of `<Image>`
@@ -90,6 +94,7 @@ npm run format:check # Check formatting without modifying
 ```
 
 **When to use**:
+
 - `format` - Before committing (makes code pretty)
 - `format:check` - In CI/CD pipelines
 
@@ -257,14 +262,17 @@ npm run db:studio
 ## 💡 Quick Tips
 
 **Forget a command?**
+
 - Type `npm run` to see all available scripts
 - Check this file (bookmark it!)
 
 **Command not found?**
+
 - Ensure you're in project root directory
 - Run `npm install` if node_modules is missing
 
 **Command taking forever?**
+
 - Ctrl+C to cancel
 - Check if another instance is running
 

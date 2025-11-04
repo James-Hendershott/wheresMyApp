@@ -14,11 +14,11 @@ export default function HomePage() {
         <div className="mb-8 flex justify-center">
           <Package className="h-24 w-24 text-blue-600" />
         </div>
-        
+
         <h1 className="mb-4 text-5xl font-bold tracking-tight text-gray-900">
           Where&apos;s My...? 📦
         </h1>
-        
+
         <p className="mb-8 text-xl text-gray-600">
           Track every storage tote, its location on real racks, and the items
           inside. Scan QR codes, check items in/out, and never lose track of
@@ -81,9 +81,13 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="group cursor-pointer rounded-lg border bg-white p-6 shadow-sm transition-all hover:scale-105 hover:shadow-lg hover:border-blue-500">
-      <div className="mb-3 flex justify-center text-blue-600 transition-transform group-hover:scale-110">{icon}</div>
-      <h3 className="mb-2 text-lg font-semibold group-hover:text-blue-600">{title}</h3>
+    <div className="group cursor-pointer rounded-lg border bg-white p-6 shadow-sm transition-all hover:scale-105 hover:border-blue-500 hover:shadow-lg">
+      <div className="mb-3 flex justify-center text-blue-600 transition-transform group-hover:scale-110">
+        {icon}
+      </div>
+      <h3 className="mb-2 text-lg font-semibold group-hover:text-blue-600">
+        {title}
+      </h3>
       <p className="text-sm text-gray-600">{description}</p>
     </div>
   );
