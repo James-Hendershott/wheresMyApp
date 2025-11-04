@@ -5,6 +5,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 interface RackPageProps {
   params: { id: string };
@@ -83,7 +84,7 @@ export default async function RackPage({ params }: RackPageProps) {
                 <li key={s!.id} className="flex items-center gap-2">
                   <ContainerTypeIcon typeName={s!.container!.type as string | undefined} />
                   <span className="font-medium">{s!.container!.label}</span>
-                  <span className="text-gray-500">[row {s!.row}, col {s!.col}]</span>
+                  <span className="text-gray-500">{formatSlotLabel(s!.row, s!.col)}</span>
                 </li>
               ))}
           </ul>

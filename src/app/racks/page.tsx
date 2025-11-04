@@ -12,6 +12,7 @@ import {
   AddItemForm,
 } from "@/components/CrudFormsClient";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
@@ -44,7 +45,7 @@ export default async function RacksPage() {
   // For slot/containers dropdowns
   const slotOptions = slots.map((slot) => ({
     id: slot.id,
-    label: `${slot.rack?.name || "Rack"} [${slot.row},${slot.col}]`,
+    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
   }));
   const containerOptions = containers.map((c) => ({
     id: c.id,
@@ -147,8 +148,8 @@ export default async function RacksPage() {
                                     }`}
                                     title={
                                       slot.container
-                                        ? `${slot.container.label} [${slot.row},${slot.col}]`
-                                        : `Empty [${slot.row},${slot.col}]`
+                                        ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
+                                        : `Empty ${formatSlotLabel(slot.row, slot.col)}`
                                     }
                                   />
                                 ))}

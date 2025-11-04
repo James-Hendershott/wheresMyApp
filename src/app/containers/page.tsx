@@ -8,6 +8,7 @@ import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
@@ -45,7 +46,7 @@ export default async function ContainersPage() {
   ]);
   const slotOptions = slots.map((slot) => ({
     id: slot.id,
-    label: `${slot.rack?.name || "Rack"} [${slot.row},${slot.col}]`,
+    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
   }));
 
   // Group containers by type
@@ -134,7 +135,7 @@ export default async function ContainersPage() {
               <div
                 className="grid gap-4"
                 style={{
-                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(240px, min(300px, 1fr)))",
                 }}
               >
                 {typeContainers.map((container) => {
@@ -142,14 +143,18 @@ export default async function ContainersPage() {
                     container.currentSlot?.rack?.location?.name || "Unassigned";
                   const rack = container.currentSlot?.rack?.name || null;
                   const slot = container.currentSlot
-                    ? `[${container.currentSlot.row},${container.currentSlot.col}]`
+                    ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
                     : null;
 
                   return (
                     <Link
                       key={container.id}
                       href={`/containers/${container.id}`}
-                      className="block rounded-lg border border-gray-200 bg-gray-50 p-4 transition hover:border-blue-400 hover:bg-blue-50"
+                      className={`block rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
+                        container.itemsCheckedOut > 0
+                          ? "border-orange-400 bg-orange-50"
+                          : "border-gray-200 bg-gray-50"
+                      }`}
                     >
                       <div className="mb-2 flex items-start justify-between">
                         <div>

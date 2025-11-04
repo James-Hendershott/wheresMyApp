@@ -224,11 +224,24 @@ export function AddContainerForm({
     }
   }, [state]);
 
+  // Auto-populate code and label when type is selected
+  useEffect(() => {
+    if (selectedTypeId && typeCounts && containerTypes) {
+      const t = containerTypes.find((x) => x.id === selectedTypeId);
+      if (!t) return;
+      const next = (typeCounts[selectedTypeId] ?? 0) + 1;
+      const suggestedCode = `${t.codePrefix}-${next}`;
+      const suggestedLabel = `${t.name} #${next}`;
+      if (codeRef.current) codeRef.current.value = suggestedCode;
+      if (labelRef.current) labelRef.current.value = suggestedLabel;
+    }
+  }, [selectedTypeId, typeCounts, containerTypes]);
+
   return (
     <form ref={formRef} action={formAction} className="mb-4 rounded border p-4">
       <h2 className="mb-2 font-bold">Add Container (Tote)</h2>
       {containerTypes && containerTypes.length > 0 ? (
-        <div className="mb-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <div className="mb-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <select
             value={selectedTypeId}
             onChange={(e) => setSelectedTypeId(e.target.value)}
@@ -245,23 +258,6 @@ export function AddContainerForm({
             <div className="flex items-center text-sm text-gray-600">
               Next number: {(typeCounts[selectedTypeId] ?? 0) + 1}
             </div>
-          )}
-          {selectedTypeId && typeCounts && (
-            <button
-              type="button"
-              onClick={() => {
-                const t = containerTypes?.find((x) => x.id === selectedTypeId);
-                if (!t) return;
-                const next = (typeCounts[selectedTypeId] ?? 0) + 1;
-                const suggestedCode = `${t.codePrefix}-${next}`;
-                const suggestedLabel = `${t.name} #${next}`;
-                if (codeRef.current) codeRef.current.value = suggestedCode;
-                if (labelRef.current) labelRef.current.value = suggestedLabel;
-              }}
-              className="rounded bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-            >
-              Autofill code/label
-            </button>
           )}
         </div>
       ) : (

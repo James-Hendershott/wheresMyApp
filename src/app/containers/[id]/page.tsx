@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { QRCodeDisplay } from "./QRCodeDisplay";
 import { AddItemToContainerForm } from "./AddItemToContainerForm";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 interface ContainerPageProps {
   params: { id: string };
@@ -39,7 +40,7 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
   const location = container.currentSlot?.rack?.location?.name || "Unassigned";
   const rack = container.currentSlot?.rack?.name || null;
   const slot = container.currentSlot
-    ? `[${container.currentSlot.row},${container.currentSlot.col}]`
+    ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
     : null;
 
   return (
