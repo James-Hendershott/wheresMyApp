@@ -4,6 +4,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 
 interface RackPageProps {
   params: { id: string };
@@ -69,6 +70,25 @@ export default async function RackPage({ params }: RackPageProps) {
           })
         )}
       </svg>
+      {/* Legend with icons */}
+      <div className="mt-6 rounded border bg-white p-4 shadow-sm">
+        <h2 className="mb-2 text-lg font-semibold">Containers in this rack</h2>
+        {rack.slots.filter((s) => s.container).length === 0 ? (
+          <p className="text-sm text-gray-500">No containers placed yet.</p>
+        ) : (
+          <ul className="space-y-2 text-sm">
+            {rack.slots
+              .filter((s) => s.container)
+              .map((s) => (
+                <li key={s!.id} className="flex items-center gap-2">
+                  <ContainerTypeIcon typeName={s!.container!.type as string | undefined} />
+                  <span className="font-medium">{s!.container!.label}</span>
+                  <span className="text-gray-500">[row {s!.row}, col {s!.col}]</span>
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
       <div className="mt-6">
         <a href="/racks" className="text-blue-600 hover:underline">
           ← Back to Inventory Map
