@@ -6,6 +6,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { ICON_VALUES } from "@/lib/iconKeys";
 
 const containerTypeSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -14,7 +15,10 @@ const containerTypeSchema = z.object({
     .min(1, "Prefix required")
     .max(12, "Prefix too long")
     .regex(/^[A-Z0-9_-]+$/, "Use A-Z, 0-9, dash or underscore"),
-  iconKey: z.string().optional(),
+  iconKey: z
+    .string()
+    .optional()
+    .refine((v) => !v || ICON_VALUES.includes(v), "Invalid icon key"),
   length: z.coerce.number().int().positive().optional(),
   width: z.coerce.number().int().positive().optional(),
   height: z.coerce.number().int().positive().optional(),

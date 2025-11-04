@@ -4,6 +4,7 @@
 import { useFormState } from "react-dom";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { ICON_OPTIONS } from "@/lib/iconKeys";
 
 type FormResult = { success?: string; error?: string };
 
@@ -52,7 +53,13 @@ export function AddContainerTypeForm({
         <input name="width" placeholder="Width" type="number" min={1} className={inputClass} />
         <input name="height" placeholder="Height" type="number" min={1} className={inputClass} />
       </div>
-      <input name="iconKey" placeholder="Icon key (optional)" className={inputClass} />
+      <select name="iconKey" className={inputClass} defaultValue="">
+        {ICON_OPTIONS.map((opt: typeof ICON_OPTIONS[number]) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
       <button type="submit" className={buttonClass}>
         Add Type
       </button>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "sonner";
+import { ICON_OPTIONS } from "@/lib/iconKeys";
 
 type FormResult = { success?: string; error?: string };
 
@@ -86,7 +87,13 @@ export function ContainerTypeRow({
         <form ref={formRef} action={formAction} className="grid grid-cols-1 gap-2 sm:grid-cols-5">
           <input name="name" defaultValue={type.name} className={input} required />
           <input name="codePrefix" defaultValue={type.codePrefix} className={input} required />
-          <input name="iconKey" defaultValue={type.iconKey ?? ""} className={input} />
+          <select name="iconKey" defaultValue={type.iconKey ?? ""} className={input}>
+            {ICON_OPTIONS.map((opt: typeof ICON_OPTIONS[number]) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <div className="grid grid-cols-3 gap-2">
             <input name="length" defaultValue={type.length ?? ""} className={input} type="number" min={1} />
             <input name="width" defaultValue={type.width ?? ""} className={input} type="number" min={1} />
