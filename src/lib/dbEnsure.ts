@@ -17,9 +17,23 @@ export async function ensureContainerTypesSchema() {
         "length" integer NULL,
         "width" integer NULL,
         "height" integer NULL,
+        "topLength" integer NULL,
+        "topWidth" integer NULL,
+        "bottomLength" integer NULL,
+        "bottomWidth" integer NULL,
         "createdAt" timestamp(3) NOT NULL DEFAULT now(),
         "updatedAt" timestamp(3) NOT NULL DEFAULT now()
       );
+    `);
+
+    // Add new dimension columns if missing (for tapered containers)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma as unknown as any).$executeRawUnsafe(`
+      ALTER TABLE "container_types"
+      ADD COLUMN IF NOT EXISTS "topLength" integer NULL,
+      ADD COLUMN IF NOT EXISTS "topWidth" integer NULL,
+      ADD COLUMN IF NOT EXISTS "bottomLength" integer NULL,
+      ADD COLUMN IF NOT EXISTS "bottomWidth" integer NULL;
     `);
 
     // Add containerTypeId column if missing

@@ -270,16 +270,22 @@ model Movement {
 // ───────────────────── Container Types (Admin managed) ─────────────────────
 
 model ContainerType {
-  id          String      @id @default(cuid())
-  name        String      @unique             // e.g., "27 Gallon Tote"
-  codePrefix  String                          // e.g., "TOTE"
-  iconKey     String?                         // e.g., "tote", "suitcase", "box"
-  length      Int?                            // in cm or inches (unit-agnostic for now)
-  width       Int?
-  height      Int?
-  containers  Container[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String      @id @default(cuid())
+  name         String      @unique             // e.g., "27 Gallon Tote"
+  codePrefix   String                          // e.g., "TOTE27" - used for auto-generating codes
+  iconKey      String?                         // e.g., "tote", "suitcase", "box"
+  // For boxes/suitcases: use length, width, height
+  length       Int?                            // in inches
+  width        Int?
+  height       Int?
+  // For tapered containers (totes, bins): use top/bottom dimensions
+  topLength    Int?
+  topWidth     Int?
+  bottomLength Int?
+  bottomWidth  Int?
+  containers   Container[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@map("container_types")
 }

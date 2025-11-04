@@ -19,9 +19,15 @@ const containerTypeSchema = z.object({
     .string()
     .optional()
     .refine((v) => !v || ICON_VALUES.includes(v), "Invalid icon key"),
+  // Box dimensions
   length: z.coerce.number().int().positive().optional(),
   width: z.coerce.number().int().positive().optional(),
   height: z.coerce.number().int().positive().optional(),
+  // Tapered container dimensions
+  topLength: z.coerce.number().int().positive().optional(),
+  topWidth: z.coerce.number().int().positive().optional(),
+  bottomLength: z.coerce.number().int().positive().optional(),
+  bottomWidth: z.coerce.number().int().positive().optional(),
 });
 
 export type ContainerTypeInput = z.infer<typeof containerTypeSchema>;
@@ -37,6 +43,10 @@ export async function createContainerType(formData: FormData) {
     length: formData.get("length") ?? undefined,
     width: formData.get("width") ?? undefined,
     height: formData.get("height") ?? undefined,
+    topLength: formData.get("topLength") ?? undefined,
+    topWidth: formData.get("topWidth") ?? undefined,
+    bottomLength: formData.get("bottomLength") ?? undefined,
+    bottomWidth: formData.get("bottomWidth") ?? undefined,
   });
 
   if (!parsed.success) {
@@ -54,6 +64,10 @@ export async function createContainerType(formData: FormData) {
         length: parsed.data.length ?? null,
         width: parsed.data.width ?? null,
         height: parsed.data.height ?? null,
+        topLength: parsed.data.topLength ?? null,
+        topWidth: parsed.data.topWidth ?? null,
+        bottomLength: parsed.data.bottomLength ?? null,
+        bottomWidth: parsed.data.bottomWidth ?? null,
       },
     });
     revalidatePath("/admin/container-types");
@@ -79,6 +93,10 @@ export async function listContainerTypes() {
     length?: number | null;
     width?: number | null;
     height?: number | null;
+    topLength?: number | null;
+    topWidth?: number | null;
+    bottomLength?: number | null;
+    bottomWidth?: number | null;
   }>;
   } catch (e: any) {
     // If the table doesn't exist yet, return an empty list gracefully
@@ -91,6 +109,10 @@ export async function listContainerTypes() {
         length?: number | null;
         width?: number | null;
         height?: number | null;
+        topLength?: number | null;
+        topWidth?: number | null;
+        bottomLength?: number | null;
+        bottomWidth?: number | null;
       }>;
     }
     throw e;
@@ -105,6 +127,10 @@ export async function updateContainerType(id: string, formData: FormData) {
     length: formData.get("length") ?? undefined,
     width: formData.get("width") ?? undefined,
     height: formData.get("height") ?? undefined,
+    topLength: formData.get("topLength") ?? undefined,
+    topWidth: formData.get("topWidth") ?? undefined,
+    bottomLength: formData.get("bottomLength") ?? undefined,
+    bottomWidth: formData.get("bottomWidth") ?? undefined,
   });
   if (!parsed.success) {
     return { error: parsed.error.errors[0]?.message ?? "Invalid input" };
@@ -120,6 +146,10 @@ export async function updateContainerType(id: string, formData: FormData) {
         length: parsed.data.length ?? null,
         width: parsed.data.width ?? null,
         height: parsed.data.height ?? null,
+        topLength: parsed.data.topLength ?? null,
+        topWidth: parsed.data.topWidth ?? null,
+        bottomLength: parsed.data.bottomLength ?? null,
+        bottomWidth: parsed.data.bottomWidth ?? null,
       },
     });
     revalidatePath("/admin/container-types");
