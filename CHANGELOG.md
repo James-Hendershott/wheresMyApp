@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Admin Container Types: create/list UI with optional dimensions (L×W×H) and icon key
+- Add Container form: Type dropdown with next-number suggestion and Autofill for code/label
+- Type-specific icons displayed on rack detail page (tote/suitcase/box/bin)
+- Containers list grouped by Type with current/total item counts and checked-out breakdown
 - Mobile testing support with network host binding documentation
 - Database seed verification scripts and documentation
 - Toast notifications with Sonner for user feedback on form submissions
@@ -19,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Location-based organization with collapsible rack groups
 
 ### Changed
+- Rack detail page includes a legend listing placed containers with type icons
+- Containers list redesigned per type grouping for faster browsing
 - Inventory Map page reorganized: Rack visualization now displayed first, CRUD forms moved below
 - Racks now grouped by their locations for better spatial understanding
 - Rack cards show mini grid visualization with actual slot layout
@@ -26,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repository hygiene: ignore Obsidian workspace files (`Obsidian_Notes/.obsidian`, `.trash`)
 
 ### Fixed
+- QR code labels now downloadable as PNG (alongside print)
 - CRUD forms now show proper feedback when creating locations, racks, containers, and items
 - Duplicate entries prevented with user-friendly error messages
 - Items show warning when similar item exists but still allow creation
@@ -71,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript cache issues with Prisma Client types explained
 
 ### Documentation
+- Learning docs updated: Prisma model additions (ContainerType), server actions patterns, and UI flows for Container Types
 
 - Created 5-folder Obsidian_Notes structure (Getting Started, Learning, Development, Planning, Reference)
 - NPM Explained guide (746 lines, comprehensive npm reference)

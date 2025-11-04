@@ -114,14 +114,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] ~~Racks page error: "Unsupported Server Component Type: Undefined"~~ FIXED (implemented `CollapsibleLocation`)
 - [x] ~~Production seed script risk of data wipe if CSV invalid~~ FIXED (validate CSV before any deletes)
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
-- [ ] Admin functionality to add new Container Types
-- [ ] When Adding a new Container Type, Should have the ability to set dimensions using a generic 3D size chart and you fill in the dimensions needed.
-- [ ] Container Types should be protected and set by Admin, when anyone adds a new container it should be a dropdown for the type then auto number the container based on the next available number no matter whats been selected.
-- [ ] Specific icons for each container TYPE. ie 17 Gallon Tote, 27 Gallon Tote, 38 Gallon Tote Suitcase, Box, Bin, Carry-On
-- [ ] The containers inside the Container List should be grouped by Type, and only display Tote name, Label if one is provided, Number, Description, Item count Current/Total, references checked out items vs total items.
-- [ ] Rack Creation should give a visual as they are creating it before submitting it, to ensure they are filling it in correctly. Provide either a generic Grid that is a uniform size based on selection of Slots left to Right and Slots Top to Bottom. Number the slots for easy location.
-- [ ] toast notifications for actions
-- [ ] Generate QR Codes when Container is Completed that could be downloaded.
+- [x] Admin functionality to add new Container Types — Initial version (Create/List) DONE; Edit/Delete next
+- [x] Container Type dimensions (L×W×H) — Supported in admin create form
+- [x] Container Type dropdown with auto-number suggestion when adding containers (with Autofill)
+- [x] Specific icons for each container TYPE (tote/suitcase/box/bin) shown on rack detail page
+- [x] Containers list grouped by Type; shows tote name/label/code/description; item counts Current/Total with checked-out breakdown
+- [x] Rack Creation visual preview during creation (live grid, labeled slots)
+- [x] Toast notifications for create/update/delete actions
+- [x] QR codes downloadable as PNG (alongside print)
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
 
 ### Medium Priority

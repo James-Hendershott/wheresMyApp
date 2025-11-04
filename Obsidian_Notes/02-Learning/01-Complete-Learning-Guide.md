@@ -846,6 +846,61 @@ pnpm db:studio
 
 ---
 
+### New: Container Types model and admin UI
+
+We added a structured way to define and reuse container “types” (like 27 Gallon Tote, Suitcase, Bin), along with UI integration.
+
+#### Data model (schema)
+
+Prisma schema prepares for a `ContainerType` model and a relation from `Container`:
+
+```prisma
+model ContainerType {
+  id         String   @id @default(cuid())
+  name       String   @unique     // e.g. "27 Gallon Tote"
+  codePrefix String               // e.g. "TOTE"
+  iconKey    String?
+  length     Int?
+  width      Int?
+  height     Int?
+  containers Container[]
+}
+
+model Container {
+  // ...existing fields
+  type            String?        // Legacy string for compatibility
+  containerTypeId String?
+  containerType   ContainerType? @relation(fields: [containerTypeId], references: [id])
+  number          Int?           // Sequential number per type
+}
+```
+
+Note: Until Prisma client is regenerated and migrations are applied, the app safely persists `type` (string) and uses form-provided hidden fields to suggest codes and numbers.
+
+#### Admin UI
+
+- Route: `/admin/container-types`
+- Create new types with: Name, Code Prefix, optional Icon Key, and optional dimensions (L×W×H)
+- Lists existing types; edit/delete planned next
+
+#### Add Container form integration
+
+- Type dropdown shows available types
+- Shows "Next number" suggestion per type
+- Autofill button populates code (e.g. `TOTE-24`) and label (e.g. `27 Gallon Tote #24`)
+
+#### Icons and grouping
+
+- Rack detail page shows a legend with type-specific icons (tote/suitcase/box/bin)
+- Containers page is grouped by type and displays item counts as Current/Total with checked-out breakdown
+
+#### Migration path
+
+- After resolving Windows file lock and running `npx prisma generate` + migrations, persist `containerTypeId` and `number` directly
+- UI already designed to support the relation without further changes
+
+---
+
 ## Auth.js (NextAuth v5)
 
 ### What is Auth.js?
