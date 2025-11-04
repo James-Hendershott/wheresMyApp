@@ -21,8 +21,17 @@ export async function createRack(formData: FormData) {
     cols: formData.get("cols"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten() };
+    return { error: "Validation failed: " + parsed.error.errors[0].message };
   }
+
+  // Check for duplicate rack name
+  const existing = await prisma.rack.findFirst({
+    where: { name: parsed.data.name },
+  });
+  if (existing) {
+    return { error: "Rack already exists with this name. Try again." };
+  }
+
   // Create rack and slots
   const rack = await prisma.rack.create({
     data: {
@@ -43,7 +52,9 @@ export async function createRack(formData: FormData) {
     include: { slots: true },
   });
   revalidatePath("/racks");
-  return { rack };
+  return {
+    success: `Rack "${rack.name}" created with ${rack.slots.length} slots!`,
+  };
 }
 
 export async function updateRack(id: string, formData: FormData) {

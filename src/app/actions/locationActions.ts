@@ -17,11 +17,20 @@ export async function createLocation(formData: FormData) {
     notes: formData.get("notes") || undefined,
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten() };
+    return { error: "Validation failed: " + parsed.error.errors[0].message };
   }
+
+  // Check for duplicate location name
+  const existing = await prisma.location.findFirst({
+    where: { name: parsed.data.name },
+  });
+  if (existing) {
+    return { error: "Location already exists with this name. Try again." };
+  }
+
   const loc = await prisma.location.create({ data: parsed.data });
   revalidatePath("/racks");
-  return { location: loc };
+  return { success: `Location "${loc.name}" created successfully!` };
 }
 
 export async function updateLocation(id: string, formData: FormData) {

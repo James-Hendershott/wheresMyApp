@@ -1,7 +1,12 @@
-// WHY: Unified CRUD forms for Location, Rack, Container, and Item
-// WHAT: Server components that post directly to Server Actions using the action prop
-// HOW: Tailwind-only controls for portability; shadcn/ui can be swapped in later
+// WHY: Client-side CRUD forms with user feedback via toast notifications
+// WHAT: Forms that show success/error messages when creating locations, racks, containers, items
+// HOW: Use useFormState hook to get server action responses and display them with sonner toast
 
+"use client";
+
+import { useFormState } from "react-dom";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { createLocation } from "@/app/actions/locationActions";
 import { createRack } from "@/app/actions/rackActions";
 import { createContainer } from "@/app/actions/containerActions";
@@ -9,15 +14,61 @@ import { createItem } from "@/app/actions/itemActions";
 
 const inputClass = "mb-2 w-full rounded border p-2";
 const buttonClass =
-  "inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700";
+  "inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50";
+
+type FormResult = {
+  success?: string;
+  error?: string;
+};
+
+// Wrapper functions to match useFormState signature (state, formData) => result
+async function createLocationWrapper(
+  _prevState: FormResult,
+  formData: FormData
+): Promise<FormResult> {
+  return await createLocation(formData);
+}
+
+async function createRackWrapper(
+  _prevState: FormResult,
+  formData: FormData
+): Promise<FormResult> {
+  return await createRack(formData);
+}
+
+async function createContainerWrapper(
+  _prevState: FormResult,
+  formData: FormData
+): Promise<FormResult> {
+  return await createContainer(formData);
+}
+
+async function createItemWrapper(
+  _prevState: FormResult,
+  formData: FormData
+): Promise<FormResult> {
+  return await createItem(formData);
+}
 
 export function AddLocationForm() {
-  const action = async (formData: FormData) => {
-    "use server";
-    await createLocation(formData);
-  };
+  const [state, formAction] = useFormState<FormResult, FormData>(
+    createLocationWrapper,
+    {}
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success);
+      formRef.current?.reset();
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
+
   return (
-    <form action={action} className="mb-4 rounded border p-4">
+    <form ref={formRef} action={formAction} className="mb-4 rounded border p-4">
       <h2 className="mb-2 font-bold">Add Location</h2>
       <input
         name="name"
@@ -42,12 +93,24 @@ export function AddRackForm({
 }: {
   locations: { id: string; name: string }[];
 }) {
-  const action = async (formData: FormData) => {
-    "use server";
-    await createRack(formData);
-  };
+  const [state, formAction] = useFormState<FormResult, FormData>(
+    createRackWrapper,
+    {}
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success);
+      formRef.current?.reset();
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
+
   return (
-    <form action={action} className="mb-4 rounded border p-4">
+    <form ref={formRef} action={formAction} className="mb-4 rounded border p-4">
       <h2 className="mb-2 font-bold">Add Rack</h2>
       <input
         name="name"
@@ -68,7 +131,8 @@ export function AddRackForm({
           name="rows"
           type="number"
           min={1}
-          placeholder="Slots Top to Bottom"
+          defaultValue={3}
+          placeholder="Rows"
           className={inputClass}
           required
         />
@@ -76,7 +140,8 @@ export function AddRackForm({
           name="cols"
           type="number"
           min={1}
-          placeholder="Slots Left to Right"
+          defaultValue={4}
+          placeholder="Columns"
           className={inputClass}
           required
         />
@@ -93,12 +158,24 @@ export function AddContainerForm({
 }: {
   slots: { id: string; label: string }[];
 }) {
-  const action = async (formData: FormData) => {
-    "use server";
-    await createContainer(formData);
-  };
+  const [state, formAction] = useFormState<FormResult, FormData>(
+    createContainerWrapper,
+    {}
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success);
+      formRef.current?.reset();
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
+
   return (
-    <form action={action} className="mb-4 rounded border p-4">
+    <form ref={formRef} action={formAction} className="mb-4 rounded border p-4">
       <h2 className="mb-2 font-bold">Add Container (Tote)</h2>
       <input
         name="code"
@@ -137,12 +214,24 @@ export function AddItemForm({
 }: {
   containers: { id: string; label: string }[];
 }) {
-  const action = async (formData: FormData) => {
-    "use server";
-    await createItem(formData);
-  };
+  const [state, formAction] = useFormState<FormResult, FormData>(
+    createItemWrapper,
+    {}
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success);
+      formRef.current?.reset();
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
+
   return (
-    <form action={action} className="mb-4 rounded border p-4">
+    <form ref={formRef} action={formAction} className="mb-4 rounded border p-4">
       <h2 className="mb-2 font-bold">Add Item</h2>
       <input
         name="name"

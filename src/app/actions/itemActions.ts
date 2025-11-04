@@ -24,8 +24,17 @@ export async function createItem(formData: FormData) {
     tags: formData.getAll("tags") as string[],
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten() };
+    return { error: "Validation failed: " + parsed.error.errors[0].message };
   }
+
+  // Check if item already exists (items CAN be duplicates, but we warn the user)
+  const existing = await prisma.item.findFirst({
+    where: {
+      name: parsed.data.name,
+      containerId: parsed.data.containerId,
+    },
+  });
+
   const item = await prisma.item.create({
     data: {
       name: parsed.data.name,
@@ -36,7 +45,13 @@ export async function createItem(formData: FormData) {
     },
   });
   revalidatePath("/racks");
-  return { item };
+
+  if (existing) {
+    return {
+      success: `Item "${item.name}" created (Note: Similar item already exists in this container)`,
+    };
+  }
+  return { success: `Item "${item.name}" created successfully!` };
 }
 
 export async function updateItem(id: string, formData: FormData) {

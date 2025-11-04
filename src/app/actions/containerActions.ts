@@ -26,41 +26,56 @@ export async function createContainer(formData: FormData) {
     tags: formData.getAll("tags") as string[],
   });
   if (!parsed.success) {
-    return { error: parsed.error.flatten() };
+    return { error: "Validation failed: " + parsed.error.errors[0].message };
   }
-  // Create container, and if slotId provided, ensure the slot is empty and link both sides
-  const result = await prisma.$transaction(async (tx) => {
-    if (parsed.data.slotId) {
-      const slot = await tx.slot.findUnique({
-        where: { id: parsed.data.slotId },
-      });
-      if (!slot) throw new Error("Selected slot not found");
-      if (slot.containerId)
-        throw new Error("Selected slot is already occupied");
-    }
 
-    const container = await tx.container.create({
-      data: {
-        code: parsed.data.code,
-        label: parsed.data.label,
-        description: parsed.data.description,
-        status: parsed.data.status,
-        tags: parsed.data.tags,
-        currentSlotId: parsed.data.slotId,
-      },
-    });
-
-    if (parsed.data.slotId) {
-      await tx.slot.update({
-        where: { id: parsed.data.slotId },
-        data: { containerId: container.id },
-      });
-    }
-
-    return container;
+  // Check for duplicate container code
+  const existing = await prisma.container.findUnique({
+    where: { code: parsed.data.code },
   });
-  revalidatePath("/racks");
-  return { container: result };
+  if (existing) {
+    return { error: "Container already exists with this code. Try again." };
+  }
+
+  // Create container, and if slotId provided, ensure the slot is empty and link both sides
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      if (parsed.data.slotId) {
+        const slot = await tx.slot.findUnique({
+          where: { id: parsed.data.slotId },
+        });
+        if (!slot) throw new Error("Selected slot not found");
+        if (slot.containerId)
+          throw new Error("Selected slot is already occupied");
+      }
+
+      const container = await tx.container.create({
+        data: {
+          code: parsed.data.code,
+          label: parsed.data.label,
+          description: parsed.data.description,
+          status: parsed.data.status,
+          tags: parsed.data.tags,
+          currentSlotId: parsed.data.slotId,
+        },
+      });
+
+      if (parsed.data.slotId) {
+        await tx.slot.update({
+          where: { id: parsed.data.slotId },
+          data: { containerId: container.id },
+        });
+      }
+
+      return container;
+    });
+    revalidatePath("/racks");
+    return { success: `Container "${result.label}" created successfully!` };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Failed to create container",
+    };
+  }
 }
 
 export async function updateContainer(id: string, formData: FormData) {

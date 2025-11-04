@@ -8,9 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
 - Mobile testing support with network host binding documentation
 - Database seed verification scripts and documentation
+- Toast notifications with Sonner for user feedback on form submissions
+- Client-side CRUD forms with real-time success/error messages
+- Duplicate validation for locations, racks, and containers
+- Visual rack grid representation organized by location on Inventory Map
+- Mini grid previews showing container placement in each rack
+- Fill percentage indicators for rack capacity
+- Location-based organization with collapsible rack groups
+
+### Changed
+- Inventory Map page reorganized: Rack visualization now displayed first, CRUD forms moved below
+- Racks now grouped by their locations for better spatial understanding
+- Rack cards show mini grid visualization with actual slot layout
+- Page layout expanded to max-width-7xl for better use of space
+
+### Fixed
+- CRUD forms now show proper feedback when creating locations, racks, containers, and items
+- Duplicate entries prevented with user-friendly error messages
+- Items show warning when similar item exists but still allow creation
+- Rack grid visualization on inventory map now shows slot occupancy correctly
+- Empty states added to inventory map when no racks exist
 
 ## [0.1.0] - 2025-11-03
 
