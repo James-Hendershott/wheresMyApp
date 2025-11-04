@@ -46,6 +46,10 @@ public/worker-*.js.map
 # Prisma
 prisma/migrations/*_migration.sql
 
+# Notes/Obsidian
+Obsidian_Notes/.obsidian/
+Obsidian_Notes/.trash/
+
 # Misc
 *.pem
 .vercel

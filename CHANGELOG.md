@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Racks now grouped by their locations for better spatial understanding
 - Rack cards show mini grid visualization with actual slot layout
 - Page layout expanded to max-width-7xl for better use of space
+- Repository hygiene: ignore Obsidian workspace files (`Obsidian_Notes/.obsidian`, `.trash`)
 
 ### Fixed
 - CRUD forms now show proper feedback when creating locations, racks, containers, and items
@@ -30,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Items show warning when similar item exists but still allow creation
 - Rack grid visualization on inventory map now shows slot occupancy correctly
 - Empty states added to inventory map when no racks exist
+- Prevent accidental data wipe in production seed by validating CSV before any deletes
+- Resolve “Unsupported Server Component Type: Undefined” on racks page by implementing `CollapsibleLocation`
+- Remove unused server-based CRUD forms in favor of `CrudFormsClient`
 
 ## [0.1.0] - 2025-11-03
 
