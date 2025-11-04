@@ -10,7 +10,7 @@ test.describe("Homepage", () => {
 
     // Check for the app title
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Where's My",
+      "Where's My"
     );
   });
 

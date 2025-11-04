@@ -16,6 +16,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 🚀 Planned Features
 
 ### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
+
 - [x] Next.js 14 with App Router and TypeScript
 - [x] PostgreSQL database with Prisma ORM
 - [x] Authentication setup (NextAuth.js)
@@ -26,12 +27,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Production seed script with real data (23 containers, 308 items)
 
 ### Milestone 1: Database Schema & Seed 🔄 IN PROGRESS
+
 - [x] Prisma schema finalized with all relationships
 - [x] Comprehensive seed data (containers, items, photos)
 - [ ] Schema documentation in database docs
 - [ ] Migration strategy documented
 
 ### Milestone 2: Rack Visualization ⏳ PLANNED
+
 - [ ] Interactive SVG rack grid system
 - [ ] Visual slot management (place/move/remove containers)
 - [ ] Responsive design for mobile rack viewing
@@ -39,6 +42,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] E2E tests for rack functionality
 
 ### Milestone 3: Container & QR System ⏳ PLANNED
+
 - [ ] Container CRUD pages with search/filter
 - [ ] QR code scanner using ZXing library
 - [ ] Deep link support (scan → container detail)
@@ -46,6 +50,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Batch label printing (Avery 5160 format)
 
 ### Milestone 4: Item Management & Photos ⏳ PLANNED
+
 - [ ] Item CRUD with React Hook Form validation
 - [ ] Photo upload to S3/MinIO with presigned URLs
 - [ ] Multiple photos per item
@@ -54,6 +59,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Tag management with autocomplete
 
 ### Milestone 5: History & Search ⏳ PLANNED
+
 - [ ] Movement history page with filters
 - [ ] Global search across containers/items/locations
 - [ ] Fuzzy search support
@@ -61,6 +67,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Advanced filtering and sorting
 
 ### Milestone 6: PWA & Deployment ⏳ PLANNED
+
 - [ ] Enhanced offline support with service workers
 - [ ] Background sync for movements
 - [ ] Production deployment to Vercel + Neon
@@ -68,6 +75,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Custom domain and SSL configuration
 
 ### Phase 7: Enhanced UX (Future)
+
 - [ ] Mobile-optimized responsive design improvements
 - [ ] Dark mode support
 - [ ] Bulk item operations (move, delete, update)
@@ -75,6 +83,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Keyboard shortcuts for power users
 
 ### Phase 8: Organization & Analytics (Future)
+
 - [ ] Dashboard with inventory statistics
 - [ ] Container capacity visualization
 - [ ] Low stock alerts for items with quantities
@@ -84,6 +93,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Location hierarchy (Building → Room → Rack → Slot)
 
 ### Phase 9: Collaboration (Future)
+
 - [ ] Multi-user support with permissions
 - [ ] Shared inventories (family/team access)
 - [ ] Item checkout system with user tracking
@@ -91,6 +101,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Audit logs for all changes
 
 ### Phase 10: Advanced Features (Future)
+
 - [ ] AI-powered item recognition from photos
 - [ ] Voice search and commands
 - [ ] Smart suggestions for container organization
@@ -103,15 +114,18 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 🐛 Known Issues
 
 ### High Priority
+
 - Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
 - Dev server requires host binding for mobile access (documented workaround)
 
 ### Medium Priority
+
 - No item photo upload UI yet (database ready)
 - No QR code generation yet (database has codes ready)
 - Container capacity not enforced or tracked
 
 ### Low Priority
+
 - Rack visualization could be more interactive
 - No keyboard shortcuts implemented
 - No toast notifications for actions
@@ -121,6 +135,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 💡 Improvement Ideas
 
 ### User Experience
+
 - Add loading states and skeleton screens
 - Implement optimistic UI updates
 - Add keyboard shortcuts for power users
@@ -128,12 +143,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - Add onboarding/tutorial for first-time users
 
 ### Performance
+
 - Implement pagination for large container lists
 - Add virtual scrolling for items list
 - Optimize images with Next.js Image component
 - Add service worker for offline caching
 
 ### Developer Experience
+
 - Add Storybook for component development
 - Implement automated visual regression testing
 - Add API documentation with Swagger/OpenAPI
@@ -141,6 +158,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - Add performance monitoring
 
 ### Data Management
+
 - Implement soft deletes for containers/items
 - Add data export/import functionality
 - Create backup and restore system
@@ -151,18 +169,21 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ## 📊 Metrics & Goals
 
 ### Short-term Goals (1-2 months) - Milestones 1-3
+
 - [ ] Complete database schema documentation
 - [ ] Implement rack visualization system
 - [ ] Add QR code scanning and generation
 - [ ] Deploy alpha version for personal testing
 
 ### Medium-term Goals (3-4 months) - Milestones 4-5
+
 - [ ] Item photo uploads working
 - [ ] Movement history and search functional
 - [ ] Mobile app fully responsive
 - [ ] Beta testing with 5-10 users
 
 ### Long-term Goals (5-6 months) - Milestone 6+
+
 - [ ] Production deployment on Vercel
 - [ ] PWA offline capabilities
 - [ ] Self-hosting documentation complete
@@ -204,4 +225,4 @@ See `CONTRIBUTING.md` for detailed guidelines.
 
 ---
 
-*This roadmap is a living document and will be updated as the project evolves.*
+_This roadmap is a living document and will be updated as the project evolves._

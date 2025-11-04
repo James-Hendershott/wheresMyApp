@@ -17,6 +17,7 @@
 **Your Computer's IP**: `192.168.1.73`
 
 **URL to access on phone**:
+
 ```
 http://192.168.1.73:3000
 ```
@@ -56,32 +57,36 @@ Photos: 17
 
 ### Sample Container Breakdown
 
-| Code | Name | Items |
-|------|------|-------|
-| BIN-01 | Bin #01 | 5 items |
-| BIN-02 | Bin #02 | 7 items |
+| Code       | Name        | Items    |
+| ---------- | ----------- | -------- |
+| BIN-01     | Bin #01     | 5 items  |
+| BIN-02     | Bin #02     | 7 items  |
 | BOOKBOX-01 | Book Box #1 | 53 items |
-| TOTE-03 | Tote #03 | 14 items |
-| TOTE-08 | Tote #08 | 30 items |
-| TOTE-10 | Tote #10 | 35 items |
-| TOTE-12 | Tote #12 | 37 items |
+| TOTE-03    | Tote #03    | 14 items |
+| TOTE-08    | Tote #08    | 30 items |
+| TOTE-10    | Tote #10    | 35 items |
+| TOTE-12    | Tote #12    | 37 items |
 
 ### How to Verify
 
 1. **Run Seed Script**:
+
    ```bash
    npm run db:seed:prod
    ```
 
 2. **Check Counts**:
+
    ```bash
    npx tsx scripts/check-db.ts
    ```
 
 3. **Open Prisma Studio** (visual database browser):
+
    ```bash
    npm run db:studio
    ```
+
    Opens at: `http://localhost:5555`
 
 4. **Test in App**:
@@ -96,6 +101,7 @@ Photos: 17
 **Location**: `prisma/seed-production.ts`
 
 **What It Does**:
+
 1. Clears existing data (movements, photos, items, containers, slots, racks, locations)
 2. Parses CSV with 309 rows
 3. Extracts unique containers (23 found) and locations (14 found)
@@ -104,6 +110,7 @@ Photos: 17
 6. Creates photo records for items with photo URLs (17 photos)
 
 **Key Features**:
+
 - Maps CSV categories to `ItemCategory` enum
 - Maps CSV conditions to `ItemCondition` enum
 - Parses container names (e.g., "Bin #01" → code: "BIN-01")
@@ -118,7 +125,7 @@ Photos: 17
 **Status**: ✅ All items successfully seeded and linked to containers
 
 **Next Steps**:
+
 - Test mobile access on your phone at `http://192.168.1.73:3000`
 - Browse containers in the app to see all items
 - Use Prisma Studio for detailed database inspection
-

@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Mobile testing support with network host binding documentation
 - Database seed verification scripts and documentation
 
 ## [0.1.0] - 2025-11-03
 
 ### Added
+
 - Initial project setup with Next.js 14.2.33 and App Router
 - PostgreSQL database with Prisma ORM integration
 - Comprehensive data model (Containers, Items, Locations, Racks, Slots, Movements)
@@ -30,12 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript strict mode throughout codebase
 
 ### Changed
+
 - App rebranded from "WheresMy App" to "Where's My...?"
 - Converted package manager from pnpm to npm
 - Dynamic rendering for database-dependent pages (/containers, /racks)
 - Homepage redesigned with hover animations and improved UX
 
 ### Fixed
+
 - CI/CD pipeline converted from pnpm to npm (all 5 jobs passing)
 - Prettier formatting applied to entire codebase (37+ files)
 - Server Action inline "use server" removed from Client Component
@@ -44,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript cache issues with Prisma Client types explained
 
 ### Documentation
+
 - Created 5-folder Obsidian_Notes structure (Getting Started, Learning, Development, Planning, Reference)
 - NPM Explained guide (746 lines, comprehensive npm reference)
 - Development workflow and technical decisions documented
@@ -52,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mobile testing and seed verification guide
 
 ### Security
+
 - Environment variables properly configured (.env.example provided)
 - Database connection secured with connection pooling
 - Authentication setup (NextAuth.js configured)
@@ -59,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Initial] - 2025-07-18
 
 ### Added
+
 - Project initialization
 - Basic inventory tracking concept
 
@@ -67,11 +74,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version History Notes
 
 ### Versioning Strategy
+
 - **Major version (1.0.0)**: Breaking changes or major feature releases
 - **Minor version (0.1.0)**: New features, non-breaking changes
 - **Patch version (0.0.1)**: Bug fixes, documentation updates
 
 ### Links
+
 - [Unreleased]: Compare latest changes
 - [0.1.0]: Initial feature-complete version
 - [Initial]: Project start

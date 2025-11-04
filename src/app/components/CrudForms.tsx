@@ -68,7 +68,7 @@ export function AddRackForm({
           name="rows"
           type="number"
           min={1}
-          placeholder="Rows"
+          placeholder="Rows (left to right)"
           className={inputClass}
           required
         />
@@ -76,7 +76,7 @@ export function AddRackForm({
           name="cols"
           type="number"
           min={1}
-          placeholder="Columns"
+          placeholder="Columns (top to bottom)"
           className={inputClass}
           required
         />
