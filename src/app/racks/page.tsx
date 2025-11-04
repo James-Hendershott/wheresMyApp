@@ -11,6 +11,9 @@ import {
   AddItemForm,
 } from "../components/CrudForms";
 
+// Force dynamic rendering - don't prerender at build time
+export const dynamic = "force-dynamic";
+
 export default async function RacksPage() {
   // Fetch all locations, racks, slots, containers for CRUD forms
   const [locations, racks, containers, slots] = await Promise.all([
