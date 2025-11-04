@@ -16,25 +16,25 @@ function mapCategory(csvCategory: string): ItemCategory | undefined {
 
   const normalized = csvCategory.toLowerCase().trim();
 
-  if (normalized === "books") return "BOOKS";
-  if (normalized === "games & hobbies") return "GAMES_HOBBIES";
+  if (normalized === "books") return ItemCategory.BOOKS;
+  if (normalized === "games & hobbies") return ItemCategory.GAMES_HOBBIES;
   if (normalized.includes("camping") || normalized.includes("outdoor"))
-    return "CAMPING_OUTDOORS";
+    return ItemCategory.CAMPING_OUTDOORS;
   if (normalized.includes("tools") || normalized === "tool")
-    return "TOOLS_GEAR";
-  if (normalized === "cooking") return "COOKING";
-  if (normalized === "cleaning") return "CLEANING";
-  if (normalized === "electronics") return "ELECTRONICS";
-  if (normalized === "lights") return "LIGHTS";
-  if (normalized === "first aid") return "FIRST_AID";
-  if (normalized.includes("emergency")) return "EMERGENCY";
-  if (normalized === "clothes") return "CLOTHES";
-  if (normalized === "cordage") return "CORDAGE";
+    return ItemCategory.TOOLS_GEAR;
+  if (normalized === "cooking") return ItemCategory.COOKING;
+  if (normalized === "cleaning") return ItemCategory.CLEANING;
+  if (normalized === "electronics") return ItemCategory.ELECTRONICS;
+  if (normalized === "lights") return ItemCategory.LIGHTS;
+  if (normalized === "first aid") return ItemCategory.FIRST_AID;
+  if (normalized.includes("emergency")) return ItemCategory.EMERGENCY;
+  if (normalized === "clothes") return ItemCategory.CLOTHES;
+  if (normalized === "cordage") return ItemCategory.CORDAGE;
   if (normalized.includes("tech") || normalized.includes("media"))
-    return "TECH_MEDIA";
-  if (normalized === "misc") return "MISC";
+    return ItemCategory.TECH_MEDIA;
+  if (normalized === "misc") return ItemCategory.MISC;
 
-  return "MISC"; // Default fallback
+  return ItemCategory.MISC; // Default fallback
 }
 
 // Map CSV condition strings to ItemCondition enum
@@ -43,18 +43,20 @@ function mapCondition(csvCondition: string): ItemCondition | undefined {
 
   const normalized = csvCondition.toLowerCase().trim();
 
-  if (normalized === "unopened") return "UNOPENED";
-  if (normalized.includes("opened - nothing missing")) return "OPENED_COMPLETE";
+  if (normalized === "unopened") return ItemCondition.UNOPENED;
+  if (normalized.includes("opened - nothing missing"))
+    return ItemCondition.OPENED_COMPLETE;
   if (
     normalized.includes("opened - missing") ||
     normalized.includes("opened but missing")
   )
-    return "OPENED_MISSING";
-  if (normalized.includes("used")) return "USED";
-  if (normalized.includes("damaged")) return "DAMAGED";
+    return ItemCondition.OPENED_MISSING;
+  if (normalized.includes("used")) return ItemCondition.USED;
+  if (normalized.includes("damaged")) return ItemCondition.DAMAGED;
   if (normalized.includes("binder") || normalized.includes("loose leaf"))
-    return "USED";
-  if (normalized.includes("opened complete")) return "OPENED_COMPLETE";
+    return ItemCondition.USED;
+  if (normalized.includes("opened complete"))
+    return ItemCondition.OPENED_COMPLETE;
 
   return undefined;
 }
