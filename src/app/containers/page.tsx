@@ -4,12 +4,15 @@
 
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
 
 export default async function ContainersPage() {
+  // Defensive: ensure schema pieces exist to match current Prisma Client
+  await ensureContainerTypesSchema();
   const [containers] = await Promise.all([
     prisma.container.findMany({
       include: {

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Admin Container Types: create/list UI with optional dimensions (L×W×H) and icon key
+- Admin Container Types: inline edit and delete with toasts
 - Add Container form: Type dropdown with next-number suggestion and Autofill for code/label
 - Type-specific icons displayed on rack detail page (tote/suitcase/box/bin)
 - Containers list grouped by Type with current/total item counts and checked-out breakdown

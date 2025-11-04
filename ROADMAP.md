@@ -123,6 +123,8 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Toast notifications for create/update/delete actions
 - [x] QR codes downloadable as PNG (alongside print)
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
+- [x] The home page should not have the little Scan QR button or the View Inventory Map in addition to the 3 larger feature cards — cleaned up to avoid confusion.
+- [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
 
 ### Medium Priority
 - No item photo upload UI yet (database ready)

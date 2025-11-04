@@ -1,13 +1,29 @@
 // WHY: Admin page to manage Container Types
 // WHAT: List existing types and provide a form to add new ones
 
-import { listContainerTypes, createContainerType } from "@/app/actions/containerTypeActions";
+import {
+  listContainerTypes,
+  createContainerType,
+  updateContainerType,
+  deleteContainerType,
+} from "@/app/actions/containerTypeActions";
 import { AddContainerTypeForm } from "@/components/admin/AddContainerTypeForm";
+import { ContainerTypeRow } from "@/components/admin/ContainerTypeRow";
 
 export const dynamic = "force-dynamic";
 
 export default async function ContainerTypesAdminPage() {
   const types = await listContainerTypes();
+
+  async function updateAction(id: string, formData: FormData) {
+    "use server";
+    return await updateContainerType(id, formData);
+  }
+
+  async function deleteAction(id: string) {
+    "use server";
+    return await deleteContainerType(id);
+  }
 
   return (
     <main className="mx-auto max-w-4xl p-6">
@@ -31,20 +47,17 @@ export default async function ContainerTypesAdminPage() {
                   <th className="p-2">Prefix</th>
                   <th className="p-2">Icon</th>
                   <th className="p-2">Dimensions</th>
+                  <th className="p-2 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {types.map((t) => (
-                  <tr key={t.id} className="border-t">
-                    <td className="p-2 font-medium">{t.name}</td>
-                    <td className="p-2">{t.codePrefix}</td>
-                    <td className="p-2">{t.iconKey || "—"}</td>
-                    <td className="p-2">
-                      {t.length || t.width || t.height
-                        ? `${t.length ?? "?"} × ${t.width ?? "?"} × ${t.height ?? "?"}`
-                        : "—"}
-                    </td>
-                  </tr>
+                  <ContainerTypeRow
+                    key={t.id}
+                    type={t}
+                    onUpdate={updateAction}
+                    onDelete={deleteAction}
+                  />
                 ))}
               </tbody>
             </table>
