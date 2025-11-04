@@ -2,7 +2,8 @@
 
 This document outlines planned features, improvements, and future development directions for Where's My...?
 
-> **Last Updated**: November 4, 2025
+> **Last Updated**: November 4, 2025  
+> **For detailed development plan**: See `Obsidian_Notes/04-Planning/01-Roadmap.md`
 
 ---
 
@@ -14,26 +15,66 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ## 🚀 Planned Features
 
-### Phase 1: Core Functionality (In Progress)
-- [x] Basic container and item management
-- [x] QR code scanning setup
-- [x] Database seeding with real data
-- [ ] QR code generation for containers
-- [ ] Print QR code labels
-- [ ] Advanced search and filtering
-- [ ] Item photo upload functionality
-- [ ] Barcode/ISBN scanning for quick item entry
+### Milestone 0: Bootstrap & Foundation ✅ COMPLETE
+- [x] Next.js 14 with App Router and TypeScript
+- [x] PostgreSQL database with Prisma ORM
+- [x] Authentication setup (NextAuth.js)
+- [x] Tailwind CSS + Shadcn/ui components
+- [x] GitHub Actions CI/CD pipeline
+- [x] Testing infrastructure (Vitest + Playwright)
+- [x] PWA configuration
+- [x] Production seed script with real data (23 containers, 308 items)
 
-### Phase 2: Enhanced User Experience
-- [ ] Mobile-optimized responsive design
-- [ ] PWA offline functionality
+### Milestone 1: Database Schema & Seed 🔄 IN PROGRESS
+- [x] Prisma schema finalized with all relationships
+- [x] Comprehensive seed data (containers, items, photos)
+- [ ] Schema documentation in database docs
+- [ ] Migration strategy documented
+
+### Milestone 2: Rack Visualization ⏳ PLANNED
+- [ ] Interactive SVG rack grid system
+- [ ] Visual slot management (place/move/remove containers)
+- [ ] Responsive design for mobile rack viewing
+- [ ] Server Actions for rack operations
+- [ ] E2E tests for rack functionality
+
+### Milestone 3: Container & QR System ⏳ PLANNED
+- [ ] Container CRUD pages with search/filter
+- [ ] QR code scanner using ZXing library
+- [ ] Deep link support (scan → container detail)
+- [ ] QR label generation and printing
+- [ ] Batch label printing (Avery 5160 format)
+
+### Milestone 4: Item Management & Photos ⏳ PLANNED
+- [ ] Item CRUD with React Hook Form validation
+- [ ] Photo upload to S3/MinIO with presigned URLs
+- [ ] Multiple photos per item
+- [ ] Check-in/check-out flow for item movement
+- [ ] Item movement history tracking
+- [ ] Tag management with autocomplete
+
+### Milestone 5: History & Search ⏳ PLANNED
+- [ ] Movement history page with filters
+- [ ] Global search across containers/items/locations
+- [ ] Fuzzy search support
+- [ ] Export history to CSV
+- [ ] Advanced filtering and sorting
+
+### Milestone 6: PWA & Deployment ⏳ PLANNED
+- [ ] Enhanced offline support with service workers
+- [ ] Background sync for movements
+- [ ] Production deployment to Vercel + Neon
+- [ ] Docker Compose setup for self-hosting (Unraid)
+- [ ] Custom domain and SSL configuration
+
+### Phase 7: Enhanced UX (Future)
+- [ ] Mobile-optimized responsive design improvements
 - [ ] Dark mode support
 - [ ] Bulk item operations (move, delete, update)
-- [ ] Export inventory to CSV/PDF
-- [ ] Item history and movement tracking timeline
 - [ ] Recently accessed containers/items
+- [ ] Keyboard shortcuts for power users
 
-### Phase 3: Organization & Analytics
+### Phase 8: Organization & Analytics (Future)
 - [ ] Dashboard with inventory statistics
 - [ ] Container capacity visualization
 - [ ] Low stock alerts for items with quantities
@@ -42,14 +83,14 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Custom categories and conditions
 - [ ] Location hierarchy (Building → Room → Rack → Slot)
 
-### Phase 4: Collaboration
+### Phase 9: Collaboration (Future)
 - [ ] Multi-user support with permissions
 - [ ] Shared inventories (family/team access)
 - [ ] Item checkout system with user tracking
 - [ ] Movement history with user attribution
 - [ ] Audit logs for all changes
 
-### Phase 5: Advanced Features
+### Phase 10: Advanced Features (Future)
 - [ ] AI-powered item recognition from photos
 - [ ] Voice search and commands
 - [ ] Smart suggestions for container organization
@@ -109,23 +150,23 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ## 📊 Metrics & Goals
 
-### Short-term Goals (1-3 months)
-- [ ] Complete QR code functionality
-- [ ] Add item photo uploads
-- [ ] Implement advanced search
-- [ ] Deploy to production (Vercel)
+### Short-term Goals (1-2 months) - Milestones 1-3
+- [ ] Complete database schema documentation
+- [ ] Implement rack visualization system
+- [ ] Add QR code scanning and generation
+- [ ] Deploy alpha version for personal testing
 
-### Medium-term Goals (3-6 months)
-- [ ] Mobile app launch
-- [ ] Multi-user support
-- [ ] Analytics dashboard
-- [ ] 100+ active users
+### Medium-term Goals (3-4 months) - Milestones 4-5
+- [ ] Item photo uploads working
+- [ ] Movement history and search functional
+- [ ] Mobile app fully responsive
+- [ ] Beta testing with 5-10 users
 
-### Long-term Goals (6-12 months)
-- [ ] AI-powered features
-- [ ] Third-party integrations
-- [ ] Native mobile apps (iOS/Android)
-- [ ] 1000+ active users
+### Long-term Goals (5-6 months) - Milestone 6+
+- [ ] Production deployment on Vercel
+- [ ] PWA offline capabilities
+- [ ] Self-hosting documentation complete
+- [ ] 50+ active users (if opened to public)
 
 ---
 
@@ -153,10 +194,13 @@ See `CONTRIBUTING.md` for detailed guidelines.
 
 ## 🗓️ Release Schedule
 
-- **v0.2.0** (Q1 2026): QR codes, photo uploads, advanced search
-- **v0.3.0** (Q2 2026): Mobile optimization, PWA enhancements
-- **v1.0.0** (Q3 2026): Production-ready with core features complete
-- **v2.0.0** (Q4 2026): Multi-user, collaboration features
+- **v0.1.0** (Nov 2025): ✅ Bootstrap & Foundation complete
+- **v0.2.0** (Dec 2025): Milestone 1 & 2 - Database finalization + Rack visualization
+- **v0.3.0** (Jan 2026): Milestone 3 - Container management + QR system
+- **v0.4.0** (Feb 2026): Milestone 4 - Item management + Photo uploads
+- **v0.5.0** (Mar 2026): Milestone 5 - History + Search
+- **v1.0.0** (Apr 2026): Milestone 6 - PWA enhancements + Production deployment
+- **v2.0.0** (Q4 2026): Multi-user + Collaboration features
 
 ---
 

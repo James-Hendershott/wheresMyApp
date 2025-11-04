@@ -1,15 +1,18 @@
 # Development Roadmap 🗺️
 
-> **What This Is**: Structured development plan with milestones, issues, and feature breakdown.  
+> **What This Is**: Detailed development plan with specific GitHub Issues, technical requirements, and acceptance criteria.  
 > **Purpose**: Plan what to build next, track progress, and organize work into manageable chunks.  
-> **For**: Planning development sprints and knowing what features are coming.  
-> **How to Use**: Read milestone descriptions, copy issues to GitHub, track progress.
+> **For**: Planning development sprints and knowing exactly how to implement features.  
+> **How to Use**: Read milestone descriptions, copy issues to GitHub, track progress.  
+> **Public Roadmap**: See `ROADMAP.md` in project root for high-level feature overview.
 
 ---
 
 # WheresMy App - Development Roadmap 🗺️
 
 This document outlines the development milestones and initial issues for WheresMy App.
+
+> **Note**: This aligns with the public-facing `ROADMAP.md`. This document provides implementation details.
 
 ## 📊 Milestones Overview
 
