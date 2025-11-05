@@ -23,6 +23,7 @@ export function AddContainerTypeForm({
   );
   const formRef = useRef<HTMLFormElement>(null);
   const [isTapered, setIsTapered] = useState(false);
+  const [unit, setUnit] = useState<"inches" | "mm">("inches");
 
   useEffect(() => {
     if (state?.success) {
@@ -124,10 +125,36 @@ export function AddContainerTypeForm({
 
       {/* Dimensions with 3D Visualization */}
       <div className="rounded border bg-white p-4">
-        <h3 className="mb-3 text-sm font-semibold">
-          Dimensions (inches) {!isTapered && "— Rectangular Box"}
-          {isTapered && "— Tapered Container"}
-        </h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-semibold">
+            Dimensions ({unit}) {!isTapered && "— Rectangular Box"}
+            {isTapered && "— Tapered Container"}
+          </h3>
+          <div className="flex items-center gap-2 rounded border bg-gray-50 px-2 py-1">
+            <button
+              type="button"
+              onClick={() => setUnit("inches")}
+              className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+                unit === "inches"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Inches
+            </button>
+            <button
+              type="button"
+              onClick={() => setUnit("mm")}
+              className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+                unit === "mm"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              mm
+            </button>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* 3D Visual */}
@@ -269,59 +296,137 @@ export function AddContainerTypeForm({
   );
 }
 
-// Simple 3D Box Visualization
+// Simple 3D Box Visualization - Wireframe Style
 function Dimensions3DBox() {
   return (
-    <div className="relative" style={{ width: 180, height: 180 }}>
-      <svg viewBox="0 0 200 200" className="h-full w-full">
-        {/* Back face */}
+    <div className="relative" style={{ width: 220, height: 220 }}>
+      <svg viewBox="0 0 240 240" className="h-full w-full">
+        {/* Back face - wireframe */}
         <path
-          d="M 60 60 L 140 60 L 140 140 L 60 140 Z"
-          fill="#d4a574"
-          stroke="#8b6f47"
-          strokeWidth="2"
+          d="M 60 60 L 160 60 L 160 160 L 60 160 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
-        {/* Top face */}
+        {/* Top face - wireframe */}
         <path
-          d="M 60 60 L 100 30 L 180 30 L 140 60 Z"
-          fill="#e6c9a8"
-          stroke="#8b6f47"
-          strokeWidth="2"
+          d="M 60 60 L 100 30 L 200 30 L 160 60 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
-        {/* Right face */}
+        {/* Right face - wireframe */}
         <path
-          d="M 140 60 L 180 30 L 180 110 L 140 140 Z"
-          fill="#c9a87c"
-          stroke="#8b6f47"
-          strokeWidth="2"
+          d="M 160 60 L 200 30 L 200 130 L 160 160 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
 
-        {/* Labels */}
+        {/* Dimension lines and labels */}
+        {/* Length line (bottom) */}
+        <line
+          x1="60"
+          y1="175"
+          x2="160"
+          y2="175"
+          stroke="#2563eb"
+          strokeWidth="2"
+          strokeDasharray="none"
+        />
+        <line
+          x1="60"
+          y1="170"
+          x2="60"
+          y2="180"
+          stroke="#2563eb"
+          strokeWidth="2"
+        />
+        <line
+          x1="160"
+          y1="170"
+          x2="160"
+          y2="180"
+          stroke="#2563eb"
+          strokeWidth="2"
+        />
         <text
-          x="100"
-          y="155"
-          fontSize="14"
-          fill="#333"
+          x="110"
+          y="195"
+          fontSize="18"
+          fill="#2563eb"
           textAnchor="middle"
           fontWeight="bold"
         >
           L
         </text>
+
+        {/* Width line (right side) */}
+        <line
+          x1="215"
+          y1="30"
+          x2="215"
+          y2="130"
+          stroke="#10b981"
+          strokeWidth="2"
+        />
+        <line
+          x1="210"
+          y1="30"
+          x2="220"
+          y2="30"
+          stroke="#10b981"
+          strokeWidth="2"
+        />
+        <line
+          x1="210"
+          y1="130"
+          x2="220"
+          y2="130"
+          stroke="#10b981"
+          strokeWidth="2"
+        />
         <text
-          x="165"
+          x="230"
           y="85"
-          fontSize="14"
-          fill="#333"
-          textAnchor="middle"
+          fontSize="18"
+          fill="#10b981"
+          textAnchor="start"
           fontWeight="bold"
         >
           W
         </text>
+
+        {/* Height line (left side) */}
+        <line
+          x1="45"
+          y1="60"
+          x2="45"
+          y2="160"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
+        <line
+          x1="40"
+          y1="60"
+          x2="50"
+          y2="60"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
+        <line
+          x1="40"
+          y1="160"
+          x2="50"
+          y2="160"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
         <text
-          x="150"
-          y="100"
-          fontSize="14"
-          fill="#333"
+          x="28"
+          y="115"
+          fontSize="18"
+          fill="#f59e0b"
           textAnchor="middle"
           fontWeight="bold"
         >
@@ -332,79 +437,143 @@ function Dimensions3DBox() {
   );
 }
 
-// 3D Tapered Container Visualization
+// 3D Tapered Container Visualization - Wireframe Style (Bottom Opening Larger)
 function Dimensions3DTapered() {
   return (
-    <div className="relative" style={{ width: 180, height: 180 }}>
-      <svg viewBox="0 0 200 200" className="h-full w-full">
-        {/* Back face (trapezoid) */}
+    <div className="relative" style={{ width: 220, height: 220 }}>
+      <svg viewBox="0 0 240 240" className="h-full w-full">
+        {/* Back face (trapezoid - wider at bottom) */}
         <path
-          d="M 70 50 L 130 50 L 140 140 L 60 140 Z"
-          fill="#4a90e2"
-          stroke="#2e5c8a"
-          strokeWidth="2"
+          d="M 80 40 L 140 40 L 160 150 L 60 150 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
-        {/* Top face (top opening) */}
+        {/* Top face (smaller top opening) */}
         <path
-          d="M 70 50 L 100 30 L 160 30 L 130 50 Z"
-          fill="#7ab8ff"
-          stroke="#2e5c8a"
-          strokeWidth="2"
+          d="M 80 40 L 110 20 L 170 20 L 140 40 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
         {/* Right face (trapezoid) */}
         <path
-          d="M 130 50 L 160 30 L 170 120 L 140 140 Z"
-          fill="#5fa3e8"
-          stroke="#2e5c8a"
-          strokeWidth="2"
+          d="M 140 40 L 170 20 L 190 130 L 160 150 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
+        />
+        {/* Bottom face (larger bottom base) */}
+        <path
+          d="M 60 150 L 90 130 L 190 130 L 160 150 Z"
+          fill="none"
+          stroke="#374151"
+          strokeWidth="2.5"
         />
 
         {/* Dimension lines and labels */}
+        {/* Top opening label */}
         <line
-          x1="70"
-          y1="45"
-          x2="130"
-          y2="45"
-          stroke="#666"
-          strokeWidth="1"
-          strokeDasharray="2,2"
+          x1="80"
+          y1="35"
+          x2="140"
+          y2="35"
+          stroke="#8b5cf6"
+          strokeWidth="2"
+        />
+        <line
+          x1="80"
+          y1="30"
+          x2="80"
+          y2="40"
+          stroke="#8b5cf6"
+          strokeWidth="2"
+        />
+        <line
+          x1="140"
+          y1="30"
+          x2="140"
+          y2="40"
+          stroke="#8b5cf6"
+          strokeWidth="2"
         />
         <text
-          x="100"
-          y="40"
-          fontSize="12"
-          fill="#333"
+          x="110"
+          y="20"
+          fontSize="16"
+          fill="#8b5cf6"
           textAnchor="middle"
           fontWeight="bold"
         >
           Top
         </text>
 
+        {/* Bottom base label */}
         <line
           x1="60"
-          y1="145"
-          x2="140"
-          y2="145"
-          stroke="#666"
-          strokeWidth="1"
-          strokeDasharray="2,2"
+          y1="165"
+          x2="160"
+          y2="165"
+          stroke="#ec4899"
+          strokeWidth="2"
+        />
+        <line
+          x1="60"
+          y1="160"
+          x2="60"
+          y2="170"
+          stroke="#ec4899"
+          strokeWidth="2"
+        />
+        <line
+          x1="160"
+          y1="160"
+          x2="160"
+          y2="170"
+          stroke="#ec4899"
+          strokeWidth="2"
         />
         <text
-          x="100"
-          y="160"
-          fontSize="12"
-          fill="#333"
+          x="110"
+          y="185"
+          fontSize="16"
+          fill="#ec4899"
           textAnchor="middle"
           fontWeight="bold"
         >
           Bottom
         </text>
 
+        {/* Height line */}
+        <line
+          x1="45"
+          y1="40"
+          x2="45"
+          y2="150"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
+        <line
+          x1="40"
+          y1="40"
+          x2="50"
+          y2="40"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
+        <line
+          x1="40"
+          y1="150"
+          x2="50"
+          y2="150"
+          stroke="#f59e0b"
+          strokeWidth="2"
+        />
         <text
-          x="150"
-          y="95"
-          fontSize="14"
-          fill="#333"
+          x="28"
+          y="100"
+          fontSize="18"
+          fill="#f59e0b"
           textAnchor="middle"
           fontWeight="bold"
         >

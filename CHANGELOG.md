@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Container editing capability with location/slot reassignment for admins
+- EditContainerModalButton component with Dialog UI for editing containers
+- Smart slot management preventing double-occupancy during container moves
+- Unit toggle (inches/mm) in Add Container Type form for international users
 - Admin Container Types: create/list UI with optional dimensions (L×W×H) and icon key
 - Admin Container Types: inline edit and delete with toasts
 - Admin Container Types: icon key dropdown (tote, box, bin, suitcase, carry-on) with server-side validation
@@ -35,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Container type form diagrams redesigned with larger wireframe visualizations
+- Tapered container diagram flipped to show bottom opening (realistic orientation)
+- 3D box and tapered diagrams now use clean wireframe style with color-coded dimension lines
+- Container type diagrams increased in size (180px → 220px) for better clarity
 - Rack detail page includes a legend listing placed containers with type icons
 - Containers list redesigned per type grouping for faster browsing
 - Inventory Map page reorganized: Rack visualization now displayed first, CRUD forms moved below

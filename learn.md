@@ -21,6 +21,7 @@
 10. [QR Code Generation & Scanning](#qr-code-generation--scanning)
 11. [Progressive Web Apps (PWA)](#progressive-web-apps-pwa)
 12. [Testing Strategies](#testing-strategies)
+13. [SVG Diagrams & 3D Visualization](#svg-diagrams--3d-visualization) ⭐ NEW!
 
 ---
 
@@ -1277,6 +1278,147 @@ test("can create a container", async ({ page }) => {
 3. ✅ Don't test implementation details
 4. ✅ Mock external services (S3, email)
 5. ✅ Use `data-testid` for stable selectors
+
+---
+
+## SVG Diagrams & 3D Visualization
+
+### Why SVG for Diagrams?
+
+SVG (Scalable Vector Graphics) is perfect for creating interactive diagrams in web apps because:
+
+- **Scalable**: Looks crisp at any size
+- **Lightweight**: Smaller file size than images
+- **Interactive**: Can respond to clicks, hovers
+- **Styleable**: Use CSS and inline styles
+- **Accessible**: Can be read by screen readers
+
+### Container Type Diagrams
+
+In the Add Container Type form, we use SVG to show 3D wireframe diagrams:
+
+#### Wireframe Box Diagram
+
+```tsx
+function Dimensions3DBox() {
+  return (
+    <svg viewBox="0 0 240 240" className="h-full w-full">
+      {/* Back face - wireframe */}
+      <path
+        d="M 60 60 L 160 60 L 160 160 L 60 160 Z"
+        fill="none"
+        stroke="#374151"
+        strokeWidth="2.5"
+      />
+      {/* Dimension lines with color coding */}
+      <line
+        x1="60"
+        y1="175"
+        x2="160"
+        y2="175"
+        stroke="#2563eb"
+        strokeWidth="2"
+      />
+      <text x="110" y="195" fontSize="18" fill="#2563eb" fontWeight="bold">
+        L
+      </text>
+    </svg>
+  );
+}
+```
+
+**Key Techniques:**
+
+1. **Wireframe Style**: Use `fill="none"` for hollow shapes
+2. **Color-Coded Dimensions**: Blue for Length, Green for Width, Orange for Height
+3. **Clear Labels**: Large, bold text with matching colors
+4. **Measurement Lines**: Show exactly what each dimension measures
+
+#### Tapered Container (Flipped Orientation)
+
+For tapered containers (totes, bins), we show the **bottom opening larger** (realistic orientation):
+
+```tsx
+// Bottom is wider than top (like a real tote)
+<path d="M 80 40 L 140 40 L 160 150 L 60 150 Z" fill="none" stroke="#374151" />
+```
+
+**Why flip it?** Real storage totes have:
+
+- Small top opening (easier to stack)
+- Large bottom base (more storage)
+
+This matches how users think about their containers!
+
+### State Management for UI Toggles
+
+The unit toggle (inches/mm) uses React state:
+
+```tsx
+const [unit, setUnit] = useState<"inches" | "mm">("inches");
+
+// Toggle buttons
+<button
+  onClick={() => setUnit("inches")}
+  className={unit === "inches" ? "bg-blue-600 text-white" : "text-gray-600"}
+>
+  Inches
+</button>;
+```
+
+**Pattern**: Conditional styling based on state for active/inactive states.
+
+### SVG Path Commands
+
+Understanding the `d` attribute in `<path>`:
+
+| Command | Meaning    | Example                             |
+| ------- | ---------- | ----------------------------------- |
+| `M x y` | Move to    | `M 60 60` - Start at (60, 60)       |
+| `L x y` | Line to    | `L 160 60` - Draw line to (160, 60) |
+| `Z`     | Close path | `Z` - Draw line back to start       |
+
+Example rectangle:
+
+```
+M 60 60    → Start at top-left
+L 160 60   → Line to top-right
+L 160 160  → Line to bottom-right
+L 60 160   → Line to bottom-left
+Z          → Close back to top-left
+```
+
+### Design Principles for Technical Diagrams
+
+1. **Clarity over Style**: Wireframes are clearer than filled shapes
+2. **Color-Code Information**: Different colors for different dimensions
+3. **Consistent Sizing**: All labels and lines use consistent stroke widths
+4. **Real-World Orientation**: Show objects as users expect to see them
+5. **Adequate Spacing**: Don't cram labels together
+
+### Testing SVG Diagrams
+
+Check these in different scenarios:
+
+```bash
+# Mobile responsiveness
+- Does it scale properly on small screens?
+- Are labels still readable?
+
+# Browser compatibility
+- Test in Chrome, Firefox, Safari
+- SVG support is universal, but rendering may vary
+
+# Accessibility
+- Can screen readers parse the diagram?
+- Add aria-labels for important elements
+```
+
+### Resources
+
+- [SVG Path Tutorial](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths)
+- [SVG Coordinate System](https://www.sarasoueidan.com/blog/svg-coordinate-systems/)
+- [React SVG Best Practices](https://react-svgr.com/docs/what-is-svgr/)
 
 ---
 
