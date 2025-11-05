@@ -5,6 +5,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { MoreVertical, LogOut, LogIn, Move, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,13 +43,16 @@ interface ItemActionsMenuProps {
   item: Item;
   containers: Container[];
   onSuccess?: () => void;
+  layout?: "menu" | "buttons"; // menu: kebab dropdown, buttons: inline toolbar
 }
 
 export function ItemActionsMenu({
   item,
   containers,
   onSuccess,
+  layout = "menu",
 }: ItemActionsMenuProps) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [showMoveDialog, setShowMoveDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -64,6 +68,7 @@ export function ItemActionsMenu({
       toast.success("Item checked out successfully");
       setIsOpen(false);
       onSuccess?.();
+      router.refresh();
     } else {
       toast.error(result.error || "Failed to check out item");
     }
@@ -78,6 +83,7 @@ export function ItemActionsMenu({
       toast.success("Item checked in successfully");
       setIsOpen(false);
       onSuccess?.();
+      router.refresh();
     } else {
       toast.error(result.error || "Failed to check in item");
     }
@@ -96,6 +102,7 @@ export function ItemActionsMenu({
       setShowMoveDialog(false);
       setIsOpen(false);
       onSuccess?.();
+      router.refresh();
     } else {
       toast.error(result.error || "Failed to move item");
     }
@@ -114,6 +121,7 @@ export function ItemActionsMenu({
       setShowEditDialog(false);
       setIsOpen(false);
       onSuccess?.();
+      router.refresh();
     } else {
       toast.error(result.error || "Failed to update item");
     }
@@ -129,6 +137,7 @@ export function ItemActionsMenu({
       setShowRemoveDialog(false);
       setIsOpen(false);
       onSuccess?.();
+      router.refresh();
     } else {
       toast.error(result.error || "Failed to remove item");
     }
@@ -136,75 +145,126 @@ export function ItemActionsMenu({
 
   return (
     <>
-      <div className="relative">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(!isOpen)}
-          className="h-8 w-8 p-0"
-        >
-          <MoreVertical className="h-4 w-4" />
-        </Button>
-
-        {isOpen && (
-          <div className="absolute right-0 z-10 mt-1 w-48 rounded-md border bg-white shadow-lg">
-            <div className="py-1">
-              {item.status === "IN_STORAGE" ? (
+      {layout === "menu" ? (
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(!isOpen)}
+            className="h-8 w-8 p-0"
+          >
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+          {isOpen && (
+            <div className="absolute right-0 z-10 mt-1 w-48 rounded-md border bg-white shadow-lg">
+              <div className="py-1">
+                {item.status === "IN_STORAGE" ? (
+                  <button
+                    onClick={handleCheckOut}
+                    disabled={isSubmitting}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Check Out
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleCheckIn}
+                    disabled={isSubmitting}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Check In
+                  </button>
+                )}
                 <button
-                  onClick={handleCheckOut}
-                  disabled={isSubmitting}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                  onClick={() => {
+                    setShowMoveDialog(true);
+                    setIsOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Check Out
+                  <Move className="h-4 w-4" />
+                  Move to Container
                 </button>
-              ) : (
                 <button
-                  onClick={handleCheckIn}
-                  disabled={isSubmitting}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                  onClick={() => {
+                    setShowEditDialog(true);
+                    setIsOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <LogIn className="h-4 w-4" />
-                  Check In
+                  <Edit className="h-4 w-4" />
+                  Edit Item
                 </button>
-              )}
-
-              <button
-                onClick={() => {
-                  setShowMoveDialog(true);
-                  setIsOpen(false);
-                }}
-                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <Move className="h-4 w-4" />
-                Move to Container
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowEditDialog(true);
-                  setIsOpen(false);
-                }}
-                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <Edit className="h-4 w-4" />
-                Edit Item
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowRemoveDialog(true);
-                  setIsOpen(false);
-                }}
-                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4" />
-                Remove
-              </button>
+                <button
+                  onClick={() => {
+                    setShowRemoveDialog(true);
+                    setIsOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Remove
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-2">
+          {item.status === "IN_STORAGE" ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleCheckOut}
+              disabled={isSubmitting}
+              className="gap-1"
+            >
+              <LogOut className="h-4 w-4" />
+              Check Out
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleCheckIn}
+              disabled={isSubmitting}
+              className="gap-1"
+            >
+              <LogIn className="h-4 w-4" />
+              Check In
+            </Button>
+          )}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowMoveDialog(true)}
+            className="gap-1"
+          >
+            <Move className="h-4 w-4" />
+            Move
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowEditDialog(true)}
+            className="gap-1"
+          >
+            <Edit className="h-4 w-4" />
+            Edit
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => setShowRemoveDialog(true)}
+            className="gap-1"
+          >
+            <Trash2 className="h-4 w-4" />
+            Remove
+          </Button>
+        </div>
+      )}
 
       {/* Move Dialog */}
       <Dialog open={showMoveDialog} onOpenChange={setShowMoveDialog}>

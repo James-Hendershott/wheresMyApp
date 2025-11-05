@@ -143,10 +143,14 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
                       <span>Quantity: {item.quantity}</span>
                       {item.condition && (
-                        <span>• Condition: {item.condition.replace(/_/g, " ")}</span>
+                        <span>
+                          • Condition: {item.condition.replace(/_/g, " ")}
+                        </span>
                       )}
                       {item.category && (
-                        <span>• Category: {item.category.replace(/_/g, " ")}</span>
+                        <span>
+                          • Category: {item.category.replace(/_/g, " ")}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -178,21 +182,22 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                         containerId: item.containerId,
                       }}
                       containers={allContainers}
+                      layout="buttons"
                     />
                   </div>
                 </div>
                 {item.photos.length > 0 && (
                   <div className="mt-3 flex gap-2">
                     {item.photos.map((photo) => (
-                          <Image
-                            key={photo.id}
-                            src={photo.url}
-                            alt={item.name}
-                            width={64}
-                            height={64}
-                            className="h-16 w-16 rounded object-cover"
-                          />
-                        ))}
+                      <Image
+                        key={photo.id}
+                        src={photo.url}
+                        alt={item.name}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 rounded object-cover"
+                      />
+                    ))}
                   </div>
                 )}
               </div>
