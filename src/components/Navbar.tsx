@@ -4,7 +4,7 @@
 
 "use client";
 import Link from "next/link";
-import { Package, QrCode, MapPin, Home, List } from "lucide-react";
+import { Package, QrCode, MapPin, Home, List, Grid3x3 } from "lucide-react";
 import { AuthMenu } from "@/components/auth/AuthMenu";
 
 export function Navbar() {
@@ -46,6 +46,13 @@ export function Navbar() {
           >
             <MapPin className="h-5 w-5" />
             <span className="hidden sm:inline">Locations</span>
+          </Link>
+          <Link
+            href="/racks"
+            className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+          >
+            <Grid3x3 className="h-5 w-5" />
+            <span className="hidden sm:inline">Racks</span>
           </Link>
           <Link
             href="/scan"

@@ -82,18 +82,18 @@ export function CollapsibleLocation({
                     : 0;
 
                 // Calculate grid cell size for larger, more interactive cards
-                // Target card content height ~300px for better drag-drop interaction
+                // Target card content height ~450px (150% increase) for better drag-drop interaction
                 const maxGridDimension = Math.max(rack.rows, rack.cols);
                 const baseCellSize =
                   maxGridDimension <= 4
-                    ? 40
+                    ? 60 // 150% of 40
                     : maxGridDimension <= 6
-                      ? 32
+                      ? 48 // 150% of 32
                       : maxGridDimension <= 10
-                        ? 24
-                        : 18;
+                        ? 36 // 150% of 24
+                        : 27; // 150% of 18
                 const cellSize = `${baseCellSize}px`;
-                const gap = maxGridDimension <= 6 ? "4px" : "3px";
+                const gap = maxGridDimension <= 6 ? "6px" : "4px"; // Proportionally increased
 
                 return (
                   <a
@@ -121,7 +121,7 @@ export function CollapsibleLocation({
                     </div>
 
                     {/* Larger, more interactive grid visualization */}
-                    <div className="mb-4 flex min-h-[300px] items-center justify-center rounded-lg bg-white p-4 shadow-inner">
+                    <div className="mb-4 flex min-h-[450px] items-center justify-center rounded-lg bg-white p-4 shadow-inner">
                       <div
                         className="grid"
                         style={{

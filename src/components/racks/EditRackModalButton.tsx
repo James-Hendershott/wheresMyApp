@@ -79,14 +79,15 @@ export function EditRackModalButton({
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          size="sm"
-          className="absolute right-2 top-2 h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+          size="icon"
+          className="absolute right-2 top-2 h-10 w-10 rounded-full bg-white/80 opacity-0 shadow-sm backdrop-blur-sm transition-all hover:bg-white hover:shadow-md group-hover:opacity-100"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}
+          title="Edit Rack"
         >
-          <Edit className="h-4 w-4" />
+          <Edit className="h-5 w-5 text-gray-700" />
         </Button>
       </DialogTrigger>
       <DialogContent>
