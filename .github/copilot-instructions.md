@@ -212,3 +212,37 @@ revalidatePath(`/containers/${id}`); // Specific container detail
 - **Conventional Commits**: `feat:`, `fix:`, `chore:`, `docs:`
 - Commit after each logical feature completion
 - Run `npm run format` and `npm run lint` before committing
+
+### Branching Workflow
+**CRITICAL**: Always create a feature branch for major updates:
+
+```bash
+# Create and checkout new branch for your feature
+git checkout -b feature/your-feature-name
+
+# Make changes, commit as you go
+git add .
+git commit -m "feat: description of change"
+
+# When feature is complete and tested
+git checkout main
+git merge feature/your-feature-name
+
+# Delete the feature branch after merging
+git branch -d feature/your-feature-name
+```
+
+**Branch naming conventions**:
+- `feature/` - New features (e.g., `feature/photo-upload`)
+- `fix/` - Bug fixes (e.g., `fix/qr-scanner`)
+- `docs/` - Documentation only (e.g., `docs/api-reference`)
+- `refactor/` - Code refactoring (e.g., `refactor/server-actions`)
+- `chore/` - Maintenance tasks (e.g., `chore/update-deps`)
+
+**When to branch**:
+- ✅ Adding new features (category system, photo upload, etc.)
+- ✅ Major refactoring or structural changes
+- ✅ Breaking changes to schema or APIs
+- ✅ Multi-step updates that span multiple commits
+- ❌ Small bug fixes (can commit directly to main)
+- ❌ Documentation typos or minor updates
