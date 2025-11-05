@@ -25,7 +25,16 @@ WheresMy App is a full-stack inventory management system designed for home organ
 - **Visual Rack Grid Selector**: Click-to-assign interface for intuitive container slot assignment (replaces dropdown)
 - **Color-Coded Slots**: White=available, Gray=occupied, Blue=current location for instant visual feedback
 - **Separated Concerns**: Edit dialog handles name/description only; Assign to Rack button handles location
+- **Size-Specific Container Codes**: TOTE27 for 27-gallon totes, CASE for suitcases (based on HDX standards)
 - **Responsive Layouts**: 1-4 column grids adapt to screen size for optimal viewing on any device
+
+### Network Access
+
+Test on phones, tablets, and other computers on your network:
+```bash
+npm run dev:network
+```
+Access from other devices at `http://YOUR-IP:3000` (e.g., http://192.168.1.59:3000)
 
 ## 🛠️ Tech Stack
 

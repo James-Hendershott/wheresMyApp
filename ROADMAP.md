@@ -113,6 +113,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Auto-populated container naming based on type
 - [x] QR codes stored in database
 - [x] QR codes downloadable as PNG
+- [x] **Container code prefixes with size** (TOTE27 for 27-gallon, CASE for suitcases based on HDX standards)
 - [ ] **[HIGH PRIORITY]** Container editing with admin/user approval workflow
 - [x] **[HIGH PRIORITY]** QR code scanner opens container with item management interface
 - [ ] QR code scanner using ZXing library (camera access needs fix)

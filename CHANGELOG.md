@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Container code prefixes with size identifiers** - TOTE27 (27 gallon), CASE (suitcase) for better identification
+- **Network-accessible dev server** - `npm run dev:network` command for testing on other devices
 - **Icon-only buttons with tooltips on container cards** to reduce UI crowding and improve visual clarity
 - **AssignToRackButton component** with visual rack grid selector for intuitive slot assignment
   - Displays all racks with color-coded slot availability (white=available, gray=occupied, blue=current)
@@ -58,6 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **EditContainerModalButton simplified** to only edit name/description with helper text directing to AssignToRackButton for location changes
 - **Rack grid visual selector** replaces dropdown for slot assignment, showing full rack layout with occupied/available slots
 - Container cards now display action buttons in top-right corner with flex gap-1 for reduced crowding
+- **Container code prefixes updated** from generic (TOTE) to size-specific (TOTE27) following HDX tote standards
+- Suitcase prefix shortened from SUITCASE to CASE for cleaner labeling
+- All containers now have sequential numbers within their type (e.g., TOTE27-01, TOTE27-02)
 - **Inventory Page Layout**: Restored proper card grid (1-4 columns responsive) with full-size photos and metadata; moved actions to kebab dropdown menu
 - **Container Detail Layout**: Fixed item display with photos on left (80x80), metadata on right, action buttons below; improved spacing and readability
 - **Edit Container Button**: Relocated from inside container detail page to main containers list (absolute positioned top-right per card)
