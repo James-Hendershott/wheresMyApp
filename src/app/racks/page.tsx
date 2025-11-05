@@ -137,7 +137,7 @@ export default async function RacksPage() {
                         </div>
 
                         {/* Larger, more interactive grid visualization - max 5x5 display */}
-                        <div className="mb-4 flex min-h-[450px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
+                        <div className="mb-4 flex min-h-[562px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
                           <div
                             className="grid"
                             style={{
