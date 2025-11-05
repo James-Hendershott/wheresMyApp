@@ -2,6 +2,8 @@
 // WHAT: Displays container info, QR for printing, items list, and add item form
 // HOW: Server component with client-side QR display component
 
+import { ItemActionsMenu } from "@/components/items/ItemActionsMenu";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -15,7 +17,7 @@ interface ContainerPageProps {
 }
 
 export default async function ContainerPage({ params }: ContainerPageProps) {
-  const [container, slots] = await Promise.all([
+  const [container, allContainers, slots] = await Promise.all([
     prisma.container.findUnique({
       where: { id: params.id },
       include: {
@@ -35,6 +37,10 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
           orderBy: { createdAt: "desc" },
         },
       },
+    }),
+    prisma.container.findMany({
+      select: { id: true, label: true },
+      orderBy: { label: "asc" },
     }),
     prisma.slot.findMany({
       include: { rack: { include: { location: true } } },
@@ -116,8 +122,8 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
           <div className="space-y-3">
             {container.items.map((item) => (
               <div key={item.id} className="rounded border p-4">
-                <div className="flex items-start justify-between">
-                  <div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
                     <div className="font-semibold">{item.name}</div>
                     {item.description && (
                       <div className="mt-1 text-sm text-gray-600">
@@ -134,29 +140,59 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                         </span>
                       ))}
                     </div>
+                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                      <span>Quantity: {item.quantity}</span>
+                      {item.condition && (
+                        <span>• Condition: {item.condition.replace(/_/g, " ")}</span>
+                      )}
+                      {item.category && (
+                        <span>• Category: {item.category.replace(/_/g, " ")}</span>
+                      )}
+                    </div>
                   </div>
-                  <span
-                    className={`rounded px-2 py-1 text-xs ${
-                      item.status === "IN_STORAGE"
-                        ? "bg-blue-100 text-blue-700"
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-medium ${
+                        item.status === "IN_STORAGE"
+                          ? "bg-blue-100 text-blue-700"
+                          : item.status === "CHECKED_OUT"
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {item.status === "IN_STORAGE"
+                        ? "In Storage"
                         : item.status === "CHECKED_OUT"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
+                          ? "Checked Out"
+                          : item.status}
+                    </span>
+                    <ItemActionsMenu
+                      item={{
+                        id: item.id,
+                        name: item.name,
+                        description: item.description,
+                        status: item.status,
+                        quantity: item.quantity,
+                        condition: item.condition,
+                        category: item.category,
+                        containerId: item.containerId,
+                      }}
+                      containers={allContainers}
+                    />
+                  </div>
                 </div>
                 {item.photos.length > 0 && (
                   <div className="mt-3 flex gap-2">
                     {item.photos.map((photo) => (
-                      <img
-                        key={photo.id}
-                        src={photo.url}
-                        alt={item.name}
-                        className="h-16 w-16 rounded object-cover"
-                      />
-                    ))}
+                          <Image
+                            key={photo.id}
+                            src={photo.url}
+                            alt={item.name}
+                            width={64}
+                            height={64}
+                            className="h-16 w-16 rounded object-cover"
+                          />
+                        ))}
                   </div>
                 )}
               </div>

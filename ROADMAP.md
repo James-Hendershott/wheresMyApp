@@ -17,23 +17,6 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### High Priority
 
-- [ ] Containers need to be editable by Admin or by user with admin approval request
-- [ ] Containers need to be able to have items checked out/removed/moved/checked in from the containers
-- [ ] Scanning QR code will open the container to the items inside, where you can perform the check out, check in, remove, move, or edit functions
-- [ ] When any function is performed on an item inside a container, that item should be time stamped with a log of who did what.
-- [ ] if an item was checked out but has not been checked in within 7 days of checking it out, a notification will be pinged to the user who checked it out AND the admin
-- [ ] The badge that currently says In Storage on the items needs to change to Checked out when it has been checked out.
-- [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
-- [ ] Add something to Container Cards to draw more attention to containers that have items missing.
-- [ ] Ensure Photos can be added via taking a picture or uploading image.
-- [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
-- [ ] In the admin add new container type, support unit toggle (mm/in), larger wireframe visuals, and correct tapered orientation.
-- [ ] Icon selector should reset/show all options after a selection.
-- [ ] Locations follows per-page modal pattern (Add Location only). Add clear navigation links to create Rack/Container/Item from their respective pages.
-- [ ] Node deprecation warning [DEP0040] (punycode) surfaced via Prisma CLI on Windows — upgrade in progress; requires closing Node processes to resolve locked engine binary before reinstall/regenerate.
-
-### Medium Priority
-
 - [ ] No item photo upload UI yet (database ready)
 - [ ] No reason that the Where's My...? Image should go to home and also Home inside the navbar. Maybe just use the image.
 - [ ] No QR code generation UI yet (database has codes ready, but need generation button)
@@ -299,8 +282,16 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~Uniform container card sizing~~ — <span style="color:#16a34a">Shipped: prevents wide cards from spanning full row</span>
 - [x] ~~A1-style slot labeling (A1, B2, etc.)~~ — <span style="color:#16a34a">Shipped: replaced [0,1] format across app</span>
 - [x] ~~Auto-populate container fields on type selection~~ — <span style="color:#16a34a">Shipped: removed manual Autofill button</span>
-- [x] ~~Visual indicator for containers with checked-out items~~ — <span style="color:#16a34a">Shipped: orange border/background</span>
-- [x] ~~Normalized rack card sizes on locations page~~ — <span style="color:#16a34a">Shipped: max-width constraint</span>
+
+- [x] ~~Container editing with location/slot reassignment~~ — <span style="color:#16a34a">Shipped: EditContainerModalButton with smart slot management (Nov 4, 2025)</span>
+- [x] ~~Item check-out/check-in system with user tracking~~ — <span style="color:#16a34a">Shipped: Server actions with movement logging (Nov 4, 2025)</span>
+- [x] ~~Item management actions (move, edit, remove)~~ — <span style="color:#16a34a">Shipped: ItemActionsMenu dropdown component (Nov 4, 2025)</span>
+- [x] ~~Activity logging for all item operations~~ — <span style="color:#16a34a">Shipped: Movement table logs actor, timestamp, action, containers (Nov 4, 2025)</span>
+- [x] ~~Status badge improvements (In Storage → Checked Out)~~ — <span style="color:#16a34a">Shipped: Humanized display with orange highlight (Nov 4, 2025)</span>
+- [x] ~~QR scan opens container with item management~~ — <span style="color:#16a34a">Shipped: Full ItemActionsMenu from QR scan (Nov 4, 2025)</span>
+- [x] ~~Container type wireframe diagrams~~ — <span style="color:#16a34a">Shipped: Clean wireframes, color-coded dimensions, 220px size (Nov 4, 2025)</span>
+- [x] ~~Unit toggle (inches/mm) for container types~~ — <span style="color:#16a34a">Shipped: Button toggle in add form (Nov 4, 2025)</span>
+- [x] ~~Tapered container orientation fix~~ — <span style="color:#16a34a">Shipped: Bottom opening larger (realistic) (Nov 4, 2025)</span>
 
 ---
 

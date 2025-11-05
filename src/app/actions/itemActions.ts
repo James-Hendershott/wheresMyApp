@@ -6,6 +6,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ItemStatus } from "@prisma/client";
+import { auth } from "@/auth";
 
 const itemSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -14,6 +15,291 @@ const itemSchema = z.object({
   containerId: z.string().optional(),
   tags: z.string().array().optional(),
 });
+
+// ───────────────────── Check Out Item ─────────────────────
+
+export async function checkOutItem(itemId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const item = await prisma.item.findUnique({
+      where: { id: itemId },
+      include: { container: true },
+    });
+
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    if (item.status === "CHECKED_OUT") {
+      return { success: false, error: "Item is already checked out" };
+    }
+
+    // Update item status and log movement in transaction
+    await prisma.$transaction([
+      prisma.item.update({
+        where: { id: itemId },
+        data: { status: "CHECKED_OUT" },
+      }),
+      prisma.movement.create({
+        data: {
+          actorId: session.user.id,
+          itemId: itemId,
+          action: "check_out",
+          fromContainerId: item.containerId,
+        },
+      }),
+    ]);
+
+    revalidatePath(`/containers/${item.containerId}`);
+    revalidatePath("/containers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Check out error:", error);
+    return { success: false, error: "Failed to check out item" };
+  }
+}
+
+// ───────────────────── Check In Item ─────────────────────
+
+export async function checkInItem(itemId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const item = await prisma.item.findUnique({
+      where: { id: itemId },
+      include: { container: true },
+    });
+
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    if (item.status !== "CHECKED_OUT") {
+      return { success: false, error: "Item is not checked out" };
+    }
+
+    // Update item status and log movement in transaction
+    await prisma.$transaction([
+      prisma.item.update({
+        where: { id: itemId },
+        data: { status: "IN_STORAGE" },
+      }),
+      prisma.movement.create({
+        data: {
+          actorId: session.user.id,
+          itemId: itemId,
+          action: "check_in",
+          toContainerId: item.containerId,
+        },
+      }),
+    ]);
+
+    revalidatePath(`/containers/${item.containerId}`);
+    revalidatePath("/containers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Check in error:", error);
+    return { success: false, error: "Failed to check in item" };
+  }
+}
+
+// ───────────────────── Move Item to Different Container ─────────────────────
+
+const MoveItemSchema = z.object({
+  itemId: z.string().min(1),
+  targetContainerId: z.string().min(1),
+});
+
+export async function moveItemToContainer(formData: FormData) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const data = MoveItemSchema.parse({
+      itemId: formData.get("itemId"),
+      targetContainerId: formData.get("targetContainerId"),
+    });
+
+    const item = await prisma.item.findUnique({
+      where: { id: data.itemId },
+    });
+
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    const fromContainerId = item.containerId;
+
+    // Move item and log movement in transaction
+    await prisma.$transaction([
+      prisma.item.update({
+        where: { id: data.itemId },
+        data: { containerId: data.targetContainerId },
+      }),
+      prisma.movement.create({
+        data: {
+          actorId: session.user.id,
+          itemId: data.itemId,
+          action: "move",
+          fromContainerId: fromContainerId,
+          toContainerId: data.targetContainerId,
+        },
+      }),
+    ]);
+
+    if (fromContainerId) {
+      revalidatePath(`/containers/${fromContainerId}`);
+    }
+    revalidatePath(`/containers/${data.targetContainerId}`);
+    revalidatePath("/containers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Move item error:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: "Invalid data" };
+    }
+    return { success: false, error: "Failed to move item" };
+  }
+}
+
+// ───────────────────── Remove Item Permanently ─────────────────────
+
+export async function removeItemPermanently(itemId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const item = await prisma.item.findUnique({
+      where: { id: itemId },
+    });
+
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    const containerId = item.containerId;
+
+    // Log removal before deleting
+    await prisma.movement.create({
+      data: {
+        actorId: session.user.id,
+        itemId: itemId,
+        action: "remove",
+        fromContainerId: containerId,
+        note: `Removed item: ${item.name}`,
+      },
+    });
+
+    // Delete item (cascades to photos via schema)
+    await prisma.item.delete({
+      where: { id: itemId },
+    });
+
+    if (containerId) {
+      revalidatePath(`/containers/${containerId}`);
+    }
+    revalidatePath("/containers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Remove item error:", error);
+    return { success: false, error: "Failed to remove item" };
+  }
+}
+
+// ───────────────────── Edit Item Details ─────────────────────
+
+const EditItemSchema = z.object({
+  itemId: z.string().min(1),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  quantity: z.coerce.number().min(1).default(1),
+  condition: z
+    .enum(["UNOPENED", "OPENED_COMPLETE", "OPENED_MISSING", "USED", "DAMAGED"])
+    .optional(),
+  category: z
+    .enum([
+      "BOOKS",
+      "GAMES_HOBBIES",
+      "CAMPING_OUTDOORS",
+      "TOOLS_GEAR",
+      "COOKING",
+      "CLEANING",
+      "ELECTRONICS",
+      "LIGHTS",
+      "FIRST_AID",
+      "EMERGENCY",
+      "CLOTHES",
+      "CORDAGE",
+      "TECH_MEDIA",
+      "MISC",
+    ])
+    .optional(),
+});
+
+export async function editItemDetails(formData: FormData) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const data = EditItemSchema.parse({
+      itemId: formData.get("itemId"),
+      name: formData.get("name"),
+      description: formData.get("description") || undefined,
+      quantity: formData.get("quantity"),
+      condition: formData.get("condition") || undefined,
+      category: formData.get("category") || undefined,
+    });
+
+    const item = await prisma.item.findUnique({
+      where: { id: data.itemId },
+    });
+
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    await prisma.item.update({
+      where: { id: data.itemId },
+      data: {
+        name: data.name,
+        description: data.description,
+        quantity: data.quantity,
+        condition: data.condition,
+        category: data.category,
+      },
+    });
+
+    if (item.containerId) {
+      revalidatePath(`/containers/${item.containerId}`);
+    }
+    revalidatePath("/containers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Edit item error:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message };
+    }
+    return { success: false, error: "Failed to edit item" };
+  }
+}
 
 export async function createItem(formData: FormData) {
   const parsed = itemSchema.safeParse({
