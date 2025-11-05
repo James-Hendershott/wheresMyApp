@@ -80,33 +80,35 @@ export function AssignToRackButton({
     }
   };
 
-  const button = (
-    <Button
-      variant="outline"
-      size={iconOnly ? "icon" : "sm"}
-      className={iconOnly ? "h-8 w-8" : "gap-2"}
-    >
-      <MapPin className="h-4 w-4" />
-      {!iconOnly && "Assign to Rack"}
-    </Button>
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {iconOnly ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>{button}</TooltipTrigger>
-              <TooltipContent>
-                <p>Assign to Rack</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ) : (
-          button
-        )}
-      </DialogTrigger>
+      {iconOnly ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                >
+                  <MapPin className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Assign to Rack</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-2">
+            <MapPin className="h-4 w-4" />
+            Assign to Rack
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-h-[80vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Assign Container to Rack Slot</DialogTitle>
