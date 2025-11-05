@@ -37,17 +37,17 @@ function mapCategory(csvCategory: string): {
 
   // Tools
   if (normalized.includes("tools") || normalized === "tool") {
-    return { category: "TOOLS_HARDWARE", subcategory: "TOOLS_HAND_TOOLS" };
+    return { category: "TOOLS_HARDWARE", subcategory: "TOOLS_HAND" };
   }
 
   // Kitchen/Cooking
   if (normalized === "cooking") {
-    return { category: "KITCHEN", subcategory: "KITCHEN_COOKWARE" };
+    return { category: "KITCHEN", subcategory: "KITCHEN_UTENSILS" };
   }
 
   // Cleaning
   if (normalized === "cleaning") {
-    return { category: "CLEANING", subcategory: "CLEANING_PRODUCTS" };
+    return { category: "CLEANING", subcategory: "CLEANING_SUPPLIES" };
   }
 
   // Electronics
