@@ -153,21 +153,24 @@ export function CollapsibleLocation({
                         {displaySlots.map((slot) => (
                           <div
                             key={slot.id}
-                            className={`cursor-pointer rounded transition-all hover:scale-110 hover:shadow-md ${
+                            className={`flex cursor-pointer items-center justify-center rounded transition-all hover:scale-110 hover:shadow-md ${
                               slot.container
-                                ? "bg-blue-500 hover:bg-blue-600"
-                                : "bg-gray-200 hover:bg-gray-300"
+                                ? "bg-blue-500 font-semibold text-white hover:bg-blue-600"
+                                : "bg-gray-200 font-medium text-gray-600 hover:bg-gray-300"
                             }`}
                             style={{
                               width: cellWidth,
                               height: cellHeight,
+                              fontSize: "0.75rem",
                             }}
                             title={
                               slot.container
                                 ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
                                 : `Empty ${formatSlotLabel(slot.row, slot.col)}`
                             }
-                          />
+                          >
+                            {formatSlotLabel(slot.row, slot.col)}
+                          </div>
                         ))}
                       </div>
                     </div>
