@@ -121,6 +121,8 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Auto-populated container naming based on type
 - [x] QR codes stored in database
 - [x] QR codes downloadable as PNG
+- [ ] **[HIGH PRIORITY]** Container editing with admin/user approval workflow
+- [ ] **[HIGH PRIORITY]** QR code scanner opens container with item management interface
 - [ ] QR code scanner using ZXing library (camera access needs fix)
 - [ ] Deep link support (scan → container detail)
 - [ ] QR label generation button/UI
@@ -132,6 +134,11 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Item listing on container detail pages
 - [x] Check-in/check-out status tracking
 - [x] Database schema ready for photos
+- [ ] **[HIGH PRIORITY]** Item check-out/check-in UI with timestamp logging
+- [ ] **[HIGH PRIORITY]** Item move/remove/edit functions from container view
+- [ ] **[HIGH PRIORITY]** Activity log for all item operations (who, what, when)
+- [ ] **[HIGH PRIORITY]** Status badge updates (In Storage → Checked Out)
+- [ ] **[HIGH PRIORITY]** 7-day checkout notification system for overdue items
 - [ ] Photo upload UI (camera or file upload)
 - [ ] Photo upload to S3/MinIO with presigned URLs
 - [ ] Multiple photos per item
@@ -203,6 +210,12 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Complete Container Types system with tapered dimensions
 - [x] Implement collapsible locations UI
 - [x] Add A1-style slot labeling across app
+- [ ] **[HIGH PRIORITY]** Implement item check-out/check-in workflow with logging
+- [ ] **[HIGH PRIORITY]** Add activity timestamps and user tracking for items
+- [ ] **[HIGH PRIORITY]** Create 7-day overdue notification system
+- [ ] **[HIGH PRIORITY]** Update status badges for checked-out items
+- [ ] **[HIGH PRIORITY]** Container editing with approval workflow
+- [ ] **[HIGH PRIORITY]** QR scan → container detail with item actions
 - [ ] Fix QR camera access for scanning
 - [ ] Add photo upload UI (camera + file)
 - [ ] Add rack editing capabilities
@@ -213,6 +226,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Interactive rack drag-and-drop system
 - [ ] QR label generation and batch printing
 - [ ] Complete item photo uploads to cloud storage
+- [ ] Activity history dashboard with filters
 - [ ] Deploy alpha version for personal testing
 
 ### Long-term Goals (Feb - Apr 2026) - Milestones 4-6
