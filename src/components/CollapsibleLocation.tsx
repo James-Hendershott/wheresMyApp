@@ -82,18 +82,25 @@ export function CollapsibleLocation({
                     : 0;
 
                 // Calculate grid cell size for larger, more interactive cards
-                // Target card content height ~450px (150% increase) for better drag-drop interaction
+                // Additional 50% increase + max grid 5x5 constraint to prevent overflow
                 const maxGridDimension = Math.max(rack.rows, rack.cols);
                 const baseCellSize =
                   maxGridDimension <= 4
-                    ? 60 // 150% of 40
+                    ? 90 // 150% of 60 (50% additional increase)
                     : maxGridDimension <= 6
-                      ? 48 // 150% of 32
+                      ? 72 // 150% of 48
                       : maxGridDimension <= 10
-                        ? 36 // 150% of 24
-                        : 27; // 150% of 18
+                        ? 54 // 150% of 36
+                        : 40; // 150% of 27
                 const cellSize = `${baseCellSize}px`;
-                const gap = maxGridDimension <= 6 ? "6px" : "4px"; // Proportionally increased
+                const gap = maxGridDimension <= 6 ? "8px" : "6px"; // Proportionally increased
+
+                // Constrain to max 5x5 grid for display
+                const displayRows = Math.min(rack.rows, 5);
+                const displayCols = Math.min(rack.cols, 5);
+                const displaySlots = rack.slots.filter(
+                  (s) => s.row < displayRows && s.col < displayCols
+                );
 
                 return (
                   <a
@@ -117,19 +124,24 @@ export function CollapsibleLocation({
                       </div>
                       <div className="text-sm text-gray-500">
                         {rack.rows} × {rack.cols}
+                        {(rack.rows > 5 || rack.cols > 5) && (
+                          <span className="ml-1 text-xs text-orange-600">
+                            (5×5 preview)
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Larger, more interactive grid visualization */}
-                    <div className="mb-4 flex min-h-[450px] items-center justify-center rounded-lg bg-white p-4 shadow-inner">
+                    {/* Larger, more interactive grid visualization - max 5x5 display */}
+                    <div className="mb-4 flex min-h-[450px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
                       <div
                         className="grid"
                         style={{
-                          gridTemplateColumns: `repeat(${rack.cols}, ${cellSize})`,
+                          gridTemplateColumns: `repeat(${displayCols}, ${cellSize})`,
                           gap: gap,
                         }}
                       >
-                        {rack.slots.map((slot) => (
+                        {displaySlots.map((slot) => (
                           <div
                             key={slot.id}
                             className={`cursor-pointer rounded transition-all hover:scale-110 hover:shadow-md ${

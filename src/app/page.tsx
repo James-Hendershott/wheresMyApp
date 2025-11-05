@@ -34,7 +34,7 @@ export default function HomePage() {
               description="Scan tote codes instantly with your phone camera"
             />
           </Link>
-          <Link href="/racks" className="block">
+          <Link href="/locations" className="block">
             <FeatureCard
               icon={<MapPin className="h-8 w-8" />}
               title="Visual Rack Map"

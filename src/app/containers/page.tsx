@@ -19,6 +19,12 @@ export default async function ContainersPage() {
   const [containers, slots, containerTypes] = await Promise.all([
     prisma.container.findMany({
       include: {
+        containerType: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         currentSlot: {
           include: {
             rack: {
@@ -60,7 +66,9 @@ export default async function ContainersPage() {
   const grouped = new Map<string, GroupedContainer[]>();
 
   for (const container of containers) {
-    const typeName = container.type || "Uncategorized";
+    // Use containerType.name if available, otherwise fall back to legacy type field
+    const typeName =
+      container.containerType?.name || container.type || "Uncategorized";
     const itemsInStorage = container.items.filter(
       (i) => i.status === "IN_STORAGE"
     ).length;
