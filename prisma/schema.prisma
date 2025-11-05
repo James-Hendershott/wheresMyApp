@@ -125,6 +125,7 @@ model Slot {
   col         Int
   containerId String?     @unique
   container   Container?  @relation(fields: [containerId], references: [id])
+  item        Item?       @relation("ItemSlotRelation") // WHAT: If an item acts as container, it can occupy a slot
   movements   Movement[]  @relation("slotMovements")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -190,6 +191,11 @@ model Item {
   notes          String?        @db.Text
   quantity       Int            @default(1)
   expirationDate DateTime?      // WHAT: For items that expire
+  // NEW: Items as Containers support
+  isContainer    Boolean        @default(false) // WHAT: If true, this item acts as its own container
+  volume         Float?         // WHAT: Volume in cubic inches (for capacity calculations)
+  currentSlotId  String?        @unique // WHAT: If isContainer=true, this item can occupy a slot
+  currentSlot    Slot?          @relation("ItemSlotRelation", fields: [currentSlotId], references: [id], onDelete: SetNull)
   containerId    String?
   container      Container?     @relation(fields: [containerId], references: [id], onDelete: SetNull)
   tags           String[]       @default([])
@@ -201,6 +207,8 @@ model Item {
   @@index([containerId])
   @@index([status])
   @@index([category])
+  @@index([currentSlotId])
+  @@index([isContainer])
   @@map("items")
 }
 
@@ -389,6 +397,7 @@ model ContainerType {
   topWidth     Int?
   bottomLength Int?
   bottomWidth  Int?
+  capacity     Float?                          // WHAT: Volume in cubic inches (calculated from dimensions)
   containers   Container[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
