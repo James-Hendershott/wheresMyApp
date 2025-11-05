@@ -1,104 +1,87 @@
-// WHY: Visual SVG grid for a single rack, showing where each container is placed
-// WHAT: Fetches rack by id, renders SVG grid (rows × cols), shows containers in slots
-// HOW: Server component, ready for future drag/drop and actions
+// WHY: Interactive drag-and-drop rack grid for visual container management
+// WHAT: Fetches rack by id, displays interactive grid with drag-and-drop, click to view container details
+// HOW: Server component fetches data, InteractiveRackGrid handles all interactions
 
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
-import { formatSlotLabel } from "@/lib/slotLabels";
+import { InteractiveRackGrid } from "@/components/racks/InteractiveRackGrid";
+import Link from "next/link";
 
 interface RackPageProps {
   params: { id: string };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function RackPage({ params }: RackPageProps) {
-  const rack = await prisma.rack.findUnique({
-    where: { id: params.id },
-    include: {
-      location: true,
-      slots: {
-        include: {
-          container: true,
+  const [rack, unassignedContainers] = await Promise.all([
+    prisma.rack.findUnique({
+      where: { id: params.id },
+      include: {
+        location: true,
+        slots: {
+          include: {
+            container: {
+              include: {
+                containerType: {
+                  select: {
+                    name: true,
+                    iconKey: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
-    },
-  });
+    }),
+    // Get containers without a slot assignment
+    prisma.container.findMany({
+      where: {
+        currentSlotId: null,
+        status: "ACTIVE",
+      },
+      include: {
+        containerType: {
+          select: {
+            name: true,
+            iconKey: true,
+          },
+        },
+      },
+      orderBy: { code: "asc" },
+    }),
+  ]);
+
   if (!rack) return notFound();
 
-  // SVG grid dimensions
-  const cellSize = 60;
-  const width = rack.cols * cellSize;
-  const height = rack.rows * cellSize;
-
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="mb-2 text-2xl font-bold">{rack.name}</h1>
-      <div className="mb-4 text-gray-500">
-        Location: {rack.location?.name || "Unknown"}
+    <main className="mx-auto max-w-7xl p-6">
+      <div className="mb-6">
+        <Link
+          href="/locations"
+          className="text-sm text-blue-600 hover:underline"
+        >
+          ← Back to Locations
+        </Link>
       </div>
-      <svg width={width} height={height} className="rounded border bg-gray-50">
-        {/* Draw grid */}
-        {[...Array(rack.rows)].map((_, row) =>
-          [...Array(rack.cols)].map((_, col) => {
-            const slot = rack.slots.find((s) => s.row === row && s.col === col);
-            const hasContainer = slot && slot.container;
-            return (
-              <g key={`${row}-${col}`}>
-                <rect
-                  x={col * cellSize}
-                  y={row * cellSize}
-                  width={cellSize}
-                  height={cellSize}
-                  fill={hasContainer ? "#dbeafe" : "#fff"}
-                  stroke="#94a3b8"
-                  strokeWidth={1}
-                  rx={8}
-                />
-                {hasContainer && (
-                  <text
-                    x={col * cellSize + cellSize / 2}
-                    y={row * cellSize + cellSize / 2}
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fontSize={14}
-                    fill="#2563eb"
-                  >
-                    {slot!.container!.label}
-                  </text>
-                )}
-              </g>
-            );
-          })
-        )}
-      </svg>
-      {/* Legend with icons */}
-      <div className="mt-6 rounded border bg-white p-4 shadow-sm">
-        <h2 className="mb-2 text-lg font-semibold">Containers in this rack</h2>
-        {rack.slots.filter((s) => s.container).length === 0 ? (
-          <p className="text-sm text-gray-500">No containers placed yet.</p>
-        ) : (
-          <ul className="space-y-2 text-sm">
-            {rack.slots
-              .filter((s) => s.container)
-              .map((s) => (
-                <li key={s!.id} className="flex items-center gap-2">
-                  <ContainerTypeIcon
-                    typeName={s!.container!.type as string | undefined}
-                  />
-                  <span className="font-medium">{s!.container!.label}</span>
-                  <span className="text-gray-500">
-                    {formatSlotLabel(s!.row, s!.col)}
-                  </span>
-                </li>
-              ))}
-          </ul>
-        )}
+
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">{rack.name}</h1>
+        <p className="mt-2 text-gray-600">
+          📍 {rack.location?.name || "Unknown Location"} • {rack.rows} rows × {rack.cols} columns
+        </p>
+        <p className="mt-1 text-sm text-gray-500">
+          💡 Drag containers from the unassigned list below to empty slots. Click occupied slots to view container details.
+        </p>
       </div>
-      <div className="mt-6">
-        <a href="/racks" className="text-blue-600 hover:underline">
-          ← Back to Inventory Map
-        </a>
-      </div>
+
+      <InteractiveRackGrid
+        rack={rack}
+        availableContainers={unassignedContainers}
+        showUnassigned={true}
+        cellSize="lg"
+      />
     </main>
   );
 }

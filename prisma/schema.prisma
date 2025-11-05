@@ -152,6 +152,10 @@ model Container {
   number          Int?             // WHAT: Sequential number within a type (for auto-numbering)
   currentSlotId  String?           @unique
   currentSlot    Slot?
+  // NEW: Nested container support (container inside another container)
+  parentContainerId String?
+  parentContainer   Container?  @relation("NestedContainers", fields: [parentContainerId], references: [id], onDelete: SetNull)
+  childContainers   Container[] @relation("NestedContainers")
   tags           String[]          @default([])
   items          Item[]
   movementsFrom  Movement[]        @relation("containerFrom")
@@ -162,6 +166,7 @@ model Container {
   @@index([status])
   @@index([code])
   @@index([containerTypeId])
+  @@index([parentContainerId])
   @@map("containers")
 }
 

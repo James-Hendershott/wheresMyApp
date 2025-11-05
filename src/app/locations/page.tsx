@@ -1,5 +1,6 @@
-// WHY: Locations page that hosts the Inventory Map previously on /racks
-// WHAT: Shows collapsible location cards with rack visualization
+// WHY: Locations page showing all locations with interactive rack grids
+// WHAT: Shows collapsible location cards with drag-and-drop rack visualization
+// HOW: Server component fetches data, CollapsibleLocation uses InteractiveRackGrid
 
 import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
@@ -11,15 +12,46 @@ export const dynamic = "force-dynamic";
 
 export default async function LocationsPage() {
   await ensureContainerTypesSchema();
-  const [locations] = await Promise.all([
+  const [locations, unassignedContainers] = await Promise.all([
     prisma.location.findMany({
       include: {
         racks: {
-          include: { slots: { include: { container: true } } },
+          include: {
+            slots: {
+              include: {
+                container: {
+                  include: {
+                    containerType: {
+                      select: {
+                        name: true,
+                        iconKey: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
           orderBy: { name: "asc" },
         },
       },
       orderBy: { name: "asc" },
+    }),
+    // Get containers without a slot assignment
+    prisma.container.findMany({
+      where: {
+        currentSlotId: null,
+        status: "ACTIVE",
+      },
+      include: {
+        containerType: {
+          select: {
+            name: true,
+            iconKey: true,
+          },
+        },
+      },
+      orderBy: { code: "asc" },
     }),
   ]);
 
@@ -48,18 +80,43 @@ export default async function LocationsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {locations.map((location) => (
-            <CollapsibleLocation
-              key={location.id}
-              location={location}
-              allLocations={locations.map((l) => ({
-                id: l.id,
-                name: l.name,
-              }))}
-            />
-          ))}
-        </div>
+        <>
+          {/* Unassigned containers section */}
+          {unassignedContainers.length > 0 && (
+            <div className="mb-6 rounded-lg border-2 border-dashed border-orange-200 bg-orange-50 p-6">
+              <h2 className="mb-3 text-lg font-semibold text-orange-900">
+                📦 Unassigned Containers ({unassignedContainers.length})
+              </h2>
+              <p className="mb-4 text-sm text-orange-700">
+                These containers are not assigned to any rack slot. Navigate to a rack page or drag them into rack grids below.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {unassignedContainers.map((container) => (
+                  <a
+                    key={container.id}
+                    href={`/containers/${container.id}`}
+                    className="rounded-lg border-2 border-orange-300 bg-white px-3 py-2 text-sm font-medium transition hover:border-orange-500 hover:shadow-md"
+                  >
+                    {container.label} ({container.code})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            {locations.map((location) => (
+              <CollapsibleLocation
+                key={location.id}
+                location={location}
+                allLocations={locations.map((l) => ({
+                  id: l.id,
+                  name: l.name,
+                }))}
+              />
+            ))}
+          </div>
+        </>
       )}
     </main>
   );

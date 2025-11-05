@@ -1,18 +1,30 @@
-// WHY: Present a single Location card with its racks and a mini grid visualization
-// WHAT: Client component with collapsible sections to manage screen space
+// WHY: Present a single Location card with its racks and interactive grid previews
+// WHAT: Client component with collapsible sections, click-through to rack detail pages
+// HOW: Shows mini grids with visual feedback, links to full interactive rack pages
 
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
 import { formatSlotLabel } from "@/lib/slotLabels";
 import { EditRackModalButton } from "@/components/racks/EditRackModalButton";
+import Link from "next/link";
+
+type Container = {
+  id: string;
+  code: string;
+  label: string;
+  containerType?: {
+    name: string;
+    iconKey: string | null;
+  } | null;
+};
 
 type SlotWithContainer = {
   id: string;
   row: number;
   col: number;
-  container: { label: string } | null;
+  container: Container | null;
 };
 
 type RackWithSlots = {
@@ -112,10 +124,10 @@ export function CollapsibleLocation({
                 );
 
                 return (
-                  <a
+                  <Link
                     key={rack.id}
                     href={`/racks/${rack.id}`}
-                    className="group relative block rounded-lg border bg-gray-50 p-6 transition hover:border-blue-500 hover:shadow-lg"
+                    className="group relative block rounded-lg border-2 bg-gray-50 p-6 transition hover:border-blue-500 hover:shadow-lg"
                   >
                     <EditRackModalButton
                       rack={{
@@ -128,8 +140,13 @@ export function CollapsibleLocation({
                       locations={allLocations}
                     />
                     <div className="mb-3 flex items-start justify-between">
-                      <div className="text-lg font-semibold text-gray-900">
-                        {rack.name}
+                      <div>
+                        <div className="text-lg font-semibold text-gray-900">
+                          {rack.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Click for interactive drag-and-drop
+                        </div>
                       </div>
                       <div className="text-sm text-gray-500">
                         {rack.rows} × {rack.cols}
@@ -141,7 +158,7 @@ export function CollapsibleLocation({
                       </div>
                     </div>
 
-                    {/* Larger, more interactive grid visualization - max 5x5 display */}
+                    {/* Static mini grid visualization - max 5x5 display */}
                     <div className="mb-4 flex min-h-[400px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
                       <div
                         className="grid"
@@ -165,11 +182,17 @@ export function CollapsibleLocation({
                             }}
                             title={
                               slot.container
-                                ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
-                                : `Empty ${formatSlotLabel(slot.row, slot.col)}`
+                                ? `${slot.container.label} - ${formatSlotLabel(slot.row, slot.col)}`
+                                : `Empty - ${formatSlotLabel(slot.row, slot.col)}`
                             }
                           >
-                            {formatSlotLabel(slot.row, slot.col)}
+                            {slot.container ? (
+                              <span className="text-center">
+                                {formatSlotLabel(slot.row, slot.col)}
+                              </span>
+                            ) : (
+                              formatSlotLabel(slot.row, slot.col)
+                            )}
                           </div>
                         ))}
                       </div>
@@ -190,7 +213,7 @@ export function CollapsibleLocation({
                         />
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 );
               })}
             </div>
