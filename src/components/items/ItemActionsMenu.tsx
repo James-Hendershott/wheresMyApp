@@ -15,6 +15,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   checkOutItem,
   checkInItem,
   moveItemToContainer,
@@ -45,8 +51,7 @@ interface ItemActionsMenuProps {
   containers: Container[];
   onSuccess?: () => void;
   layout?: "menu" | "buttons"; // menu: kebab dropdown, buttons: inline toolbar
-  quickMove?: boolean; // when true, show a compact inline select to move immediately
-  iconOnly?: boolean; // when true, render icon-only buttons (use title for a11y)
+  iconOnly?: boolean; // when true, render icon-only 8x8px buttons with tooltips
 }
 
 export function ItemActionsMenu({
@@ -54,7 +59,6 @@ export function ItemActionsMenu({
   containers,
   onSuccess,
   layout = "menu",
-  quickMove = false,
   iconOnly = false,
 }: ItemActionsMenuProps) {
   const router = useRouter();
@@ -63,32 +67,6 @@ export function ItemActionsMenu({
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isQuickMoving, setIsQuickMoving] = useState(false);
-
-  const handleQuickMoveChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const targetContainerId = event.target.value;
-    if (!targetContainerId) return;
-
-    setIsQuickMoving(true);
-    const formData = new FormData();
-    formData.append("itemId", item.id);
-    formData.append("targetContainerId", targetContainerId);
-    const result = await moveItemToContainer(formData);
-    setIsQuickMoving(false);
-
-    if (result.success) {
-      toast.success("Item moved successfully");
-      onSuccess?.();
-      router.refresh();
-    } else {
-      toast.error(result.error || "Failed to move item");
-    }
-
-    // reset select back to placeholder
-    event.currentTarget.value = "";
-  };
 
   const handleCheckOut = async () => {
     setIsSubmitting(true);
@@ -243,83 +221,97 @@ export function ItemActionsMenu({
           )}
         </div>
       ) : (
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={
-              item.status === "IN_STORAGE" ? handleCheckOut : handleCheckIn
-            }
-            disabled={isSubmitting}
-            className={iconOnly ? "p-2" : "gap-1"}
-            title={item.status === "IN_STORAGE" ? "Check Out" : "Check In"}
-            aria-label={item.status === "IN_STORAGE" ? "Check Out" : "Check In"}
-          >
-            {item.status === "IN_STORAGE" ? (
-              <LogOut className="h-4 w-4" />
-            ) : (
-              <LogIn className="h-4 w-4" />
-            )}
-            {!iconOnly &&
-              (item.status === "IN_STORAGE" ? "Check Out" : "Check In")}
-          </Button>
+        <TooltipProvider>
+          <div className="flex flex-wrap items-center gap-1">
+            {/* Check Out/In Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size={iconOnly ? "icon" : "sm"}
+                  variant="outline"
+                  onClick={
+                    item.status === "IN_STORAGE" ? handleCheckOut : handleCheckIn
+                  }
+                  disabled={isSubmitting}
+                  className={iconOnly ? "h-8 w-8" : "gap-1"}
+                >
+                  {item.status === "IN_STORAGE" ? (
+                    <LogOut className="h-4 w-4" />
+                  ) : (
+                    <LogIn className="h-4 w-4" />
+                  )}
+                  {!iconOnly &&
+                    (item.status === "IN_STORAGE" ? "Check Out" : "Check In")}
+                </Button>
+              </TooltipTrigger>
+              {iconOnly && (
+                <TooltipContent>
+                  <p>{item.status === "IN_STORAGE" ? "Check Out" : "Check In"}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
 
-          {quickMove && (
-            <select
-              onChange={handleQuickMoveChange}
-              disabled={isQuickMoving}
-              className="h-8 rounded border px-2 text-sm"
-              title="Quick move to container"
-              aria-label="Quick move to container"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Move…
-              </option>
-              {containers
-                .filter((c) => c.id !== item.containerId)
-                .map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label}
-                  </option>
-                ))}
-            </select>
-          )}
+            {/* Move Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size={iconOnly ? "icon" : "sm"}
+                  variant="outline"
+                  onClick={() => setShowMoveDialog(true)}
+                  className={iconOnly ? "h-8 w-8" : "gap-1"}
+                >
+                  <Move className="h-4 w-4" />
+                  {!iconOnly && "Move"}
+                </Button>
+              </TooltipTrigger>
+              {iconOnly && (
+                <TooltipContent>
+                  <p>Move to Container</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
 
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowMoveDialog(true)}
-            className={iconOnly ? "p-2" : "gap-1"}
-            title="Move (advanced)"
-            aria-label="Move (advanced)"
-          >
-            <Move className="h-4 w-4" />
-            {!iconOnly && "Move"}
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowEditDialog(true)}
-            className={iconOnly ? "p-2" : "gap-1"}
-            title="Edit item"
-            aria-label="Edit item"
-          >
-            <Edit className="h-4 w-4" />
-            {!iconOnly && "Edit"}
-          </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setShowRemoveDialog(true)}
-            className={iconOnly ? "p-2" : "gap-1"}
-            title="Remove item"
-            aria-label="Remove item"
-          >
-            <Trash2 className="h-4 w-4" />
-            {!iconOnly && "Remove"}
-          </Button>
-        </div>
+            {/* Edit Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size={iconOnly ? "icon" : "sm"}
+                  variant="outline"
+                  onClick={() => setShowEditDialog(true)}
+                  className={iconOnly ? "h-8 w-8" : "gap-1"}
+                >
+                  <Edit className="h-4 w-4" />
+                  {!iconOnly && "Edit"}
+                </Button>
+              </TooltipTrigger>
+              {iconOnly && (
+                <TooltipContent>
+                  <p>Edit Item</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+
+            {/* Remove Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size={iconOnly ? "icon" : "sm"}
+                  variant="destructive"
+                  onClick={() => setShowRemoveDialog(true)}
+                  className={iconOnly ? "h-8 w-8" : "gap-1"}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {!iconOnly && "Remove"}
+                </Button>
+              </TooltipTrigger>
+              {iconOnly && (
+                <TooltipContent>
+                  <p>Remove Item</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       )}
 
       {/* Move Dialog */}

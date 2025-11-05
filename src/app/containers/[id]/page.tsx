@@ -193,7 +193,7 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                         }}
                         containers={allContainers}
                         layout="buttons"
-                        quickMove
+                        iconOnly
                       />
                     </div>
                   </div>
