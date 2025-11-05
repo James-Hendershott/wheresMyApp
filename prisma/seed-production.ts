@@ -1,40 +1,99 @@
 // WHY: Production seed script to import real inventory data from Google Forms CSV
-// WHAT: Parse CSV, extract container types/codes, map categories, handle conditions
+// WHAT: Parse CSV, extract container types/codes, map categories to new expanded system with subcategories
+// HOW: Use category mapping table to convert old CSV categories to ItemCategory + ItemSubcategory
 
 import { PrismaClient } from "@prisma/client";
 import type { Container } from "@prisma/client";
-import { ItemCategory, ItemCondition } from "@prisma/client";
+import { ItemCategory, ItemSubcategory, ItemCondition } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 import * as fs from "fs";
 import * as path from "path";
 
 const prisma = new PrismaClient();
 
-// Map CSV categories to ItemCategory enum
-function mapCategory(csvCategory: string): ItemCategory | undefined {
-  if (!csvCategory) return undefined;
+// Map CSV categories to new ItemCategory + ItemSubcategory system
+function mapCategory(csvCategory: string): {
+  category: ItemCategory;
+  subcategory?: ItemSubcategory | null;
+} {
+  if (!csvCategory) return { category: "MISCELLANEOUS" };
 
   const normalized = csvCategory.toLowerCase().trim();
 
-  if (normalized === "books") return "BOOKS";
-  if (normalized === "games & hobbies") return "GAMES_HOBBIES";
-  if (normalized.includes("camping") || normalized.includes("outdoor"))
-    return "CAMPING_OUTDOORS";
-  if (normalized.includes("tools") || normalized === "tool")
-    return "TOOLS_GEAR";
-  if (normalized === "cooking") return "COOKING";
-  if (normalized === "cleaning") return "CLEANING";
-  if (normalized === "electronics") return "ELECTRONICS";
-  if (normalized === "lights") return "LIGHTS";
-  if (normalized === "first aid") return "FIRST_AID";
-  if (normalized.includes("emergency")) return "EMERGENCY";
-  if (normalized === "clothes") return "CLOTHES";
-  if (normalized === "cordage") return "CORDAGE";
-  if (normalized.includes("tech") || normalized.includes("media"))
-    return "TECH_MEDIA";
-  if (normalized === "misc") return "MISC";
+  // Books
+  if (normalized === "books") {
+    return { category: "BOOKS_MEDIA", subcategory: "BOOKS_NOVELS" };
+  }
 
-  return "MISC"; // Default fallback
+  // Games & Hobbies
+  if (normalized === "games & hobbies") {
+    return { category: "GAMES_HOBBIES" };
+  }
+
+  // Camping & Outdoors
+  if (normalized.includes("camping") || normalized.includes("outdoor")) {
+    return { category: "CAMPING_OUTDOORS" };
+  }
+
+  // Tools
+  if (normalized.includes("tools") || normalized === "tool") {
+    return { category: "TOOLS_HARDWARE", subcategory: "TOOLS_HAND_TOOLS" };
+  }
+
+  // Kitchen/Cooking
+  if (normalized === "cooking") {
+    return { category: "KITCHEN", subcategory: "KITCHEN_COOKWARE" };
+  }
+
+  // Cleaning
+  if (normalized === "cleaning") {
+    return { category: "CLEANING", subcategory: "CLEANING_PRODUCTS" };
+  }
+
+  // Electronics
+  if (normalized === "electronics") {
+    return {
+      category: "ELECTRONICS",
+      subcategory: "ELECTRONICS_ACCESSORIES",
+    };
+  }
+
+  // Lights
+  if (normalized === "lights") {
+    return { category: "LIGHTING", subcategory: "LIGHTING_FLASHLIGHTS" };
+  }
+
+  // First Aid
+  if (normalized === "first aid") {
+    return { category: "SAFETY", subcategory: "MEDICAL_FIRST_AID" };
+  }
+
+  // Emergency
+  if (normalized.includes("emergency")) {
+    return { category: "SAFETY", subcategory: "SAFETY_EMERGENCY" };
+  }
+
+  // Clothes
+  if (normalized === "clothes") {
+    return { category: "APPAREL" };
+  }
+
+  // Cordage
+  if (normalized === "cordage") {
+    return { category: "ROPES", subcategory: "CORDAGE_ROPE" };
+  }
+
+  // Tech & Media
+  if (normalized.includes("tech") || normalized.includes("media")) {
+    return { category: "BOOKS_MEDIA", subcategory: "MEDIA_MUSIC" };
+  }
+
+  // Misc
+  if (normalized === "misc") {
+    return { category: "MISCELLANEOUS" };
+  }
+
+  return { category: "MISCELLANEOUS" }; // Default fallback
 }
 
 // Map CSV condition strings to ItemCondition enum
@@ -263,7 +322,7 @@ async function main() {
     }
 
     try {
-      const category = mapCategory(row.Category);
+      const { category, subcategory } = mapCategory(row.Category);
       const condition = mapCondition(row["Condition or Status"]);
       const quantity = parseQuantity(row.QTY);
       const expirationDate = parseDate(row["Expiration Date if One"]);
@@ -272,7 +331,8 @@ async function main() {
         data: {
           name: itemName,
           description: row.Notes?.trim() || null,
-          category,
+          category: category as any, // Type cast needed until Prisma client regenerates
+          subcategory: subcategory as any,
           condition,
           isbn: row.ISBN?.trim() || null,
           notes: row.Notes?.trim() || null,

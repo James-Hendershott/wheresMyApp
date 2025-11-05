@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Category/Subcategory System**: Expanded ItemCategory enum from 14 to 35+ values; added ItemSubcategory enum with 30+ specialized classifications
+- **Item Edit Dialog**: Category and subcategory dropdowns in edit form; grouped optgroups for better UX
+- **Category Migration Script**: `scripts/migrate-categories.ts` with dry-run/apply modes to transform old categories to new structure
+- **Quick Move Dropdown**: Inline container selector on item cards for one-click item moves (Container + Inventory pages)
+- **CSV Import Support**: Enhanced production seed script to handle new category/subcategory structure from Google Forms CSV
 - Item check-out/check-in system with user attribution and timestamp logging
 - ItemActionsMenu dropdown component with check-out, check-in, move, edit, and remove actions
 - Activity logging system via Movement table tracking who did what and when
@@ -42,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Inventory Page Layout**: Restored proper card grid (1-4 columns responsive) with full-size photos and metadata; moved actions to kebab dropdown menu
+- **Container Detail Layout**: Fixed item display with photos on left (80x80), metadata on right, action buttons below; improved spacing and readability
+- **Edit Container Button**: Relocated from inside container detail page to main containers list (absolute positioned top-right per card)
+- **All Item Props**: Added subcategory field throughout codebase (ItemActionsMenu, inventory, container pages, server actions)
 - Status badges now display "In Storage" and "Checked Out" instead of raw enum values
 - Checked out items highlighted with orange background for visibility
 - Item display enhanced with quantity, condition, and category information
@@ -55,6 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Database Schema Applied**: Ran `npx prisma migrate dev` to ensure ItemSubcategory and expanded ItemCategory enums are in database
+- **UI Layout Restoration**: Fixed inventory page grid that was broken by compact inline buttons; restored card-based layout
+- **Container Detail Display**: Repaired item display layout with proper photo positioning and metadata flow
+- **Missing Field Props**: Added subcategory to all item type definitions to prevent TypeScript errors
 - QR code labels now downloadable as PNG (alongside print)
 - CRUD forms now show proper feedback when creating locations, racks, containers, and items
 - Duplicate entries prevented with user-friendly error messages

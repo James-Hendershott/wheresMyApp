@@ -18,13 +18,17 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ### High Priority
 
 - [ ] No item photo upload UI yet (database ready)
-- [ ] No reason that the Where's My...? Image should go to home and also Home inside the navbar. Maybe just use the image.
-- [ ] No QR code generation UI yet (database has codes ready, but need generation button)
 - [ ] Container capacity not enforced or tracked
 - [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location
 
+### Medium Priority
+
+- [ ] Category migration script exists but needs to be run on production data (optional manual step)
+- [ ] Create item forms don't yet have category/subcategory selects (only edit dialog has them)
+
 ### Low Priority
 
+- [ ] No reason that the Where's My...? Image should go to home and also Home inside the navbar. Maybe just use the image.
 - Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
 - Dev server requires host binding for mobile access (documented workaround)
 - Rack visualization could be more interactive
@@ -117,15 +121,19 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Item listing on container detail pages
 - [x] Check-in/check-out status tracking
 - [x] Database schema ready for photos
-- [x] **[HIGH PRIORITY]** Item check-out/check-in UI with timestamp logging
-- [x] **[HIGH PRIORITY]** Item move/remove/edit functions from container view
-- [x] **[HIGH PRIORITY]** Activity log for all item operations (who, what, when)
-- [x] **[HIGH PRIORITY]** Status badge updates (In Storage → Checked Out)
+- [x] **Category/Subcategory System**: Expanded ItemCategory to 35+ values, added ItemSubcategory with 30+ specialized types
+- [x] **Quick-Move Dropdown**: Inline container selector on item cards for instant relocations
+- [x] **Edit Dialog**: Category and subcategory dropdowns in item edit form with grouped optgroups
+- [x] **Item check-out/check-in UI** with timestamp logging
+- [x] **Item move/remove/edit functions** from container view
+- [x] **Activity log** for all item operations (who, what, when)
+- [x] **Status badge updates** (In Storage → Checked Out)
+- [x] **UI Layout Fixes**: Restored inventory page card grid, fixed container detail layout, relocated edit button
 - [ ] **[HIGH PRIORITY]** 7-day checkout notification system for overdue items
 - [ ] Photo upload UI (camera or file upload)
 - [ ] Photo upload to S3/MinIO with presigned URLs
 - [ ] Multiple photos per item
-- [ ] Item movement history tracking
+- [ ] Add category/subcategory to create item forms (currently only in edit)
 - [ ] Tag management with autocomplete
 
 ### Milestone 5: History & Search ⏳ PLANNED
@@ -193,7 +201,12 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Complete Container Types system with tapered dimensions
 - [x] Implement collapsible locations UI
 - [x] Add A1-style slot labeling across app
-- [ ] **[HIGH PRIORITY]** Implement item check-out/check-in workflow with logging
+- [x] **Implement item check-out/check-in workflow with logging**
+- [x] **Expand category system with subcategories (35+ categories, 30+ subcategories)**
+- [x] **Add quick-move dropdown for instant item relocations**
+- [x] **Fix UI layouts (inventory page, container detail, edit button placement)**
+- [ ] CSV import with automatic category mapping to new structure
+- [ ] Photo upload functionality
 - [ ] **[HIGH PRIORITY]** Add activity timestamps and user tracking for items
 - [ ] **[HIGH PRIORITY]** Create 7-day overdue notification system
 - [ ] **[HIGH PRIORITY]** Update status badges for checked-out items

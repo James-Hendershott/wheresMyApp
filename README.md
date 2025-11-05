@@ -11,10 +11,12 @@ WheresMy App is a full-stack inventory management system designed for home organ
 
 - 📱 **QR Code Scanning**: Instantly access tote information via phone camera
 - 🗺️ **Visual Rack Maps**: Interactive SVG grids showing container locations
-- 📦 **Item Tracking**: Check items in/out with photo uploads
-- 📊 **Movement History**: Complete audit trail of all movements
-- 🔐 **Secure Auth**: Email magic links or Google OAuth
+- 📦 **Item Tracking**: Check items in/out with photo uploads, quick-move dropdown for instant relocations
+- 🏷️ **Category System**: 35+ item categories with 30+ subcategories for precise organization
+- 📊 **Movement History**: Complete audit trail of all movements with user attribution
+- 🔐 **Secure Auth**: Email magic links or Google OAuth with user role management
 - 📴 **Offline Ready**: PWA with offline capabilities
+- 📥 **CSV Import**: Import existing inventory from Google Forms/spreadsheets with automatic category mapping
 
 ## 🛠️ Tech Stack
 
@@ -92,14 +94,18 @@ This project showcases a modern, production-ready stack:
 
 ### Seeding from the CSV (what it imports)
 
-The seed script reads the real intake CSV at `Obsidian_Notes/files/Tote Inventory Intake Form (Responses) - Form Responses 1.csv` and imports:
+The production seed script reads the real intake CSV at `Obsidian_Notes/files/Tote Inventory Intake Form (Responses) - Form Responses 1 (1).csv` and imports:
 
-- Locations from “Tote Location”
-- Containers from “Tote Number” + “Tote Description” (stable code generated for QR)
-- Items from “Item Name”, quantity from “QTY”, tags from Category/Condition/ISBN
-- Item photos from “Item Photo” URLs
+- **Locations** from "Tote Location" column (creates unique locations)
+- **Containers** from "Tote Number" + "Tote Description" (stable QR code generated)
+- **Items** from "Item Name", quantity from "QTY", notes from "Notes"
+- **Categories**: Automatically maps old categories (e.g., "Books", "Camping & Outdoors") to new ItemCategory + ItemSubcategory enums
+- **Item Photos** from "Item Photo" URLs (if provided)
+- **Metadata**: Condition/Status, ISBN numbers, expiration dates
 
-It’s idempotent: you can re-run `pnpm db:seed` without duplicating data.
+The script is **idempotent**: you can re-run `npm run db:seed:prod` without duplicating data.
+
+**Category Mapping**: The seed script includes intelligent mapping from the original CSV categories to the expanded 35+ category system. See `scripts/migrate-categories.ts` for the full mapping table.
 
 Example `.env` for Postgres on a LAN host:
 
