@@ -1,6 +1,6 @@
-// WHY: Allow editing container details (label, description, location/slot assignment)
-// WHAT: Modal button that opens a form to edit container information
-// HOW: Uses Dialog from shadcn/ui, server action for updates
+// WHY: Allow editing container name and description only (not location - use AssignToRackButton for that)
+// WHAT: Modal button that opens a form to edit container label and description
+// HOW: Uses Dialog from shadcn/ui, server action for updates, icon-only mode with tooltip
 
 "use client";
 
@@ -14,34 +14,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { updateContainer } from "@/app/actions/containerActions";
 import { toast } from "sonner";
-
-type Slot = {
-  id: string;
-  label: string;
-};
 
 type Container = {
   id: string;
   label: string;
   description: string | null;
-  currentSlotId: string | null;
 };
 
 interface EditContainerModalButtonProps {
   container: Container;
-  slots: Slot[];
+  iconOnly?: boolean;
 }
 
 export function EditContainerModalButton({
   container,
-  slots,
+  iconOnly = false,
 }: EditContainerModalButtonProps) {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState(container.label);
   const [description, setDescription] = useState(container.description || "");
-  const [slotId, setSlotId] = useState(container.currentSlotId || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,7 +51,6 @@ export function EditContainerModalButton({
       const formData = new FormData();
       formData.append("label", label);
       formData.append("description", description);
-      formData.append("currentSlotId", slotId);
 
       const result = await updateContainer(container.id, formData);
 
@@ -72,13 +70,32 @@ export function EditContainerModalButton({
     }
   };
 
+  const button = (
+    <Button
+      variant="outline"
+      size={iconOnly ? "icon" : "sm"}
+      className={iconOnly ? "h-8 w-8" : "gap-2"}
+    >
+      <Edit className="h-4 w-4" />
+      {!iconOnly && "Edit"}
+    </Button>
+  );
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Edit className="h-4 w-4" />
-          Edit Container
-        </Button>
+        {iconOnly ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>{button}</TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Name & Description</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          button
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -118,31 +135,14 @@ export function EditContainerModalButton({
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="Optional description for this container"
             />
           </div>
 
-          {/* Location/Slot */}
-          <div>
-            <label
-              htmlFor="slot"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Location & Slot
-            </label>
-            <select
-              id="slot"
-              value={slotId}
-              onChange={(e) => setSlotId(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="">Unassigned</option>
-              {slots.map((slot) => (
-                <option key={slot.id} value={slot.id}>
-                  {slot.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <p className="text-sm text-gray-500">
+            💡 Use the "Assign to Rack" button to change the container's
+            location.
+          </p>
 
           {/* Actions */}
           <div className="flex justify-end gap-2">

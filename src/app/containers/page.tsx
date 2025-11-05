@@ -8,6 +8,7 @@ import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
 import { EditContainerModalButton } from "@/components/containers/EditContainerModalButton";
+import { AssignToRackButton } from "@/components/containers/AssignToRackButton";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
 import { formatSlotLabel } from "@/lib/slotLabels";
 
@@ -17,7 +18,7 @@ export const dynamic = "force-dynamic";
 export default async function ContainersPage() {
   // Defensive: ensure schema pieces exist to match current Prisma Client
   await ensureContainerTypesSchema();
-  const [containers, slots, containerTypes] = await Promise.all([
+  const [containers, racks, containerTypes] = await Promise.all([
     prisma.container.findMany({
       include: {
         containerType: {
@@ -45,18 +46,32 @@ export default async function ContainersPage() {
       },
       orderBy: { label: "asc" },
     }),
-    prisma.slot.findMany({
-      include: { rack: true },
-      orderBy: [{ rack: { name: "asc" } }, { row: "asc" }, { col: "asc" }],
+    prisma.rack.findMany({
+      include: {
+        location: true,
+        slots: {
+          select: {
+            id: true,
+            row: true,
+            col: true,
+            containerId: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
     }),
     listContainerTypes(),
   ]);
-  const slotOptions = slots.map((slot) => ({
-    id: slot.id,
-    label: `${slot.rack?.name || "Rack"} ${formatSlotLabel(slot.row, slot.col)}`,
-  }));
 
-  // Group containers by type
+  // Build slot options for AddContainerForm (still uses dropdown for initial assignment)
+  const slotOptions = racks.flatMap((rack) =>
+    rack.slots.map((slot) => ({
+      id: slot.id,
+      label: `${rack.location.name} - ${rack.name} ${formatSlotLabel(slot.row, slot.col)}`,
+    }))
+  );
+
+  // Group containers by containerType
   type GroupedContainer = (typeof containers)[0] & {
     typeName: string;
     itemsInStorage: number;
@@ -168,16 +183,21 @@ export default async function ContainersPage() {
                           : "border-gray-200 bg-gray-50"
                       }`}
                     >
-                      {/* Edit button in top-right corner */}
-                      <div className="absolute right-2 top-2">
+                      {/* Action buttons in top-right corner - icon only with tooltips */}
+                      <div className="absolute right-2 top-2 flex gap-1">
+                        <AssignToRackButton
+                          containerId={container.id}
+                          currentSlotId={container.currentSlot?.id || null}
+                          racks={racks}
+                          iconOnly
+                        />
                         <EditContainerModalButton
                           container={{
                             id: container.id,
                             label: container.label,
                             description: container.description,
-                            currentSlotId: container.currentSlot?.id || null,
                           }}
-                          slots={slotOptions}
+                          iconOnly
                         />
                       </div>
 

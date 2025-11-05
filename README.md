@@ -17,6 +17,15 @@ WheresMy App is a full-stack inventory management system designed for home organ
 - 🔐 **Secure Auth**: Email magic links or Google OAuth with user role management
 - 📴 **Offline Ready**: PWA with offline capabilities
 - 📥 **CSV Import**: Import existing inventory from Google Forms/spreadsheets with automatic category mapping
+- 🎨 **Modern UI**: Icon-only buttons with tooltips, visual rack grid selector, compact card layouts
+
+### UI Highlights
+
+- **Icon-Only Buttons with Tooltips**: Reduced UI crowding on container cards with hover-to-reveal button labels
+- **Visual Rack Grid Selector**: Click-to-assign interface for intuitive container slot assignment (replaces dropdown)
+- **Color-Coded Slots**: White=available, Gray=occupied, Blue=current location for instant visual feedback
+- **Separated Concerns**: Edit dialog handles name/description only; Assign to Rack button handles location
+- **Responsive Layouts**: 1-4 column grids adapt to screen size for optimal viewing on any device
 
 ## 🛠️ Tech Stack
 

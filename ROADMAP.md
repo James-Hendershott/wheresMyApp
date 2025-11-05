@@ -17,6 +17,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### High Priority
 
+- [ ] Items can be added and NOT be inside a container. If an item is not in a container, there needs to be a check mark or something that can be checked to allow it to act as a container and be placed in a slot.
 - [ ] No item photo upload UI yet (database ready)
 - [ ] Container capacity not enforced or tracked
 - [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location
@@ -90,12 +91,16 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Production seed script with real data (23 containers, 308 items)
 - [x] Migration tool to link legacy containers to Container Types
 
-### Milestone 2: Rack Visualization 🔄 IN PROGRESS
+### Milestone 2: Rack Visualization ✅ COMPLETE
 
 - [x] Basic rack grid visualization on locations and racks pages
 - [x] Visual slot occupancy indicators (filled/empty)
 - [x] Collapsible location cards for space management
 - [x] A1-style slot labeling (row 0 → A, col 1 → 1)
+- [x] **Visual Rack Grid Selector**: Click-to-assign interface with color-coded slots for intuitive container placement
+- [x] **Icon-Only Buttons with Tooltips**: Reduced UI crowding on container cards with hover-to-reveal labels
+- [x] **AssignToRackButton Component**: Displays full rack layout with white=available, gray=occupied, blue=current
+- [x] **Separated Edit Concerns**: Edit dialog handles name/description only; separate button for location assignment
 - [ ] Interactive SVG rack grid with drag-and-drop
 - [ ] Rack editing (move containers, change location/name)
 - [ ] Server Actions for rack operations

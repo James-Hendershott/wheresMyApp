@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Icon-only buttons with tooltips on container cards** to reduce UI crowding and improve visual clarity
+- **AssignToRackButton component** with visual rack grid selector for intuitive slot assignment
+  - Displays all racks with color-coded slot availability (white=available, gray=occupied, blue=current)
+  - Click-to-assign interface replaces dropdown for better spatial awareness
+  - Icon-only mode with MapPin icon and "Assign to Rack" tooltip
+- **Tooltip support for all container action buttons** with hover-to-reveal functionality
+- Separated Edit functionality: Edit dialog now only handles container name and description (not location)
 - **Category/Subcategory System**: Expanded ItemCategory enum from 14 to 35+ values; added ItemSubcategory enum with 30+ specialized classifications
 - **Item Edit Dialog**: Category and subcategory dropdowns in edit form; grouped optgroups for better UX
 - **Category Migration Script**: `scripts/migrate-categories.ts` with dry-run/apply modes to transform old categories to new structure
@@ -47,6 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Container card buttons refactored to icon-only mode** with Edit and Assign to Rack buttons side-by-side in compact horizontal layout
+- **EditContainerModalButton simplified** to only edit name/description with helper text directing to AssignToRackButton for location changes
+- **Rack grid visual selector** replaces dropdown for slot assignment, showing full rack layout with occupied/available slots
+- Container cards now display action buttons in top-right corner with flex gap-1 for reduced crowding
 - **Inventory Page Layout**: Restored proper card grid (1-4 columns responsive) with full-size photos and metadata; moved actions to kebab dropdown menu
 - **Container Detail Layout**: Fixed item display with photos on left (80x80), metadata on right, action buttons below; improved spacing and readability
 - **Edit Container Button**: Relocated from inside container detail page to main containers list (absolute positioned top-right per card)
