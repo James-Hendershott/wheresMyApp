@@ -17,6 +17,12 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### High Priority
 
+- [ ] Containers need to be editable by Admin or by user with admin approval request
+- [ ] Containers need to be able to have items checked out/removed/moved/checked in from the containers
+- [ ] Scanning QR code will open the container to the items inside, where you can perform the check out, check in, remove, move, or edit functions
+- [ ] When any function is performed on an item inside a container, that item should be time stamped with a log of who did what.
+- [ ] if an item was checked out but has not been checked in within 7 days of checking it out, a notification will be pinged to the user who checked it out AND the admin
+- [ ] The badge that currently says In Storage on the items needs to change to Checked out when it has been checked out.
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
 - [ ] Add something to Container Cards to draw more attention to containers that have items missing.
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
