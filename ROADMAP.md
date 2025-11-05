@@ -18,6 +18,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ### High Priority
 
 - [ ] Need to be able to Edit a Rack when you select it. i.e. Drag and drop totes, Change Location, Change Name Etc.
+- [ ] Add something to Container Cards to draw more attention to containers that have items missing.
 - [ ] Ensure Photos can be added via taking a picture or uploading image.
 - [ ] Ensure QR Scanning actually gives the option to access the camera and not just shut it down.
 - [ ] In the admin add new container type, support unit toggle (mm/in), larger wireframe visuals, and correct tapered orientation.
@@ -28,6 +29,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 ### Medium Priority
 
 - [ ] No item photo upload UI yet (database ready)
+- [ ] No reason that the Where's My...? Image should go to home and also Home inside the navbar. Maybe just use the image.
 - [ ] No QR code generation UI yet (database has codes ready, but need generation button)
 - [ ] Container capacity not enforced or tracked
 - [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location

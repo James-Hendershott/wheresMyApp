@@ -62,14 +62,30 @@ export async function migrateContainersToTypes(
   let matched = 0;
   let unmatched = 0;
 
+  // Custom mappings for legacy types
+  const customMappings: Record<string, string> = {
+    tote: "27 gallon tote", // Map legacy "Tote" to "27 Gallon Tote"
+  };
+
   for (const container of containers) {
     const legacyType = (container.type || "").trim();
     let matchedType: { id: string; name: string } | undefined;
 
+    // Apply custom mapping first
+    const normalizedLegacy = legacyType.toLowerCase();
+    const mappedName = customMappings[normalizedLegacy];
+    if (mappedName) {
+      matchedType = typesByName.get(mappedName) as
+        | { id: string; name: string; codePrefix: string }
+        | undefined;
+    }
+
     // Try to match by exact name
-    matchedType = typesByName.get(legacyType.toLowerCase()) as
-      | { id: string; name: string; codePrefix: string }
-      | undefined;
+    if (!matchedType) {
+      matchedType = typesByName.get(legacyType.toLowerCase()) as
+        | { id: string; name: string; codePrefix: string }
+        | undefined;
+    }
 
     // Try to match by code prefix (e.g., TOTE27-1 → TOTE27)
     if (!matchedType && container.code) {
