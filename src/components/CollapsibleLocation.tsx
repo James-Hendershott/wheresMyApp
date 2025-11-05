@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { formatSlotLabel } from "@/lib/slotLabels";
+import { EditRackModalButton } from "@/components/racks/EditRackModalButton";
 
 type SlotWithContainer = {
   id: string;
@@ -31,8 +32,10 @@ type LocationWithRacks = {
 
 export function CollapsibleLocation({
   location,
+  allLocations,
 }: {
   location: LocationWithRacks;
+  allLocations: { id: string; name: string }[];
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -67,12 +70,7 @@ export function CollapsibleLocation({
               No racks in this location yet.
             </p>
           ) : (
-            <div
-              className="grid justify-items-start gap-4"
-              style={{
-                gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-              }}
-            >
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {location.racks.map((rack) => {
                 const filledSlots = rack.slots.filter(
                   (s) => s.container
@@ -83,52 +81,73 @@ export function CollapsibleLocation({
                     ? Math.round((filledSlots / totalSlots) * 100)
                     : 0;
 
+                // Calculate grid cell size for larger, more interactive cards
+                // Target card content height ~300px for better drag-drop interaction
+                const maxGridDimension = Math.max(rack.rows, rack.cols);
+                const baseCellSize =
+                  maxGridDimension <= 4
+                    ? 40
+                    : maxGridDimension <= 6
+                      ? 32
+                      : maxGridDimension <= 10
+                        ? 24
+                        : 18;
+                const cellSize = `${baseCellSize}px`;
+                const gap = maxGridDimension <= 6 ? "4px" : "3px";
+
                 return (
                   <a
                     key={rack.id}
                     href={`/racks/${rack.id}`}
-                    className="block max-w-sm justify-self-start rounded-lg border bg-gray-50 p-4 transition hover:border-blue-500 hover:shadow-md"
+                    className="group relative block rounded-lg border bg-gray-50 p-6 transition hover:border-blue-500 hover:shadow-lg"
                   >
-                    <div className="mb-2 flex items-start justify-between">
-                      <div className="font-semibold text-gray-900">
+                    <EditRackModalButton
+                      rack={{
+                        id: rack.id,
+                        name: rack.name,
+                        rows: rack.rows,
+                        cols: rack.cols,
+                        locationId: location.id,
+                      }}
+                      locations={allLocations}
+                    />
+                    <div className="mb-3 flex items-start justify-between">
+                      <div className="text-lg font-semibold text-gray-900">
                         {rack.name}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-sm text-gray-500">
                         {rack.rows} × {rack.cols}
                       </div>
                     </div>
 
-                    {/* Mini Grid Visualization */}
-                    <div className="mb-3">
+                    {/* Larger, more interactive grid visualization */}
+                    <div className="mb-4 flex min-h-[300px] items-center justify-center rounded-lg bg-white p-4 shadow-inner">
                       <div
-                        className="grid gap-1"
+                        className="grid"
                         style={{
-                          gridTemplateColumns: `repeat(${Math.min(
-                            rack.cols,
-                            8
-                          )}, minmax(0, 1fr))`,
+                          gridTemplateColumns: `repeat(${rack.cols}, ${cellSize})`,
+                          gap: gap,
                         }}
                       >
-                        {rack.slots
-                          .slice(0, Math.min(32, rack.rows * rack.cols))
-                          .map((slot) => (
-                            <div
-                              key={slot.id}
-                              className={`aspect-square rounded ${
-                                slot.container ? "bg-blue-500" : "bg-gray-200"
-                              }`}
-                              title={
-                                slot.container
-                                  ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
-                                  : `Empty ${formatSlotLabel(slot.row, slot.col)}`
-                              }
-                            />
-                          ))}
-                        {rack.slots.length > 32 && (
-                          <div className="flex items-center justify-center text-xs text-gray-400">
-                            +{rack.slots.length - 32}
-                          </div>
-                        )}
+                        {rack.slots.map((slot) => (
+                          <div
+                            key={slot.id}
+                            className={`cursor-pointer rounded transition-all hover:scale-110 hover:shadow-md ${
+                              slot.container
+                                ? "bg-blue-500 hover:bg-blue-600"
+                                : "bg-gray-200 hover:bg-gray-300"
+                            }`}
+                            style={{
+                              width: cellSize,
+                              height: cellSize,
+                            }}
+                            title={
+                              slot.container
+                                ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
+                                : `Empty ${formatSlotLabel(slot.row, slot.col)}`
+                            }
+                          />
+                        ))}
                       </div>
                     </div>
 

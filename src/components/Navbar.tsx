@@ -4,7 +4,7 @@
 
 "use client";
 import Link from "next/link";
-import { Package, QrCode, MapPin, Home } from "lucide-react";
+import { Package, QrCode, MapPin, Home, List } from "lucide-react";
 import { AuthMenu } from "@/components/auth/AuthMenu";
 
 export function Navbar() {
@@ -27,6 +27,20 @@ export function Navbar() {
             <span className="hidden sm:inline">Home</span>
           </Link>
           <Link
+            href="/inventory"
+            className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+          >
+            <List className="h-5 w-5" />
+            <span className="hidden sm:inline">Inventory</span>
+          </Link>
+          <Link
+            href="/containers"
+            className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+          >
+            <Package className="h-5 w-5" />
+            <span className="hidden sm:inline">Containers</span>
+          </Link>
+          <Link
             href="/locations"
             className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
           >
@@ -39,13 +53,6 @@ export function Navbar() {
           >
             <QrCode className="h-5 w-5" />
             <span className="hidden sm:inline">Scan</span>
-          </Link>
-          <Link
-            href="/containers"
-            className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
-          >
-            <Package className="h-5 w-5" />
-            <span className="hidden sm:inline">Containers</span>
           </Link>
           <div className="group relative">
             <button className="hidden items-center gap-1 text-gray-500 hover:text-blue-600 sm:flex">

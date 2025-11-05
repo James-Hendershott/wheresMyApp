@@ -79,6 +79,98 @@ export async function updateRack(id: string, formData: FormData) {
   return { rack };
 }
 
+export async function updateRackWithData(
+  id: string,
+  data: {
+    name: string;
+    rows: number;
+    cols: number;
+    locationId: string;
+  }
+) {
+  const parsed = rackSchema.safeParse(data);
+  if (!parsed.success) {
+    return { error: parsed.error.errors[0].message };
+  }
+
+  // Fetch existing rack and slots
+  const existingRack = await prisma.rack.findUnique({
+    where: { id },
+    include: { slots: { include: { container: true } } },
+  });
+
+  if (!existingRack) {
+    return { error: "Rack not found" };
+  }
+
+  // Update rack details
+  const rack = await prisma.rack.update({
+    where: { id },
+    data: {
+      name: parsed.data.name,
+      locationId: parsed.data.locationId,
+      rows: parsed.data.rows,
+      cols: parsed.data.cols,
+    },
+  });
+
+  // Handle slot grid changes if dimensions changed
+  if (
+    parsed.data.rows !== existingRack.rows ||
+    parsed.data.cols !== existingRack.cols
+  ) {
+    // Delete all existing slots
+    await prisma.slot.deleteMany({ where: { rackId: id } });
+
+    // Create new slot grid
+    await prisma.slot.createMany({
+      data: Array.from(
+        { length: parsed.data.rows * parsed.data.cols },
+        (_, i) => ({
+          rackId: id,
+          row: Math.floor(i / parsed.data.cols),
+          col: i % parsed.data.cols,
+        })
+      ),
+    });
+
+    // Reassign containers to new slots if their positions still exist
+    const containersToReassign = existingRack.slots.filter((s) => s.container);
+    for (const slot of containersToReassign) {
+      if (
+        slot.row < parsed.data.rows &&
+        slot.col < parsed.data.cols &&
+        slot.container
+      ) {
+        // Find the new slot at this position
+        const newSlot = await prisma.slot.findFirst({
+          where: {
+            rackId: id,
+            row: slot.row,
+            col: slot.col,
+          },
+        });
+        if (newSlot) {
+          await prisma.container.update({
+            where: { id: slot.container.id },
+            data: { currentSlotId: newSlot.id },
+          });
+        } else {
+          // Position no longer exists, unassign container
+          await prisma.container.update({
+            where: { id: slot.container.id },
+            data: { currentSlotId: null },
+          });
+        }
+      }
+    }
+  }
+
+  revalidatePath("/racks");
+  revalidatePath("/locations");
+  return { success: true, rack };
+}
+
 export async function deleteRack(id: string) {
   await prisma.rack.delete({ where: { id } });
   revalidatePath("/racks");

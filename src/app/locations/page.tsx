@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { CollapsibleLocation } from "@/components/CollapsibleLocation";
 import { AddLocationModalButton } from "@/components/locations/AddLocationModalButton";
+import { AddRackModalButton } from "@/components/racks/AddRackModalButton";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,9 @@ export default async function LocationsPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <AddRackModalButton
+            locations={locations.map((l) => ({ id: l.id, name: l.name }))}
+          />
           <AddLocationModalButton />
         </div>
       </div>
@@ -46,7 +50,14 @@ export default async function LocationsPage() {
       ) : (
         <div className="space-y-6">
           {locations.map((location) => (
-            <CollapsibleLocation key={location.id} location={location} />
+            <CollapsibleLocation
+              key={location.id}
+              location={location}
+              allLocations={locations.map((l) => ({
+                id: l.id,
+                name: l.name,
+              }))}
+            />
           ))}
         </div>
       )}
