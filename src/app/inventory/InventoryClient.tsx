@@ -6,18 +6,11 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import {
-  Download,
-  Filter,
-  Search,
-  Edit,
-  Package,
-  MapPin,
-  Plus,
-} from "lucide-react";
+import { Download, Filter, Search, Package, MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatSlotLabel } from "@/lib/slotLabels";
+import { ItemActionsMenu } from "@/components/items/ItemActionsMenu";
 
 type ItemWithRelations = {
   id: string;
@@ -318,20 +311,10 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredItems.map((item) => {
-            const location =
-              item.container?.currentSlot?.rack.location.name || "Unassigned";
-            const rack = item.container?.currentSlot?.rack.name || "";
-            const slot = item.container?.currentSlot
-              ? formatSlotLabel(
-                  item.container.currentSlot.row,
-                  item.container.currentSlot.col
-                )
-              : "";
-
             return (
               <div
                 key={item.id}
-                className={`rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
+                className={`flex flex-col rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
                   item.status === "CHECKED_OUT"
                     ? "border-orange-400 bg-orange-50"
                     : "border-gray-200 bg-gray-50"
@@ -356,7 +339,7 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                 </div>
 
                 {/* Item Info */}
-                <div className="space-y-2">
+                <div className="flex-1 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="line-clamp-2 font-semibold text-gray-900">
                       {item.name}
@@ -397,8 +380,10 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                         <MapPin className="h-3 w-3" />
                         <span className="truncate">
                           {item.container.label}
-                          {rack && ` → ${rack}`}
-                          {slot && ` ${slot}`}
+                          {item.container.currentSlot?.rack.name &&
+                            ` → ${item.container.currentSlot.rack.name}`}
+                          {item.container.currentSlot &&
+                            ` ${formatSlotLabel(item.container.currentSlot.row, item.container.currentSlot.col)}`}
                         </span>
                       </div>
                     )}
@@ -427,15 +412,25 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                       )}
                     </div>
                   )}
+                </div>
 
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-2 w-full gap-1"
-                  >
-                    <Edit className="h-3 w-3" />
-                    Edit
-                  </Button>
+                {/* Actions - use menu dropdown to save space */}
+                <div className="mt-3 border-t pt-3">
+                  <ItemActionsMenu
+                    item={{
+                      id: item.id,
+                      name: item.name,
+                      description: item.description,
+                      status: item.status,
+                      quantity: item.quantity,
+                      condition: item.condition,
+                      category: item.category,
+                      subcategory: null,
+                      containerId: item.container?.id || null,
+                    }}
+                    containers={containers}
+                    layout="menu"
+                  />
                 </div>
               </div>
             );

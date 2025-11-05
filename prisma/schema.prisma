@@ -179,7 +179,8 @@ model Item {
   description    String?        @db.Text
   status         ItemStatus     @default(IN_STORAGE)
   condition      ItemCondition? // WHAT: Physical state of item
-  category       ItemCategory?  // WHAT: Organizational category
+  category       ItemCategory?  // WHAT: Organizational category (expanded)
+  subcategory    ItemSubcategory? // WHAT: More specific classification beneath category
   isbn           String?        // WHAT: For books
   notes          String?        @db.Text
   quantity       Int            @default(1)
@@ -213,6 +214,7 @@ enum ItemCondition {
 }
 
 enum ItemCategory {
+  // Preserve original values for compatibility
   BOOKS
   GAMES_HOBBIES
   CAMPING_OUTDOORS
@@ -227,6 +229,105 @@ enum ItemCategory {
   CORDAGE
   TECH_MEDIA
   MISC
+
+  // Expanded, more granular categories
+  BOOKS_MEDIA
+  ENTERTAINMENT
+  HOBBIES
+  OUTDOOR
+  TOOLS_HARDWARE
+  KITCHEN
+  HOUSEHOLD
+  LIGHTING
+  SAFETY
+  APPAREL
+  ROPES
+  COMPUTING
+  AUDIO
+  SPORTS_FITNESS
+  OFFICE
+  SEASONAL
+  AUTOMOTIVE
+  GARDEN
+  TOYS
+  HOME_GOODS
+  MISCELLANEOUS
+}
+
+enum ItemSubcategory {
+  // Books & media
+  BOOKS_NOVELS
+  BOOKS_REFERENCE
+  MEDIA_DVDS
+  MEDIA_MUSIC
+
+  // Games & hobbies
+  GAMES_BOARD
+  GAMES_VIDEO
+  HOBBIES_CRAFTS
+
+  // Camping & outdoors
+  CAMPING_TENTS
+  CAMPING_SLEEPING
+  CAMPING_COOKING
+
+  // Tools
+  TOOLS_HAND
+  TOOLS_POWER
+  TOOLS_FASTENERS
+
+  // Kitchen
+  KITCHEN_APPLIANCES
+  KITCHEN_UTENSILS
+
+  // Cleaning & household
+  CLEANING_SUPPLIES
+  HOUSEHOLD_CONSUMABLES
+
+  // Electronics
+  ELECTRONICS_COMPUTING
+  ELECTRONICS_AUDIO
+  ELECTRONICS_ACCESSORIES
+
+  // Lighting
+  LIGHTING_FLASHLIGHTS
+  LIGHTING_LAMPS
+
+  // Safety / Medical
+  MEDICAL_FIRST_AID
+  SAFETY_EMERGENCY
+
+  // Apparel
+  CLOTHING_MENS
+  CLOTHING_WOMENS
+  CLOTHING_KIDS
+
+  // Cords & ropes
+  CORDAGE_ROPE
+  CORDAGE_CARABINER
+
+  // Sports & fitness
+  SPORTS_BALLS
+  SPORTS_FITNESS_EQUIPMENT
+
+  // Office
+  OFFICE_PAPER
+  OFFICE_EQUIPMENT
+
+  // Seasonal & decorations
+  SEASONAL_DECORATIONS
+
+  // Automotive / garage
+  AUTOMOTIVE_PARTS
+
+  // Garden
+  GARDEN_TOOLS
+
+  // Toys
+  TOYS_CHILDRENS
+
+  // Misc
+  MISC_OTHER
 }
 
 model ItemPhoto {

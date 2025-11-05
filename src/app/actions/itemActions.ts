@@ -231,24 +231,8 @@ const EditItemSchema = z.object({
   condition: z
     .enum(["UNOPENED", "OPENED_COMPLETE", "OPENED_MISSING", "USED", "DAMAGED"])
     .optional(),
-  category: z
-    .enum([
-      "BOOKS",
-      "GAMES_HOBBIES",
-      "CAMPING_OUTDOORS",
-      "TOOLS_GEAR",
-      "COOKING",
-      "CLEANING",
-      "ELECTRONICS",
-      "LIGHTS",
-      "FIRST_AID",
-      "EMERGENCY",
-      "CLOTHES",
-      "CORDAGE",
-      "TECH_MEDIA",
-      "MISC",
-    ])
-    .optional(),
+  category: z.string().optional(),
+  subcategory: z.string().optional(),
 });
 
 export async function editItemDetails(formData: FormData) {
@@ -265,6 +249,7 @@ export async function editItemDetails(formData: FormData) {
       quantity: formData.get("quantity"),
       condition: formData.get("condition") || undefined,
       category: formData.get("category") || undefined,
+      subcategory: formData.get("subcategory") || undefined,
     });
 
     const item = await prisma.item.findUnique({
@@ -282,7 +267,8 @@ export async function editItemDetails(formData: FormData) {
         description: data.description,
         quantity: data.quantity,
         condition: data.condition,
-        category: data.category,
+        category: data.category as any,
+        subcategory: data.subcategory as any,
       },
     });
 

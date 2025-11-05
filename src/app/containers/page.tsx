@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { ensureContainerTypesSchema } from "@/lib/dbEnsure";
 import { ContainerTypeIcon } from "@/components/ContainerTypeIcon";
 import { AddContainerModalButton } from "@/components/containers/AddContainerModalButton";
+import { EditContainerModalButton } from "@/components/containers/EditContainerModalButton";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
 import { formatSlotLabel } from "@/lib/slotLabels";
 
@@ -159,17 +160,32 @@ export default async function ContainersPage() {
                     : null;
 
                   return (
-                    <Link
+                    <div
                       key={container.id}
-                      href={`/containers/${container.id}`}
-                      className={`block rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
+                      className={`relative rounded-lg border p-4 ${
                         container.itemsCheckedOut > 0
                           ? "border-orange-400 bg-orange-50"
                           : "border-gray-200 bg-gray-50"
                       }`}
                     >
-                      <div className="mb-2 flex items-start justify-between">
-                        <div>
+                      {/* Edit button in top-right corner */}
+                      <div className="absolute right-2 top-2">
+                        <EditContainerModalButton
+                          container={{
+                            id: container.id,
+                            label: container.label,
+                            description: container.description,
+                            currentSlotId: container.currentSlot?.id || null,
+                          }}
+                          slots={slotOptions}
+                        />
+                      </div>
+
+                      <Link
+                        href={`/containers/${container.id}`}
+                        className="block transition hover:opacity-80"
+                      >
+                        <div className="mb-2 pr-8">
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-semibold text-gray-900">
                               {container.label}
@@ -181,26 +197,30 @@ export default async function ContainersPage() {
                             </p>
                           )}
                         </div>
-                        <span
-                          className={`rounded px-2 py-1 text-xs font-medium ${
-                            container.status === "ACTIVE"
-                              ? "bg-green-100 text-green-700"
-                              : container.status === "ARCHIVED"
-                                ? "bg-gray-100 text-gray-600"
-                                : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {container.status}
-                        </span>
-                      </div>
 
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <div>
-                          📍 {location}
-                          {rack && ` → ${rack}`}
-                          {slot && ` ${slot}`}
+                        <div className="mb-2 flex items-center justify-between">
+                          <span
+                            className={`rounded px-2 py-1 text-xs font-medium ${
+                              container.status === "ACTIVE"
+                                ? "bg-green-100 text-green-700"
+                                : container.status === "ARCHIVED"
+                                  ? "bg-gray-100 text-gray-600"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {container.status}
+                          </span>
                         </div>
-                        <div className="ml-auto flex items-center gap-1">
+
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="flex-1">
+                            📍 {location}
+                            {rack && ` → ${rack}`}
+                            {slot && ` ${slot}`}
+                          </div>
+                        </div>
+
+                        <div className="mt-2 flex items-center gap-1 text-sm">
                           <span className="font-medium text-gray-900">
                             {container.itemsInStorage}/{container.totalItems}
                           </span>
@@ -211,8 +231,8 @@ export default async function ContainersPage() {
                             </span>
                           )}
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                    </div>
                   );
                 })}
               </div>

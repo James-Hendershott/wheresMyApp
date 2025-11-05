@@ -105,7 +105,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] QR codes stored in database
 - [x] QR codes downloadable as PNG
 - [ ] **[HIGH PRIORITY]** Container editing with admin/user approval workflow
-- [ ] **[HIGH PRIORITY]** QR code scanner opens container with item management interface
+- [x] **[HIGH PRIORITY]** QR code scanner opens container with item management interface
 - [ ] QR code scanner using ZXing library (camera access needs fix)
 - [ ] Deep link support (scan → container detail)
 - [ ] QR label generation button/UI
@@ -117,10 +117,10 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] Item listing on container detail pages
 - [x] Check-in/check-out status tracking
 - [x] Database schema ready for photos
-- [ ] **[HIGH PRIORITY]** Item check-out/check-in UI with timestamp logging
-- [ ] **[HIGH PRIORITY]** Item move/remove/edit functions from container view
-- [ ] **[HIGH PRIORITY]** Activity log for all item operations (who, what, when)
-- [ ] **[HIGH PRIORITY]** Status badge updates (In Storage → Checked Out)
+- [x] **[HIGH PRIORITY]** Item check-out/check-in UI with timestamp logging
+- [x] **[HIGH PRIORITY]** Item move/remove/edit functions from container view
+- [x] **[HIGH PRIORITY]** Activity log for all item operations (who, what, when)
+- [x] **[HIGH PRIORITY]** Status badge updates (In Storage → Checked Out)
 - [ ] **[HIGH PRIORITY]** 7-day checkout notification system for overdue items
 - [ ] Photo upload UI (camera or file upload)
 - [ ] Photo upload to S3/MinIO with presigned URLs
@@ -292,6 +292,8 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~Container type wireframe diagrams~~ — <span style="color:#16a34a">Shipped: Clean wireframes, color-coded dimensions, 220px size (Nov 4, 2025)</span>
 - [x] ~~Unit toggle (inches/mm) for container types~~ — <span style="color:#16a34a">Shipped: Button toggle in add form (Nov 4, 2025)</span>
 - [x] ~~Tapered container orientation fix~~ — <span style="color:#16a34a">Shipped: Bottom opening larger (realistic) (Nov 4, 2025)</span>
+- [x] ~~Quick move dropdown on item cards~~ — <span style="color:#16a34a">Shipped: one-click move on Container + Inventory pages (Nov 4, 2025)</span>
+- [x] ~~Inventory page inline actions~~ — <span style="color:#16a34a">Shipped: check-out/in, move, edit, remove with compact cards and icon toolbar (Nov 4, 2025)</span>
 
 ---
 

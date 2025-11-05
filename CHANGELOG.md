@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Edit item details (name, description, quantity, condition, category)
 - Remove item permanently with confirmation dialog
 - Server actions for all item management operations with authentication
+- Quick Move: inline container dropdown on item cards (Container + Inventory pages) for one-click move
+- Inventory: inline action buttons per item card; optional icon-only compact toolbar
 - Admin Container Types: icon key dropdown (tote, box, bin, suitcase, carry-on) with server-side validation
 - Auth.js (NextAuth v5) integration with Prisma adapter and dev credentials login
 - User registration flow with admin approval: /register page captures name/email/reason; admin approves via /admin/pending-users
@@ -43,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Status badges now display "In Storage" and "Checked Out" instead of raw enum values
 - Checked out items highlighted with orange background for visibility
 - Item display enhanced with quantity, condition, and category information
+- Inventory item cards compacted with 40x40 thumbnails and denser metadata for more items per row
 - QR code scan now provides full item management interface directly
 - Inventory Map page reorganized: Rack visualization now displayed first, CRUD forms moved below
 - Racks now grouped by their locations for better spatial understanding

@@ -9,15 +9,13 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { QRCodeDisplay } from "./QRCodeDisplay";
 import { AddItemToContainerForm } from "./AddItemToContainerForm";
-import { EditContainerModalButton } from "@/components/containers/EditContainerModalButton";
-import { formatSlotLabel } from "@/lib/slotLabels";
 
 interface ContainerPageProps {
   params: { id: string };
 }
 
 export default async function ContainerPage({ params }: ContainerPageProps) {
-  const [container, allContainers, slots] = await Promise.all([
+  const [container, allContainers] = await Promise.all([
     prisma.container.findUnique({
       where: { id: params.id },
       include: {
@@ -42,15 +40,6 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
       select: { id: true, label: true },
       orderBy: { label: "asc" },
     }),
-    prisma.slot.findMany({
-      include: { rack: { include: { location: true } } },
-      orderBy: [
-        { rack: { location: { name: "asc" } } },
-        { rack: { name: "asc" } },
-        { row: "asc" },
-        { col: "asc" },
-      ],
-    }),
   ]);
 
   if (!container) return notFound();
@@ -58,14 +47,8 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
   const location = container.currentSlot?.rack?.location?.name || "Unassigned";
   const rack = container.currentSlot?.rack?.name || null;
   const slot = container.currentSlot
-    ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
+    ? `${String.fromCharCode(65 + container.currentSlot.row)}${container.currentSlot.col + 1}`
     : null;
-
-  // Format slots for dropdown
-  const slotOptions = slots.map((s) => ({
-    id: s.id,
-    label: `${s.rack?.location?.name || "Unknown"} → ${s.rack?.name || "Unknown"} ${formatSlotLabel(s.row, s.col)}`,
-  }));
 
   return (
     <main className="mx-auto max-w-4xl p-6">
@@ -78,18 +61,7 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
         </Link>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="mb-3 flex items-center justify-between">
-              <h1 className="text-3xl font-bold">{container.label}</h1>
-              <EditContainerModalButton
-                container={{
-                  id: container.id,
-                  label: container.label,
-                  description: container.description,
-                  currentSlotId: container.currentSlotId,
-                }}
-                slots={slotOptions}
-              />
-            </div>
+            <h1 className="mb-3 text-3xl font-bold">{container.label}</h1>
             <div className="text-gray-600">
               <div>
                 Code:{" "}
@@ -121,85 +93,111 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
         ) : (
           <div className="space-y-3">
             {container.items.map((item) => (
-              <div key={item.id} className="rounded border p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="font-semibold">{item.name}</div>
-                    {item.description && (
-                      <div className="mt-1 text-sm text-gray-600">
-                        {item.description}
-                      </div>
-                    )}
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700"
-                        >
-                          {tag}
-                        </span>
+              <div
+                key={item.id}
+                className={`rounded border p-4 ${
+                  item.status === "CHECKED_OUT"
+                    ? "border-orange-400 bg-orange-50"
+                    : "border-gray-200 bg-gray-50"
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  {/* Photo */}
+                  {item.photos.length > 0 && (
+                    <div className="flex shrink-0 gap-2">
+                      {item.photos.slice(0, 2).map((photo) => (
+                        <Image
+                          key={photo.id}
+                          src={photo.url}
+                          alt={item.name}
+                          width={80}
+                          height={80}
+                          className="h-20 w-20 rounded object-cover"
+                        />
                       ))}
                     </div>
-                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                      <span>Quantity: {item.quantity}</span>
+                  )}
+
+                  {/* Item details */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          {item.name}
+                        </h3>
+                        {item.description && (
+                          <p className="mt-1 text-sm text-gray-600">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
+                      <span
+                        className={`shrink-0 rounded px-2 py-1 text-xs font-medium ${
+                          item.status === "IN_STORAGE"
+                            ? "bg-green-100 text-green-700"
+                            : item.status === "CHECKED_OUT"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {item.status === "IN_STORAGE"
+                          ? "In Storage"
+                          : item.status === "CHECKED_OUT"
+                            ? "Checked Out"
+                            : item.status}
+                      </span>
+                    </div>
+
+                    {/* Metadata row */}
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                      <span>Qty: {item.quantity}</span>
                       {item.condition && (
                         <span>
-                          • Condition: {item.condition.replace(/_/g, " ")}
+                          Condition: {item.condition.replace(/_/g, " ")}
                         </span>
                       )}
                       {item.category && (
                         <span>
-                          • Category: {item.category.replace(/_/g, " ")}
+                          Category: {item.category.replace(/_/g, " ")}
                         </span>
                       )}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`rounded px-2 py-1 text-xs font-medium ${
-                        item.status === "IN_STORAGE"
-                          ? "bg-blue-100 text-blue-700"
-                          : item.status === "CHECKED_OUT"
-                            ? "bg-orange-100 text-orange-700"
-                            : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      {item.status === "IN_STORAGE"
-                        ? "In Storage"
-                        : item.status === "CHECKED_OUT"
-                          ? "Checked Out"
-                          : item.status}
-                    </span>
-                    <ItemActionsMenu
-                      item={{
-                        id: item.id,
-                        name: item.name,
-                        description: item.description,
-                        status: item.status,
-                        quantity: item.quantity,
-                        condition: item.condition,
-                        category: item.category,
-                        containerId: item.containerId,
-                      }}
-                      containers={allContainers}
-                      layout="buttons"
-                    />
+
+                    {/* Tags */}
+                    {item.tags.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {item.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="mt-3">
+                      <ItemActionsMenu
+                        item={{
+                          id: item.id,
+                          name: item.name,
+                          description: item.description,
+                          status: item.status,
+                          quantity: item.quantity,
+                          condition: item.condition,
+                          category: item.category,
+                          subcategory: null,
+                          containerId: item.containerId,
+                        }}
+                        containers={allContainers}
+                        layout="buttons"
+                        quickMove
+                      />
+                    </div>
                   </div>
                 </div>
-                {item.photos.length > 0 && (
-                  <div className="mt-3 flex gap-2">
-                    {item.photos.map((photo) => (
-                      <Image
-                        key={photo.id}
-                        src={photo.url}
-                        alt={item.name}
-                        width={40}
-                        height={40}
-                        className="h-10 w-10 rounded object-cover"
-                      />
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
           </div>

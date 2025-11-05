@@ -6,6 +6,7 @@ import {
   ItemCategory,
   ItemCondition,
   ContainerStatus,
+  ItemSubcategory,
 } from "@prisma/client";
 
 console.log("✅ Prisma Client imported successfully");
@@ -22,6 +23,11 @@ console.log(
 console.log(
   "✅ ContainerStatus enum:",
   Object.keys(ContainerStatus).length,
+  "values"
+);
+console.log(
+  "✅ ItemSubcategory enum:",
+  Object.keys(ItemSubcategory).length,
   "values"
 );
 
