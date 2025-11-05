@@ -81,19 +81,28 @@ export function CollapsibleLocation({
                     ? Math.round((filledSlots / totalSlots) * 100)
                     : 0;
 
-                // Calculate grid cell size for larger, more interactive cards
-                // Additional 50% increase + max grid 5x5 constraint to prevent overflow
+                // Calculate grid cell size - wider rectangles to fit better in card
+                // Using landscape orientation (wider than tall) for better space usage
                 const maxGridDimension = Math.max(rack.rows, rack.cols);
-                const baseCellSize =
+                const baseCellWidth =
                   maxGridDimension <= 4
-                    ? 90 // 150% of 60 (50% additional increase)
+                    ? 75 // Wider cells for small grids
                     : maxGridDimension <= 6
-                      ? 72 // 150% of 48
+                      ? 60 // Medium width
                       : maxGridDimension <= 10
-                        ? 54 // 150% of 36
-                        : 40; // 150% of 27
-                const cellSize = `${baseCellSize}px`;
-                const gap = maxGridDimension <= 6 ? "8px" : "6px"; // Proportionally increased
+                        ? 48 // Smaller for larger grids
+                        : 36; // Compact for very large grids
+                const baseCellHeight =
+                  maxGridDimension <= 4
+                    ? 60 // Slightly shorter than width
+                    : maxGridDimension <= 6
+                      ? 50
+                      : maxGridDimension <= 10
+                        ? 40
+                        : 30;
+                const cellWidth = `${baseCellWidth}px`;
+                const cellHeight = `${baseCellHeight}px`;
+                const gap = maxGridDimension <= 6 ? "6px" : "4px";
 
                 // Constrain to max 5x5 grid for display
                 const displayRows = Math.min(rack.rows, 5);
@@ -133,11 +142,11 @@ export function CollapsibleLocation({
                     </div>
 
                     {/* Larger, more interactive grid visualization - max 5x5 display */}
-                    <div className="mb-4 flex min-h-[562px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
+                    <div className="mb-4 flex min-h-[400px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
                       <div
                         className="grid"
                         style={{
-                          gridTemplateColumns: `repeat(${displayCols}, ${cellSize})`,
+                          gridTemplateColumns: `repeat(${displayCols}, ${cellWidth})`,
                           gap: gap,
                         }}
                       >
@@ -150,8 +159,8 @@ export function CollapsibleLocation({
                                 : "bg-gray-200 hover:bg-gray-300"
                             }`}
                             style={{
-                              width: cellSize,
-                              height: cellSize,
+                              width: cellWidth,
+                              height: cellHeight,
                             }}
                             title={
                               slot.container
