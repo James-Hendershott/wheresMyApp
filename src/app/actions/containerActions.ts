@@ -101,60 +101,69 @@ export async function createContainer(formData: FormData) {
 }
 
 export async function updateContainer(id: string, formData: FormData) {
-  const parsed = containerSchema.safeParse({
-    code: formData.get("code"),
-    label: formData.get("label"),
-    description: formData.get("description") || undefined,
-    status: formData.get("status") || ContainerStatus.ACTIVE,
-    slotId: formData.get("slotId") || undefined,
-    tags: formData.getAll("tags") as string[],
-  });
-  if (!parsed.success) {
-    return { error: parsed.error.flatten() };
+  const label = formData.get("label") as string;
+  const description = formData.get("description") as string;
+  const currentSlotId = formData.get("currentSlotId") as string;
+
+  if (!label || label.length < 2) {
+    return { error: "Label is required and must be at least 2 characters" };
   }
-  // Update container and adjust slot occupancy if changed
-  const updated = await prisma.$transaction(async (tx) => {
-    // Find current slot for container
-    const existing = await tx.container.findUnique({ where: { id } });
-    if (!existing) throw new Error("Container not found");
 
-    // If slotId changed, free previous and occupy new
-    if (parsed.data.slotId !== existing.currentSlotId) {
-      if (existing.currentSlotId) {
-        await tx.slot.update({
-          where: { id: existing.currentSlotId },
-          data: { containerId: null },
-        });
-      }
-      if (parsed.data.slotId) {
-        const newSlot = await tx.slot.findUnique({
-          where: { id: parsed.data.slotId },
-        });
-        if (!newSlot) throw new Error("Selected slot not found");
-        if (newSlot.containerId && newSlot.containerId !== id)
-          throw new Error("Selected slot is already occupied");
-        await tx.slot.update({
-          where: { id: parsed.data.slotId },
-          data: { containerId: id },
-        });
-      }
-    }
+  try {
+    // Update container and adjust slot occupancy if changed
+    const updated = await prisma.$transaction(async (tx) => {
+      // Find current slot for container
+      const existing = await tx.container.findUnique({ where: { id } });
+      if (!existing) throw new Error("Container not found");
 
-    const container = await tx.container.update({
-      where: { id },
-      data: {
-        code: parsed.data.code,
-        label: parsed.data.label,
-        description: parsed.data.description,
-        status: parsed.data.status,
-        tags: parsed.data.tags,
-        currentSlotId: parsed.data.slotId ?? null,
-      },
+      // If slotId changed, free previous and occupy new
+      const newSlotId = currentSlotId || null;
+      if (newSlotId !== existing.currentSlotId) {
+        // Free previous slot
+        if (existing.currentSlotId) {
+          await tx.slot.update({
+            where: { id: existing.currentSlotId },
+            data: { containerId: null },
+          });
+        }
+        // Occupy new slot
+        if (newSlotId) {
+          const newSlot = await tx.slot.findUnique({
+            where: { id: newSlotId },
+          });
+          if (!newSlot) throw new Error("Selected slot not found");
+          if (newSlot.containerId && newSlot.containerId !== id)
+            throw new Error("Selected slot is already occupied");
+          await tx.slot.update({
+            where: { id: newSlotId },
+            data: { containerId: id },
+          });
+        }
+      }
+
+      const container = await tx.container.update({
+        where: { id },
+        data: {
+          label,
+          description: description || null,
+          currentSlotId: newSlotId,
+        },
+      });
+      return container;
     });
-    return container;
-  });
-  revalidatePath("/racks");
-  return { container: updated };
+
+    revalidatePath("/containers");
+    revalidatePath(`/containers/${id}`);
+    revalidatePath("/locations");
+    revalidatePath("/racks");
+
+    return { success: true, container: updated };
+  } catch (error) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Failed to update container",
+    };
+  }
 }
 
 export async function deleteContainer(id: string) {

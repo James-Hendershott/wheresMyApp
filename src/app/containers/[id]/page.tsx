@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { QRCodeDisplay } from "./QRCodeDisplay";
 import { AddItemToContainerForm } from "./AddItemToContainerForm";
+import { EditContainerModalButton } from "@/components/containers/EditContainerModalButton";
 import { formatSlotLabel } from "@/lib/slotLabels";
 
 interface ContainerPageProps {
@@ -14,26 +15,37 @@ interface ContainerPageProps {
 }
 
 export default async function ContainerPage({ params }: ContainerPageProps) {
-  const container = await prisma.container.findUnique({
-    where: { id: params.id },
-    include: {
-      currentSlot: {
-        include: {
-          rack: {
-            include: {
-              location: true,
+  const [container, slots] = await Promise.all([
+    prisma.container.findUnique({
+      where: { id: params.id },
+      include: {
+        currentSlot: {
+          include: {
+            rack: {
+              include: {
+                location: true,
+              },
             },
           },
         },
-      },
-      items: {
-        include: {
-          photos: true,
+        items: {
+          include: {
+            photos: true,
+          },
+          orderBy: { createdAt: "desc" },
         },
-        orderBy: { createdAt: "desc" },
       },
-    },
-  });
+    }),
+    prisma.slot.findMany({
+      include: { rack: { include: { location: true } } },
+      orderBy: [
+        { rack: { location: { name: "asc" } } },
+        { rack: { name: "asc" } },
+        { row: "asc" },
+        { col: "asc" },
+      ],
+    }),
+  ]);
 
   if (!container) return notFound();
 
@@ -42,6 +54,12 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
   const slot = container.currentSlot
     ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
     : null;
+
+  // Format slots for dropdown
+  const slotOptions = slots.map((s) => ({
+    id: s.id,
+    label: `${s.rack?.location?.name || "Unknown"} → ${s.rack?.name || "Unknown"} ${formatSlotLabel(s.row, s.col)}`,
+  }));
 
   return (
     <main className="mx-auto max-w-4xl p-6">
@@ -53,9 +71,20 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
           ← Back to Containers
         </Link>
         <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">{container.label}</h1>
-            <div className="mt-2 text-gray-600">
+          <div className="flex-1">
+            <div className="mb-3 flex items-center justify-between">
+              <h1 className="text-3xl font-bold">{container.label}</h1>
+              <EditContainerModalButton
+                container={{
+                  id: container.id,
+                  label: container.label,
+                  description: container.description,
+                  currentSlotId: container.currentSlotId,
+                }}
+                slots={slotOptions}
+              />
+            </div>
+            <div className="text-gray-600">
               <div>
                 Code:{" "}
                 <span className="font-mono font-semibold">
