@@ -1,10 +1,12 @@
 // WHY: Simplified form to add items directly to a specific container
 // WHAT: Client form with Server Action for adding items with tags, description, and volume
-// HOW: Pre-fills containerId, calls createItem action, supports items as containers
+// HOW: Pre-fills containerId, calls createItem action, supports items as containers, shows capacity warnings
 
 "use client";
 import { createItem } from "@/app/actions/itemActions";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function AddItemToContainerForm({
   containerId,
@@ -12,6 +14,8 @@ export function AddItemToContainerForm({
   containerId: string;
 }) {
   const [isContainer, setIsContainer] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
     if (!isContainer) {
@@ -19,7 +23,36 @@ export function AddItemToContainerForm({
     }
     formData.set("status", "IN_STORAGE");
     formData.set("isContainer", isContainer.toString());
-    await createItem(formData);
+    
+    setIsSubmitting(true);
+    const result = await createItem(formData);
+    setIsSubmitting(false);
+
+    if (result?.error) {
+      if ((result as any).requiresOverride) {
+        // Show capacity warning and allow override
+        const override = confirm(
+          `${result.error}\n\nCurrent fill: ${(result as any).fillPercentage}%\n\nDo you want to add this item anyway?`
+        );
+        if (override) {
+          formData.set("overrideCapacity", "true");
+          setIsSubmitting(true);
+          const overrideResult = await createItem(formData);
+          setIsSubmitting(false);
+          if (overrideResult?.success) {
+            toast.success(overrideResult.success);
+            router.refresh();
+          } else if (overrideResult?.error) {
+            toast.error(overrideResult.error);
+          }
+        }
+      } else {
+        toast.error(result.error);
+      }
+    } else if (result?.success) {
+      toast.success(result.success);
+      router.refresh();
+    }
   };
 
   return (
@@ -82,9 +115,10 @@ export function AddItemToContainerForm({
       )}
       <button
         type="submit"
-        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        disabled={isSubmitting}
+        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Add Item
+        {isSubmitting ? "Adding..." : "Add Item"}
       </button>
     </form>
   );

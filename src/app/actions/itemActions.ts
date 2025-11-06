@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ItemStatus } from "@prisma/client";
 import { auth } from "@/auth";
+import { calculateContainerCapacity } from "@/lib/capacityHelpers";
+import { getCapacityWarning } from "@/lib/volumeCalculations";
 
 const itemSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -315,6 +317,46 @@ export async function createItem(formData: FormData) {
   });
   if (!parsed.success) {
     return { error: "Validation failed: " + parsed.error.errors[0].message };
+  }
+
+  // Check capacity if adding to a container with volume data
+  if (parsed.data.containerId && parsed.data.volume) {
+    const container = await prisma.container.findUnique({
+      where: { id: parsed.data.containerId },
+      include: {
+        containerType: {
+          select: { capacity: true },
+        },
+        items: {
+          select: { volume: true },
+        },
+      },
+    });
+
+    if (container && container.containerType?.capacity) {
+      const capacity = calculateContainerCapacity(
+        container.containerType.capacity,
+        container.items
+      );
+
+      // Calculate what fill percentage would be after adding this item
+      const newFillPercentage =
+        ((capacity.totalItemVolume + parsed.data.volume) / capacity.containerCapacity) * 100;
+
+      const warning = getCapacityWarning(newFillPercentage, parsed.data.volume);
+
+      // Warn if approaching capacity, but allow override
+      if (newFillPercentage >= 90) {
+        const override = formData.get("overrideCapacity") === "true";
+        if (!override) {
+          return {
+            error: warning || "Container is approaching capacity",
+            requiresOverride: true,
+            fillPercentage: newFillPercentage.toFixed(1),
+          };
+        }
+      }
+    }
   }
 
   // Check if item already exists (items CAN be duplicates, but we warn the user)
