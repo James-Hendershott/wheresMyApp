@@ -146,8 +146,8 @@ export default async function RacksPage() {
                           </div>
                         </div>
 
-                        {/* Larger, more interactive grid visualization - max 5x5 display */}
-                        <div className="mb-4 flex min-h-[400px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
+                        {/* Grid visualization showing container codes like Locations page */}
+                        <div className="mb-4 flex min-h-[300px] items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
                           <div
                             className="grid"
                             style={{
@@ -158,23 +158,35 @@ export default async function RacksPage() {
                             {displaySlots.map((slot) => (
                               <div
                                 key={slot.id}
-                                className={`flex cursor-pointer items-center justify-center rounded transition-all hover:scale-110 hover:shadow-md ${
+                                className={`flex cursor-pointer flex-col items-center justify-center rounded p-1 transition-all hover:scale-105 hover:shadow-md ${
                                   slot.container
-                                    ? "bg-blue-500 font-semibold text-white hover:bg-blue-600"
-                                    : "bg-gray-200 font-medium text-gray-600 hover:bg-gray-300"
+                                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                                    : "bg-gray-200 text-gray-600 hover:bg-gray-300"
                                 }`}
                                 style={{
                                   width: cellWidth,
                                   height: cellHeight,
-                                  fontSize: "0.75rem",
                                 }}
                                 title={
                                   slot.container
-                                    ? `${slot.container.label} ${formatSlotLabel(slot.row, slot.col)}`
-                                    : `Empty ${formatSlotLabel(slot.row, slot.col)}`
+                                    ? `${slot.container.label} (${slot.container.code}) at ${formatSlotLabel(slot.row, slot.col)}`
+                                    : `Empty slot ${formatSlotLabel(slot.row, slot.col)}`
                                 }
                               >
-                                {formatSlotLabel(slot.row, slot.col)}
+                                {slot.container ? (
+                                  <>
+                                    <div className="text-[0.6rem] font-semibold leading-tight">
+                                      {slot.container.code}
+                                    </div>
+                                    <div className="text-[0.5rem] opacity-80">
+                                      {formatSlotLabel(slot.row, slot.col)}
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="text-[0.65rem] font-medium">
+                                    {formatSlotLabel(slot.row, slot.col)}
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>

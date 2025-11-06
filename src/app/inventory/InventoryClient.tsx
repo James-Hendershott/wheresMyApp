@@ -5,7 +5,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
 import { Download, Filter, Search, Package, MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -314,39 +313,20 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
             return (
               <div
                 key={item.id}
-                className={`flex flex-col rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
+                className={`rounded-lg border p-4 transition hover:border-blue-400 hover:bg-blue-50 ${
                   item.status === "CHECKED_OUT"
                     ? "border-orange-400 bg-orange-50"
                     : "border-gray-200 bg-gray-50"
                 }`}
               >
-                {/* Header with photo thumbnail and name */}
-                <div className="mb-3 flex gap-3">
-                  {/* Compact photo thumbnail - 60x60 instead of full square */}
-                  <div className="shrink-0">
-                    {item.photos.length > 0 ? (
-                      <div className="relative h-16 w-16 overflow-hidden rounded-lg">
-                        <Image
-                          src={item.photos[0].url}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100">
-                        <Package className="h-8 w-8 text-gray-400" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Item name and status */}
-                  <div className="min-w-0 flex-1">
+                {/* Header: Name and status badge only */}
+                <div className="mb-2">
+                  <div className="flex items-start justify-between gap-2">
                     <h3 className="line-clamp-2 font-semibold text-gray-900">
                       {item.name}
                     </h3>
                     <span
-                      className={`mt-1 inline-block rounded px-2 py-0.5 text-xs font-medium ${
+                      className={`shrink-0 rounded px-2 py-0.5 text-xs font-medium ${
                         item.status === "IN_STORAGE"
                           ? "bg-green-100 text-green-700"
                           : item.status === "CHECKED_OUT"
@@ -370,18 +350,18 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                   </p>
                 )}
 
-                {/* Metadata - compact single row where possible */}
-                <div className="mb-2 space-y-1 text-xs text-gray-600">
+                {/* Metadata - compact, matching container cards */}
+                <div className="mb-2 space-y-1 text-sm text-gray-600">
                   {item.quantity > 1 && (
                     <div className="flex items-center gap-1">
                       <Package className="h-3 w-3" />
-                      <span>Qty: {item.quantity}</span>
+                      <span className="text-xs">Qty: {item.quantity}</span>
                     </div>
                   )}
                   {item.container && (
                     <div className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
-                      <span className="truncate">
+                      <span className="truncate text-xs">
                         {item.container.label}
                         {item.container.currentSlot?.rack.name &&
                           ` → ${item.container.currentSlot.rack.name}`}
@@ -397,7 +377,7 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                   )}
                 </div>
 
-                {/* Tags - more compact, only show 2 */}
+                {/* Tags - compact */}
                 {item.tags.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-1">
                     {item.tags.slice(0, 2).map((tag, idx) => (
@@ -416,8 +396,16 @@ export function InventoryClient({ items, containers }: InventoryClientProps) {
                   </div>
                 )}
 
-                {/* Actions - compact border-top separator */}
-                <div className="mt-auto border-t pt-2">
+                {/* Photo count indicator - small, unobtrusive */}
+                {item.photos.length > 0 && (
+                  <div className="mb-2 flex items-center gap-1 text-xs text-gray-500">
+                    <Package className="h-3 w-3" />
+                    <span>{item.photos.length} photo{item.photos.length !== 1 ? 's' : ''}</span>
+                  </div>
+                )}
+
+                {/* Actions - matching container cards */}
+                <div className="mt-2 border-t pt-2">
                   <ItemActionsMenu
                     item={{
                       id: item.id,
