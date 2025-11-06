@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Package, Box, Briefcase, Archive, GripVertical } from "lucide-react";
 import { formatSlotLabel } from "@/lib/slotLabels";
 import { updateContainer } from "@/app/actions/containerActions";
+import { updateItemSlot } from "@/app/actions/itemActions";
 import { toast } from "sonner";
 
 type Container = {
@@ -22,11 +23,27 @@ type Container = {
   } | null;
 };
 
+type ItemContainer = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+};
+
+type DraggableEntity = {
+  id: string;
+  displayName: string;
+  type: "container" | "item";
+  icon?: string | null;
+  code?: string;
+};
+
 type Slot = {
   id: string;
   row: number;
   col: number;
   container: Container | null;
+  item?: ItemContainer | null; // Item-containers can also occupy slots
 };
 
 type Rack = {
@@ -40,6 +57,7 @@ type Rack = {
 interface InteractiveRackGridProps {
   rack: Rack;
   availableContainers?: Container[];
+  availableItemContainers?: ItemContainer[]; // NEW: Items that act as containers
   showUnassigned?: boolean;
   cellSize?: "sm" | "md" | "lg";
 }
@@ -64,11 +82,12 @@ function getContainerIcon(iconKey: string | null | undefined) {
 export function InteractiveRackGrid({
   rack,
   availableContainers = [],
+  availableItemContainers = [],
   showUnassigned = true,
   cellSize = "md",
 }: InteractiveRackGridProps) {
   const router = useRouter();
-  const [draggedContainer, setDraggedContainer] = useState<Container | null>(null);
+  const [draggedEntity, setDraggedEntity] = useState<DraggableEntity | null>(null);
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -83,11 +102,12 @@ export function InteractiveRackGrid({
 
   const config = sizeConfig[cellSize];
 
-  const handleDragStart = (e: React.DragEvent, container: Container) => {
-    setDraggedContainer(container);
+  const handleDragStart = (e: React.DragEvent, entity: DraggableEntity) => {
+    setDraggedEntity(entity);
     setIsDragging(true);
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("containerId", container.id);
+    e.dataTransfer.setData("entityId", entity.id);
+    e.dataTransfer.setData("entityType", entity.type);
     
     // Create custom drag image for better visual feedback
     if (dragImageRef.current) {
@@ -96,7 +116,7 @@ export function InteractiveRackGrid({
   };
 
   const handleDragEnd = () => {
-    setDraggedContainer(null);
+    setDraggedEntity(null);
     setIsDragging(false);
     setDragOverSlot(null);
   };
@@ -104,8 +124,8 @@ export function InteractiveRackGrid({
   const handleDragOver = (e: React.DragEvent, slotId: string, slot: Slot) => {
     e.preventDefault();
     
-    // Only allow drop on empty slots
-    if (!slot.container) {
+    // Only allow drop on empty slots (no container AND no item)
+    if (!slot.container && !slot.item) {
       e.dataTransfer.dropEffect = "move";
       setDragOverSlot(slotId);
     } else {
@@ -123,12 +143,12 @@ export function InteractiveRackGrid({
     setDragOverSlot(null);
     setIsDragging(false);
 
-    if (!draggedContainer) return;
+    if (!draggedEntity) return;
 
     // Don't allow dropping on occupied slots
-    if (slot.container) {
+    if (slot.container || slot.item) {
       toast.error("This slot is already occupied!");
-      setDraggedContainer(null);
+      setDraggedEntity(null);
       return;
     }
 
@@ -138,33 +158,42 @@ export function InteractiveRackGrid({
       const formData = new FormData();
       formData.append("currentSlotId", slot.id);
 
-      const result = await updateContainer(draggedContainer.id, formData);
+      let result;
+      if (draggedEntity.type === "container") {
+        result = await updateContainer(draggedEntity.id, formData);
+      } else {
+        result = await updateItemSlot(draggedEntity.id, formData);
+      }
 
       if ("error" in result) {
         toast.error(result.error as string);
       } else {
-        toast.success(`${draggedContainer.label} moved to ${formatSlotLabel(slot.row, slot.col)}!`);
+        toast.success(`${draggedEntity.displayName} moved to ${formatSlotLabel(slot.row, slot.col)}!`);
         router.refresh();
       }
     } catch (error) {
-      toast.error("Failed to move container");
+      toast.error(`Failed to move ${draggedEntity.type}`);
       console.error(error);
     } finally {
       setIsUpdating(false);
-      setDraggedContainer(null);
+      setDraggedEntity(null);
     }
   };
 
-  const handleSlotClick = (container: Container | null, e: React.MouseEvent) => {
+  const handleSlotClick = (entity: Container | ItemContainer | null, e: React.MouseEvent, entityType: "container" | "item" | null) => {
     // Don't navigate if we're in the middle of dragging
     if (isDragging) {
       e.preventDefault();
       return;
     }
     
-    if (container) {
-      // Navigate to container detail
-      router.push(`/containers/${container.id}`);
+    if (entity && entityType) {
+      // Navigate to entity detail page
+      if (entityType === "container") {
+        router.push(`/containers/${entity.id}`);
+      } else {
+        router.push(`/items/${entity.id}`);
+      }
     }
   };
 
@@ -178,27 +207,35 @@ export function InteractiveRackGrid({
         <GripVertical className="h-4 w-4 text-blue-600" />
         <Package className="h-5 w-5 text-blue-600" />
         <span className="font-semibold text-blue-900">
-          {draggedContainer?.label}
+          {draggedEntity?.displayName}
         </span>
       </div>
 
-      {/* Unassigned containers - drag source */}
-      {showUnassigned && availableContainers.length > 0 && (
+      {/* Unassigned containers and item-containers - drag source */}
+      {showUnassigned && (availableContainers.length > 0 || availableItemContainers.length > 0) && (
         <div className="rounded-lg border bg-gradient-to-br from-gray-50 to-gray-100 p-4 shadow-sm">
           <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
             <GripVertical className="h-4 w-4" />
-            📦 Unassigned Containers (Drag to Rack)
+            📦 Unassigned Containers & Items (Drag to Rack)
           </h3>
           <div className="flex flex-wrap gap-2">
+            {/* Regular containers */}
             {availableContainers.map((container) => {
               const Icon = getContainerIcon(container.containerType?.iconKey);
-              const isBeingDragged = draggedContainer?.id === container.id;
+              const entity: DraggableEntity = {
+                id: container.id,
+                displayName: container.label,
+                type: "container",
+                icon: container.containerType?.iconKey,
+                code: container.code,
+              };
+              const isBeingDragged = draggedEntity?.id === container.id && draggedEntity?.type === "container";
               
               return (
                 <div
                   key={container.id}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, container)}
+                  onDragStart={(e) => handleDragStart(e, entity)}
                   onDragEnd={handleDragEnd}
                   className={`group flex cursor-move items-center gap-2 rounded-lg border-2 bg-white px-3 py-2 transition-all duration-200 ${
                     isBeingDragged
@@ -211,6 +248,36 @@ export function InteractiveRackGrid({
                   <Icon className="h-4 w-4 text-gray-600 transition group-hover:text-blue-600" />
                   <span className="text-sm font-medium">{container.label}</span>
                   <span className="text-xs text-gray-500">({container.code})</span>
+                </div>
+              );
+            })}
+            
+            {/* Item-containers */}
+            {availableItemContainers.map((item) => {
+              const entity: DraggableEntity = {
+                id: item.id,
+                displayName: item.name,
+                type: "item",
+              };
+              const isBeingDragged = draggedEntity?.id === item.id && draggedEntity?.type === "item";
+              
+              return (
+                <div
+                  key={item.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, entity)}
+                  onDragEnd={handleDragEnd}
+                  className={`group flex cursor-move items-center gap-2 rounded-lg border-2 bg-white px-3 py-2 transition-all duration-200 ${
+                    isBeingDragged
+                      ? "border-purple-500 opacity-50 shadow-sm"
+                      : "border-dashed border-purple-300 hover:border-purple-400 hover:shadow-md"
+                  }`}
+                  title={`Drag item-container ${item.name} to a slot`}
+                >
+                  <GripVertical className="h-4 w-4 text-gray-400 transition group-hover:text-purple-500" />
+                  <Box className="h-4 w-4 text-purple-600 transition group-hover:text-purple-700" />
+                  <span className="text-sm font-medium">{item.name}</span>
+                  <span className="rounded bg-purple-100 px-1.5 py-0.5 text-xs font-medium text-purple-700">Item</span>
                 </div>
               );
             })}
@@ -241,7 +308,7 @@ export function InteractiveRackGrid({
 
         {isDragging && (
           <div className="mb-4 rounded-lg border-2 border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
-            💡 Drop on an empty slot to place <strong>{draggedContainer?.label}</strong>
+            💡 Drop on an empty slot to place <strong>{draggedEntity?.displayName}</strong>
           </div>
         )}
 
@@ -260,11 +327,18 @@ export function InteractiveRackGrid({
 
             if (!slot) return null;
 
-            const isOccupied = !!slot.container;
+            const isOccupied = !!(slot.container || slot.item);
             const isDragTarget = dragOverSlot === slot.id && !isOccupied;
             const Icon = slot.container
               ? getContainerIcon(slot.container.containerType?.iconKey)
-              : Package;
+              : slot.item
+                ? Box // Item-containers get a box icon
+                : Package;
+
+            // Determine entity type for display
+            const entity = slot.container || slot.item || null;
+            const entityType = slot.container ? "container" : slot.item ? "item" : null;
+            const entityLabel = slot.container?.code || slot.item?.name || "";
 
             return (
               <div
@@ -272,10 +346,12 @@ export function InteractiveRackGrid({
                 onDragOver={(e) => handleDragOver(e, slot.id, slot)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, slot)}
-                onClick={(e) => handleSlotClick(slot.container, e)}
+                onClick={(e) => handleSlotClick(entity, e, entityType)}
                 className={`relative flex flex-col items-center justify-center rounded-lg border-2 transition-all duration-200 ${
                   isOccupied
-                    ? "cursor-pointer border-blue-500 bg-blue-50 hover:scale-105 hover:border-blue-600 hover:shadow-lg active:scale-95"
+                    ? entityType === "item"
+                      ? "cursor-pointer border-purple-500 bg-purple-50 hover:scale-105 hover:border-purple-600 hover:shadow-lg active:scale-95"
+                      : "cursor-pointer border-blue-500 bg-blue-50 hover:scale-105 hover:border-blue-600 hover:shadow-lg active:scale-95"
                     : isDragTarget
                       ? "animate-pulse border-green-500 bg-green-100 shadow-lg"
                       : isDragging
@@ -288,9 +364,9 @@ export function InteractiveRackGrid({
                 }}
                 title={
                   isOccupied
-                    ? `${slot.container!.label} - Click for details`
+                    ? `${entityType === "item" ? "Item-container:" : ""} ${entityLabel} - Click for details`
                     : isDragging
-                      ? `Drop ${draggedContainer?.label} here`
+                      ? `Drop ${draggedEntity?.displayName} here`
                       : `Empty slot ${formatSlotLabel(row, col)}`
                 }
               >
@@ -303,12 +379,21 @@ export function InteractiveRackGrid({
 
                 {isOccupied ? (
                   <>
-                    <Icon className="text-blue-600 transition-transform group-hover:scale-110" style={{ width: config.iconSize, height: config.iconSize }} />
-                    <span className="mt-1 text-center font-semibold text-blue-900" style={{ fontSize: config.fontSize }}>
+                    <Icon 
+                      className={entityType === "item" ? "text-purple-600" : "text-blue-600"} 
+                      style={{ width: config.iconSize, height: config.iconSize }} 
+                    />
+                    <span 
+                      className={`mt-1 text-center font-semibold ${entityType === "item" ? "text-purple-900" : "text-blue-900"}`} 
+                      style={{ fontSize: config.fontSize }}
+                    >
                       {formatSlotLabel(row, col)}
                     </span>
-                    <span className="text-center text-blue-700" style={{ fontSize: `${parseFloat(config.fontSize) * 0.85}rem` }}>
-                      {slot.container!.code}
+                    <span 
+                      className={`text-center ${entityType === "item" ? "text-purple-700" : "text-blue-700"}`} 
+                      style={{ fontSize: `${parseFloat(config.fontSize) * 0.85}rem` }}
+                    >
+                      {entityLabel.length > 10 ? entityLabel.substring(0, 10) + "..." : entityLabel}
                     </span>
                   </>
                 ) : (
@@ -340,7 +425,11 @@ export function InteractiveRackGrid({
           </div>
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 rounded border-2 border-blue-500 bg-blue-50"></div>
-            <span>Occupied</span>
+            <span>Container</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-4 rounded border-2 border-purple-500 bg-purple-50"></div>
+            <span>Item-Container</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-pulse rounded border-2 border-green-500 bg-green-100"></div>

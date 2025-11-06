@@ -419,3 +419,61 @@ export async function deleteItem(id: string) {
   revalidatePath("/racks");
   return { success: true };
 }
+
+// ───────────────────── Update Item Slot (for item-containers) ─────────────────────
+
+export async function updateItemSlot(itemId: string, formData: FormData) {
+  try {
+    const currentSlotId = formData.get("currentSlotId") as string | null;
+
+    // Verify the item exists and is a container
+    const item = await prisma.item.findUnique({
+      where: { id: itemId },
+      select: { id: true, name: true, isContainer: true, currentSlotId: true },
+    });
+
+    if (!item) {
+      return { error: "Item not found" };
+    }
+
+    if (!item.isContainer) {
+      return { error: "Only items marked as containers can be assigned to slots" };
+    }
+
+    // If assigning to a new slot, verify it's empty
+    if (currentSlotId) {
+      const slot = await prisma.slot.findUnique({
+        where: { id: currentSlotId },
+        include: { container: true, item: true },
+      });
+
+      if (!slot) {
+        return { error: "Slot not found" };
+      }
+
+      // Check if slot is already occupied by a container or another item
+      if (slot.container) {
+        return { error: "This slot is occupied by a container" };
+      }
+
+      if (slot.item && slot.item.id !== itemId) {
+        return { error: "This slot is already occupied by another item" };
+      }
+    }
+
+    // Update the item's currentSlotId
+    const updatedItem = await prisma.item.update({
+      where: { id: itemId },
+      data: { currentSlotId },
+    });
+
+    revalidatePath("/racks");
+    revalidatePath("/locations");
+    revalidatePath(`/items/${itemId}`);
+
+    return { item: updatedItem };
+  } catch (error) {
+    console.error("Error updating item slot:", error);
+    return { error: "Failed to update item slot" };
+  }
+}

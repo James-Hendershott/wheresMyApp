@@ -14,7 +14,7 @@ interface RackPageProps {
 export const dynamic = "force-dynamic";
 
 export default async function RackPage({ params }: RackPageProps) {
-  const [rack, unassignedContainers] = await Promise.all([
+  const [rack, unassignedContainers, unassignedItemContainers] = await Promise.all([
     prisma.rack.findUnique({
       where: { id: params.id },
       include: {
@@ -29,6 +29,14 @@ export default async function RackPage({ params }: RackPageProps) {
                     iconKey: true,
                   },
                 },
+              },
+            },
+            item: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                isContainer: true,
               },
             },
           },
@@ -50,6 +58,20 @@ export default async function RackPage({ params }: RackPageProps) {
         },
       },
       orderBy: { code: "asc" },
+    }),
+    // Get items that act as containers and don't have a slot assignment
+    prisma.item.findMany({
+      where: {
+        isContainer: true,
+        currentSlotId: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        category: true,
+      },
+      orderBy: { name: "asc" },
     }),
   ]);
 
@@ -79,6 +101,7 @@ export default async function RackPage({ params }: RackPageProps) {
       <InteractiveRackGrid
         rack={rack}
         availableContainers={unassignedContainers}
+        availableItemContainers={unassignedItemContainers}
         showUnassigned={true}
         cellSize="lg"
       />
