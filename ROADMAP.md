@@ -20,10 +20,10 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] ~~Items can be added and NOT be inside a container~~ **COMPLETED** - Items as Containers feature implemented (Nov 5, 2025)
 - [x] ~~Container capacity not enforced or tracked~~ **COMPLETED** - Capacity tracking with warnings implemented (Nov 5, 2025)
 - [x] ~~Global search functionality across containers/items/locations~~ **COMPLETED** - Global search with debounced input and categorized results (Nov 5, 2025)
+- [x] ~~Adjust/improve drag-and-drop grids for better UX~~ **COMPLETED** - Enhanced visual feedback, animations, custom drag preview, and better drop indicators (Nov 5, 2025)
 - [ ] No item photo upload UI yet (database ready)
 - [ ] Multi-household support: User logins connected to a location. Multiple databases for each house location?
 - [ ] Items with isContainer=true need drag-and-drop support in InteractiveRackGrid (schema complete, UI pending)
-- [ ] Adjust/improve drag-and-drop grids for better UX
 - [ ] Rack display inconsistency between Rack page and Location page views
 
 ### Medium Priority
@@ -322,6 +322,11 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~Tapered container orientation fix~~ — <span style="color:#16a34a">Shipped: Bottom opening larger (realistic) (Nov 4, 2025)</span>
 - [x] ~~Quick move dropdown on item cards~~ — <span style="color:#16a34a">Shipped: one-click move on Container + Inventory pages (Nov 4, 2025)</span>
 - [x] ~~Inventory page inline actions~~ — <span style="color:#16a34a">Shipped: check-out/in, move, edit, remove with compact cards and icon toolbar (Nov 4, 2025)</span>
+- [x] ~~Items as containers system~~ — <span style="color:#16a34a">Shipped: isContainer flag, volume tracking, slot assignment support (Nov 5, 2025)</span>
+- [x] ~~Container capacity tracking~~ — <span style="color:#16a34a">Shipped: Volume calculations, progress bars, color-coded warnings (90%+), override mechanism (Nov 5, 2025)</span>
+- [x] ~~HDX tote complete product line~~ — <span style="color:#16a34a">Shipped: 12-55 gallon range with accurate tapered dimensions and calculated capacities (Nov 5, 2025)</span>
+- [x] ~~Global search functionality~~ — <span style="color:#16a34a">Shipped: Real-time debounced search across containers/items/locations with categorized results (Nov 5, 2025)</span>
+- [x] ~~Drag-and-drop UX improvements~~ — <span style="color:#16a34a">Shipped: Enhanced visual feedback, custom drag preview, pulse animations, drop indicators, grip icons (Nov 5, 2025)</span>
 
 ---
 
