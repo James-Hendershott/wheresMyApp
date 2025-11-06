@@ -14,7 +14,9 @@ WheresMy App is a full-stack inventory management system designed for home organ
 - 📦 **Item Tracking**: Check items in/out with photo uploads, quick-move dropdown for instant relocations
 - 🏷️ **Category System**: 35+ item categories with 30+ subcategories for precise organization
 - 📊 **Movement History**: Complete audit trail of all movements with user attribution
-- 🔐 **Secure Auth**: Email magic links or Google OAuth with user role management
+- � **Capacity Tracking**: Volume-based container capacity with color-coded warnings (green/yellow/red)
+- 🎁 **Items as Containers**: Standalone items can act as containers and occupy rack slots
+- �🔐 **Secure Auth**: Email magic links or Google OAuth with user role management
 - 📴 **Offline Ready**: PWA with offline capabilities
 - 📥 **CSV Import**: Import existing inventory from Google Forms/spreadsheets with automatic category mapping
 - 🎨 **Modern UI**: Icon-only buttons with tooltips, visual rack grid selector, compact card layouts
@@ -24,8 +26,10 @@ WheresMy App is a full-stack inventory management system designed for home organ
 - **Icon-Only Buttons with Tooltips**: Reduced UI crowding on container cards with hover-to-reveal button labels
 - **Visual Rack Grid Selector**: Click-to-assign interface for intuitive container slot assignment (replaces dropdown)
 - **Color-Coded Slots**: White=available, Gray=occupied, Blue=current location for instant visual feedback
+- **Capacity Progress Bars**: Visual feedback on container fill percentage with automatic warnings at 90%+
+- **Items as Containers**: Checkbox to mark items as standalone containers that occupy rack slots directly
 - **Separated Concerns**: Edit dialog handles name/description only; Assign to Rack button handles location
-- **Size-Specific Container Codes**: TOTE27 for 27-gallon totes, CASE for suitcases (based on HDX standards)
+- **Size-Specific Container Codes**: TOTE27 for 27-gallon totes with accurate HDX dimensions (12G-55G range)
 - **Responsive Layouts**: 1-4 column grids adapt to screen size for optimal viewing on any device
 
 ### Network Access

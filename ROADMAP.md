@@ -2,7 +2,7 @@
 
 This document outlines planned features, improvements, and future development directions for Where's My...?
 
-> **Last Updated**: November 4, 2025  
+> **Last Updated**: November 5, 2025  
 > **For detailed development plan**: See `Obsidian_Notes/04-Planning/01-Roadmap.md`
 
 ---
@@ -17,10 +17,11 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### High Priority
 
-- [ ] Items can be added and NOT be inside a container. If an item is not in a container, there needs to be a check mark or something that can be checked to allow it to act as a container and be placed in a slot.
+- [x] ~~Items can be added and NOT be inside a container~~ **COMPLETED** - Items as Containers feature implemented (Nov 5, 2025)
+- [x] ~~Container capacity not enforced or tracked~~ **COMPLETED** - Capacity tracking with warnings implemented (Nov 5, 2025)
 - [ ] No item photo upload UI yet (database ready)
-- [ ] Container capacity not enforced or tracked
 - [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location
+- [ ] Items with isContainer=true need drag-and-drop support in InteractiveRackGrid
 
 ### Medium Priority
 
@@ -135,6 +136,11 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] **Activity log** for all item operations (who, what, when)
 - [x] **Status badge updates** (In Storage → Checked Out)
 - [x] **UI Layout Fixes**: Restored inventory page card grid, fixed container detail layout, relocated edit button
+- [x] **Items as Containers**: Items can now act as standalone containers with `isContainer` flag and `currentSlotId` for slot assignment (Nov 5, 2025)
+- [x] **Container Capacity Tracking**: Volume-based capacity tracking with progress bars and color-coded warnings (green < 75%, yellow < 90%, red >= 90%) (Nov 5, 2025)
+- [x] **Capacity Warnings**: Auto-check capacity before adding items, warn at 90%+, allow override with confirmation dialog (Nov 5, 2025)
+- [x] **HDX Tote Dimensions**: Complete HDX tote size spectrum (12-55 gallon) with accurate tapered dimensions and calculated capacities (Nov 5, 2025)
+- [ ] **Items in rack slots**: InteractiveRackGrid support for dragging item-containers into slots (foundation complete, UI pending)
 - [ ] **[HIGH PRIORITY]** 7-day checkout notification system for overdue items
 - [ ] Photo upload UI (camera or file upload)
 - [ ] Photo upload to S3/MinIO with presigned URLs
