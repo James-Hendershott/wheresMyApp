@@ -21,9 +21,9 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] ~~Container capacity not enforced or tracked~~ **COMPLETED** - Capacity tracking with warnings implemented (Nov 5, 2025)
 - [x] ~~Global search functionality across containers/items/locations~~ **COMPLETED** - Global search with debounced input and categorized results (Nov 5, 2025)
 - [x] ~~Adjust/improve drag-and-drop grids for better UX~~ **COMPLETED** - Enhanced visual feedback, animations, custom drag preview, and better drop indicators (Nov 5, 2025)
+- [x] ~~Items with isContainer=true need drag-and-drop support in InteractiveRackGrid~~ **COMPLETED** - Item-containers can now be dragged to slots with purple visual theme (Nov 5, 2025)
 - [ ] No item photo upload UI yet (database ready)
 - [ ] Multi-household support: User logins connected to a location. Multiple databases for each house location?
-- [ ] Items with isContainer=true need drag-and-drop support in InteractiveRackGrid (schema complete, UI pending)
 - [ ] Rack display inconsistency between Rack page and Location page views
 
 ### Medium Priority
@@ -143,7 +143,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] **Container Capacity Tracking**: Volume-based capacity tracking with progress bars and color-coded warnings (green < 75%, yellow < 90%, red >= 90%) (Nov 5, 2025)
 - [x] **Capacity Warnings**: Auto-check capacity before adding items, warn at 90%+, allow override with confirmation dialog (Nov 5, 2025)
 - [x] **HDX Tote Dimensions**: Complete HDX tote size spectrum (12-55 gallon) with accurate tapered dimensions and calculated capacities (Nov 5, 2025)
-- [ ] **Items in rack slots**: InteractiveRackGrid support for dragging item-containers into slots (foundation complete, UI pending)
+- [x] **Items in rack slots**: InteractiveRackGrid supports dragging item-containers into slots with purple visual theme (Nov 5, 2025)
 - [ ] **[HIGH PRIORITY]** 7-day checkout notification system for overdue items
 - [ ] Photo upload UI (camera or file upload)
 - [ ] Photo upload to S3/MinIO with presigned URLs
@@ -327,6 +327,7 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~HDX tote complete product line~~ — <span style="color:#16a34a">Shipped: 12-55 gallon range with accurate tapered dimensions and calculated capacities (Nov 5, 2025)</span>
 - [x] ~~Global search functionality~~ — <span style="color:#16a34a">Shipped: Real-time debounced search across containers/items/locations with categorized results (Nov 5, 2025)</span>
 - [x] ~~Drag-and-drop UX improvements~~ — <span style="color:#16a34a">Shipped: Enhanced visual feedback, custom drag preview, pulse animations, drop indicators, grip icons (Nov 5, 2025)</span>
+- [x] ~~Item-containers in rack grid~~ — <span style="color:#16a34a">Shipped: Drag-and-drop support for items marked as containers, purple visual theme, updateItemSlot action (Nov 5, 2025)</span>
 
 ---
 
