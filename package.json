@@ -22,6 +22,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:prod": "tsx prisma/seed-production.ts",
     "db:studio": "prisma studio",
+    "pwa:icons": "tsx scripts/generate-pwa-icons.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
