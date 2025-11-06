@@ -9,6 +9,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Items as Containers System** (Nov 5, 2025) - Items can now act as standalone containers with drag-and-drop rack slot assignment
+  - `isContainer` Boolean flag on Item model to mark items that act as containers
+  - `volume` Float field for capacity calculations (cubic inches)
+  - `currentSlotId` field linking items directly to rack slots (bypassing container requirement)
+  - `updateItemSlot()` server action for assigning/removing items from slots
+  - Support for items in slots alongside regular containers in InteractiveRackGrid
+  - Purple visual theme for item-containers (vs blue for regular containers) with distinct styling
+  - Item-containers can be dragged from unassigned list to empty rack slots
+  - Click on item-container slot navigates to `/items/{id}` detail page
+  - Legend includes "Item-Container" indicator with purple badge
+- **Container Capacity Tracking System** (Nov 5, 2025) - Volume-based capacity management with warnings
+  - `capacity` field on ContainerType model (cubic inches)
+  - Volume calculation utilities in `src/lib/volumeCalculations.ts`:
+    - `calculateTaperedVolume()` - Trapezoidal prism formula for tapered containers
+    - `calculateRectangularVolume()` - L×W×H for boxes
+    - `calculateFillPercentage()` - Utilization percentage calculation
+    - `getCapacityColorClass()` - Green/yellow/red Tailwind classes
+    - `formatVolume()` - Display formatting (cu in or cu ft)
+    - `getCapacityWarning()` - User-friendly warning messages
+  - Capacity helper functions in `src/lib/capacityHelpers.ts`:
+    - `calculateContainerCapacity()` - Aggregate item volumes
+    - `getCapacityDisplayText()` - Formatted display strings
+    - `getCapacityBarColor()` - Progress bar color classes
+  - Container cards display capacity progress bars with color coding:
+    - Green: < 75% full
+    - Yellow: 75-90% full
+    - Red: ≥ 90% full
+  - Capacity warnings when adding items (90%+ threshold):
+    - Automatic capacity check before item creation
+    - Confirmation dialog with override option
+    - Toast notifications for user feedback
+    - Loading states during validation
+- **HDX Tote Complete Product Line** (Nov 5, 2025) - Accurate dimensions and calculated capacities
+  - Six HDX tote sizes with Home Depot specifications:
+    - 12 Gallon: 3,933 cubic inches
+    - 17 Gallon: 5,152 cubic inches
+    - 27 Gallon: 7,112 cubic inches
+    - 35 Gallon: 9,144 cubic inches
+    - 45 Gallon: 12,441 cubic inches
+    - 55 Gallon: 14,840 cubic inches
+  - Tapered container dimensions (top/bottom/height) for realistic volume calculations
+  - Migration script to move existing containers to new HDX types
+  - Capacity calculation script (`scripts/calculate-hdx-capacities.ts`) executed successfully
+- **Global Search Functionality** (Nov 5, 2025) - Fast, comprehensive search across all data
+  - New `/search` page with real-time search interface
+  - `searchActions.ts` server action with multi-model queries:
+    - Containers: searches label, code, description
+    - Items: searches name, description, notes
+    - Locations: searches name, notes
+  - Case-insensitive matching with `mode: "insensitive"`
+  - Result limits: 10 containers, 20 items, 5 locations
+  - Debounced search input (300ms delay via `useDebounce` hook)
+  - Categorized results display with expandable sections
+  - Empty states: "Start typing" and "No results found"
+  - Loading indicators during search
+  - Navigation links to detail pages from results
+  - Status badges for items (IN_STORAGE, CHECKED_OUT)
+- **Enhanced Drag-and-Drop UX** (Nov 5, 2025) - Improved visual feedback and animations
+  - Custom drag preview image with ghost effect
+  - Grip icons (`GripVertical`) on all draggable items
+  - Pulse animation on drop target slots
+  - Gradient backgrounds on unassigned container sections
+  - Better color coding during drag operations:
+    - Blue: Regular containers
+    - Purple: Item-containers
+    - Green: Valid drop targets
+  - Drag state tracking with isDragging flag
+  - Contextual help text during drag: "Drop on an empty slot to place {name}"
+  - Improved drag-end cleanup to reset states
+  - Enhanced tooltips with drag instructions
+  - Hover effects on draggable items (border color changes, shadow)
+  - Active state feedback (opacity changes during drag)
 - **Container code prefixes with size identifiers** - TOTE27 (27 gallon), CASE (suitcase) for better identification
 - **Network-accessible dev server** - `npm run dev:network` command for testing on other devices
 - **Icon-only buttons with tooltips on container cards** to reduce UI crowding and improve visual clarity
