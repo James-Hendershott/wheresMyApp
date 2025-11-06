@@ -14,7 +14,22 @@ const itemSchema = z.object({
   status: z.nativeEnum(ItemStatus).default(ItemStatus.IN_STORAGE),
   containerId: z.string().optional(),
   tags: z.string().array().optional(),
-});
+  isContainer: z.boolean().default(false),
+  volume: z.number().positive().optional(),
+  currentSlotId: z.string().optional(),
+}).refine(
+  (data) => {
+    // If item is a container, it can have currentSlotId but not containerId
+    // If item is NOT a container, it needs containerId (unless being created standalone)
+    if (data.isContainer && data.containerId) {
+      return false; // Container items can't be inside other containers
+    }
+    return true;
+  },
+  {
+    message: "Items acting as containers cannot be placed inside other containers",
+  }
+);
 
 // ───────────────────── Check Out Item ─────────────────────
 
@@ -294,6 +309,9 @@ export async function createItem(formData: FormData) {
     status: formData.get("status") || ItemStatus.IN_STORAGE,
     containerId: formData.get("containerId") || undefined,
     tags: formData.getAll("tags") as string[],
+    isContainer: formData.get("isContainer") === "true",
+    volume: formData.get("volume") ? parseFloat(formData.get("volume") as string) : undefined,
+    currentSlotId: formData.get("currentSlotId") || undefined,
   });
   if (!parsed.success) {
     return { error: "Validation failed: " + parsed.error.errors[0].message };
@@ -314,6 +332,9 @@ export async function createItem(formData: FormData) {
       status: parsed.data.status,
       tags: parsed.data.tags,
       containerId: parsed.data.containerId,
+      isContainer: parsed.data.isContainer,
+      volume: parsed.data.volume,
+      currentSlotId: parsed.data.currentSlotId,
     },
   });
   revalidatePath("/racks");
