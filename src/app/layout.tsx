@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
 import { Toaster } from "sonner";
+import { OfflineStatusBanner } from "@/components/OfflineStatusBanner";
 
 // WHY: Inter font provides clean, modern typography
 const inter = Inter({ subsets: ["latin"] });
@@ -39,6 +40,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Toaster position="top-right" richColors />
+          <OfflineStatusBanner />
         </Providers>
       </body>
     </html>
