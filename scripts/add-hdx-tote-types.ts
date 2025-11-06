@@ -91,7 +91,7 @@ async function addHDXToteTypes() {
     console.log("📦 Creating/Updating HDX Tote Types:\n");
 
     for (const tote of hdxTotes) {
-      const result = await prisma.containerType.upsert({
+      await prisma.containerType.upsert({
         where: { name: tote.name },
         update: {
           codePrefix: tote.codePrefix,

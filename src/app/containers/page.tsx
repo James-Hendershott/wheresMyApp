@@ -11,6 +11,7 @@ import { EditContainerModalButton } from "@/components/containers/EditContainerM
 import { AssignToRackButton } from "@/components/containers/AssignToRackButton";
 import { listContainerTypes } from "@/app/actions/containerTypeActions";
 import { formatSlotLabel } from "@/lib/slotLabels";
+import { calculateContainerCapacity, getCapacityDisplayText, getCapacityBarColor } from "@/lib/capacityHelpers";
 
 // Force dynamic rendering - don't prerender at build time
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function ContainersPage() {
           select: {
             id: true,
             name: true,
+            capacity: true, // NEW: Include capacity for tracking
           },
         },
         currentSlot: {
@@ -41,6 +43,7 @@ export default async function ContainersPage() {
             id: true,
             name: true,
             status: true,
+            volume: true, // NEW: Include volume for capacity calculations
           },
         },
       },
@@ -174,6 +177,12 @@ export default async function ContainersPage() {
                       )
                     : null;
 
+                  // Calculate capacity for this container
+                  const capacity = calculateContainerCapacity(
+                    container.containerType?.capacity,
+                    container.items
+                  );
+
                   return (
                     <div
                       key={container.id}
@@ -251,6 +260,24 @@ export default async function ContainersPage() {
                             </span>
                           )}
                         </div>
+
+                        {/* Capacity tracking */}
+                        {capacity.hasCapacityData && (
+                          <div className="mt-2 space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-600">Capacity</span>
+                              <span className="font-medium text-gray-900">
+                                {getCapacityDisplayText(capacity)}
+                              </span>
+                            </div>
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                              <div
+                                className={`h-full transition-all duration-300 ${getCapacityBarColor(capacity.fillPercentage)}`}
+                                style={{ width: `${Math.min(capacity.fillPercentage, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </Link>
                     </div>
                   );

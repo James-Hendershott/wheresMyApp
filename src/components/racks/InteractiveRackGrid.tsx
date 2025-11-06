@@ -6,8 +6,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Package, Box, Briefcase, BookOpen, Archive } from "lucide-react";
+import { Package, Box, Briefcase, Archive } from "lucide-react";
 import { formatSlotLabel } from "@/lib/slotLabels";
 import { updateContainer } from "@/app/actions/containerActions";
 import { toast } from "sonner";
