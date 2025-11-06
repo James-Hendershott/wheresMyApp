@@ -20,8 +20,11 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] ~~Items can be added and NOT be inside a container~~ **COMPLETED** - Items as Containers feature implemented (Nov 5, 2025)
 - [x] ~~Container capacity not enforced or tracked~~ **COMPLETED** - Capacity tracking with warnings implemented (Nov 5, 2025)
 - [ ] No item photo upload UI yet (database ready)
-- [ ] How will this work for multiple households? User logins connected to a location. Multiple databases for each house location
-- [ ] Items with isContainer=true need drag-and-drop support in InteractiveRackGrid
+- [ ] Multi-household support: User logins connected to a location. Multiple databases for each house location?
+- [ ] Items with isContainer=true need drag-and-drop support in InteractiveRackGrid (schema complete, UI pending)
+- [ ] Global search functionality across containers/items/locations
+- [ ] Adjust/improve drag-and-drop grids for better UX
+- [ ] Rack display inconsistency between Rack page and Location page views
 
 ### Medium Priority
 
