@@ -124,10 +124,20 @@ export function InteractiveRackGrid({
   const handleDragOver = (e: React.DragEvent, slotId: string, slot: Slot) => {
     e.preventDefault();
     
-    // Only allow drop on empty slots (no container AND no item)
+    // Allow drop on empty slots (no container AND no item)
+    // OR if dragging from a different slot (allow rearranging)
+    const isDifferentSlot = draggedEntity && (
+      (draggedEntity.type === "container" && slot.container?.id !== draggedEntity.id) ||
+      (draggedEntity.type === "item" && slot.item?.id !== draggedEntity.id)
+    );
+    
     if (!slot.container && !slot.item) {
       e.dataTransfer.dropEffect = "move";
       setDragOverSlot(slotId);
+    } else if (isDifferentSlot) {
+      // Can't drop on occupied slot
+      e.dataTransfer.dropEffect = "none";
+      setDragOverSlot(null);
     } else {
       e.dataTransfer.dropEffect = "none";
       setDragOverSlot(null);
@@ -136,6 +146,41 @@ export function InteractiveRackGrid({
 
   const handleDragLeave = () => {
     setDragOverSlot(null);
+  };
+
+  // Handle dropping back to unassigned area (remove from rack)
+  const handleDropUnassigned = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    if (!draggedEntity) return;
+
+    setIsUpdating(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("currentSlotId", ""); // Empty string = remove from slot
+
+      let result;
+      if (draggedEntity.type === "container") {
+        result = await updateContainer(draggedEntity.id, formData);
+      } else {
+        result = await updateItemSlot(draggedEntity.id, formData);
+      }
+
+      if ("error" in result) {
+        toast.error(result.error as string);
+      } else {
+        toast.success(`${draggedEntity.displayName} removed from rack!`);
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error(`Failed to remove ${draggedEntity.type}`);
+      console.error(error);
+    } finally {
+      setIsUpdating(false);
+      setDraggedEntity(null);
+    }
   };
 
   const handleDrop = async (e: React.DragEvent, slot: Slot) => {
@@ -307,8 +352,23 @@ export function InteractiveRackGrid({
         </div>
 
         {isDragging && (
-          <div className="mb-4 rounded-lg border-2 border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
-            💡 Drop on an empty slot to place <strong>{draggedEntity?.displayName}</strong>
+          <div className="mb-4 space-y-2">
+            <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+              💡 Drop on an empty slot to place <strong>{draggedEntity?.displayName}</strong>, or drop below to remove from rack
+            </div>
+            {/* Unassigned Drop Zone - only show when dragging from a slot */}
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+              }}
+              onDrop={handleDropUnassigned}
+              className="rounded-lg border-2 border-dashed border-orange-300 bg-orange-50 p-6 text-center transition-all hover:border-orange-500 hover:bg-orange-100 hover:shadow-md"
+            >
+              <div className="text-3xl">🗑️</div>
+              <div className="mt-2 font-semibold text-orange-700">Drop here to remove from rack</div>
+              <div className="text-xs text-orange-600">Will become unassigned</div>
+            </div>
           </div>
         )}
 
@@ -339,10 +399,24 @@ export function InteractiveRackGrid({
             const entity = slot.container || slot.item || null;
             const entityType = slot.container ? "container" : slot.item ? "item" : null;
             const entityLabel = slot.container?.code || slot.item?.name || "";
+            
+            // Create draggable entity for occupied slots
+            const occupiedEntity: DraggableEntity | null = entity ? {
+              id: entity.id,
+              displayName: slot.container?.label || slot.item?.name || "",
+              type: entityType!,
+              icon: slot.container?.containerType?.iconKey,
+              code: slot.container?.code,
+            } : null;
+            
+            const isThisSlotBeingDragged = occupiedEntity && draggedEntity?.id === occupiedEntity.id && draggedEntity?.type === occupiedEntity.type;
 
             return (
               <div
                 key={slot.id}
+                draggable={isOccupied} // Make occupied slots draggable
+                onDragStart={occupiedEntity ? (e) => handleDragStart(e, occupiedEntity) : undefined}
+                onDragEnd={handleDragEnd}
                 onDragOver={(e) => handleDragOver(e, slot.id, slot)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, slot)}
@@ -350,8 +424,8 @@ export function InteractiveRackGrid({
                 className={`relative flex flex-col items-center justify-center rounded-lg border-2 transition-all duration-200 ${
                   isOccupied
                     ? entityType === "item"
-                      ? "cursor-pointer border-purple-500 bg-purple-50 hover:scale-105 hover:border-purple-600 hover:shadow-lg active:scale-95"
-                      : "cursor-pointer border-blue-500 bg-blue-50 hover:scale-105 hover:border-blue-600 hover:shadow-lg active:scale-95"
+                      ? `${isThisSlotBeingDragged ? "opacity-50 shadow-sm" : ""} cursor-move border-purple-500 bg-purple-50 hover:scale-105 hover:border-purple-600 hover:shadow-lg active:scale-95`
+                      : `${isThisSlotBeingDragged ? "opacity-50 shadow-sm" : ""} cursor-move border-blue-500 bg-blue-50 hover:scale-105 hover:border-blue-600 hover:shadow-lg active:scale-95`
                     : isDragTarget
                       ? "animate-pulse border-green-500 bg-green-100 shadow-lg"
                       : isDragging
@@ -364,12 +438,18 @@ export function InteractiveRackGrid({
                 }}
                 title={
                   isOccupied
-                    ? `${entityType === "item" ? "Item-container:" : ""} ${entityLabel} - Click for details`
+                    ? `${entityType === "item" ? "Item-container:" : ""} ${entityLabel} - Drag to move or click for details`
                     : isDragging
                       ? `Drop ${draggedEntity?.displayName} here`
                       : `Empty slot ${formatSlotLabel(row, col)}`
                 }
               >
+                {/* Drag grip indicator for occupied slots */}
+                {isOccupied && !isThisSlotBeingDragged && (
+                  <div className="absolute right-1 top-1">
+                    <GripVertical className={`h-3 w-3 ${entityType === "item" ? "text-purple-400" : "text-blue-400"}`} />
+                  </div>
+                )}
                 {/* Drop indicator */}
                 {isDragTarget && (
                   <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-green-500 bg-opacity-20">
