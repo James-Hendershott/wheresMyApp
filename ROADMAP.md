@@ -2,14 +2,14 @@
 
 This document outlines planned features, improvements, and future development directions for Where's My...?
 
-> **Last Updated**: November 5, 2025  
+> **Last Updated**: November 6, 2025  
 > **For detailed development plan**: See `Obsidian_Notes/04-Planning/01-Roadmap.md`
 
 ---
 
 ## 🎯 Vision
 
-Build a comprehensive, user-friendly inventory tracking system that makes it easy to find anything, anywhere, anytime - whether stored at home, in a storage unit, or across multiple locations.
+Build a comprehensive, user-friendly inventory tracking system that makes it easy to find anything, anywhere, anytime - whether stored at home, in a storage unit, or across multiple locations. Accessible as a Progressive Web App on any device with full offline support.
 
 ---
 
@@ -17,23 +17,19 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### High Priority
 
-- [x] ~~Items can be added and NOT be inside a container~~ **COMPLETED** - Items as Containers feature implemented (Nov 5, 2025)
-- [x] ~~Container capacity not enforced or tracked~~ **COMPLETED** - Capacity tracking with warnings implemented (Nov 5, 2025)
-- [x] ~~Global search functionality across containers/items/locations~~ **COMPLETED** - Global search with debounced input and categorized results (Nov 5, 2025)
-- [x] ~~Adjust/improve drag-and-drop grids for better UX~~ **COMPLETED** - Enhanced visual feedback, animations, custom drag preview, and better drop indicators (Nov 5, 2025)
-- [x] ~~Items with isContainer=true need drag-and-drop support in InteractiveRackGrid~~ **COMPLETED** - Item-containers can now be dragged to slots with purple visual theme (Nov 5, 2025)
 - [ ] No item photo upload UI yet (database ready)
 - [ ] Multi-household support: User logins connected to a location. Multiple databases for each house location?
 - [ ] Rack display inconsistency between Rack page and Location page views
+- [ ] Push notification backend setup (VAPID keys, API routes, service worker handler) - client complete
+- [ ] Background sync implementation for offline mutations (sync queue processing, conflict resolution)
 
 ### Medium Priority
 
 - [ ] Category migration script exists but needs to be run on production data (optional manual step)
 - [ ] Create item forms don't yet have category/subcategory selects (only edit dialog has them)
+- [ ] Mobile network firewall configuration for testing (requires admin PowerShell)
 
 ### Low Priority
-
-- [ ] No reason that the Where's My...? Image should go to home and also Home inside the navbar. Maybe just use the image.
 - Console Ninja warnings on Next.js v14.2.33 (cosmetic, not blocking)
 - Dev server requires host binding for mobile access (documented workaround)
 - Rack visualization could be more interactive
@@ -159,21 +155,38 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [ ] Export history to CSV
 - [ ] Advanced filtering and sorting
 
-### Milestone 6: PWA & Deployment 🔄 IN PROGRESS
+### Milestone 6: PWA & Deployment ✅ COMPLETE
 
-- [x] PWA configuration (manifest, icons)
-- [x] GitHub Actions CI/CD pipeline
-- [ ] Enhanced offline support with service workers
-- [ ] Background sync for movements
+- [x] PWA configuration (manifest, icons) ✅
+- [x] GitHub Actions CI/CD pipeline ✅
+- [x] **IndexedDB offline storage system** ✅ (Nov 6, 2025)
+  - Complete browser-native database wrapper
+  - React hooks for offline caching
+  - Offline status banner with visual feedback
+- [x] **Web Push Notifications (Android)** ✅ (Nov 6, 2025)
+  - Client-side push manager with VAPID support
+  - Permission management UI with platform detection
+  - iOS limitation documented with email alternative
+  - Backend implementation pending (VAPID keys + API routes)
+- [x] **Web Share Target** ✅ (Nov 6, 2025)
+  - Receive shared photos/links from other apps
+  - Works on iOS AND Android
+  - Processing UI for shared content
+- [x] **Camera permissions for QR scanning** ✅ (Nov 6, 2025)
+- [x] **App shortcuts** (Scan, Inventory, Locations) ✅ (Nov 6, 2025)
+- [x] **Enhanced manifest** with multiple icon sizes and maskable icons ✅ (Nov 6, 2025)
+- [x] **Comprehensive PWA documentation** (3 guides, ~1650 lines) ✅ (Nov 6, 2025)
+- [ ] Background sync for offline mutations (sync queue ready, processor pending)
 - [ ] Production deployment to Vercel + Neon
 - [ ] Docker Compose setup for self-hosting (Unraid)
 - [ ] Custom domain and SSL configuration
 
-### Phase 7: Enhanced UX (Future)
+### Phase 7: Enhanced UX 🔄 IN PROGRESS
 
-- [x] Collapsible locations for better space management
-- [x] Uniform card sizing across containers page
-- [x] Visual indicators for containers with checked-out items
+- [x] Collapsible locations for better space management ✅
+- [x] Uniform card sizing across containers page ✅
+- [x] Visual indicators for containers with checked-out items ✅
+- [x] Offline status banner with connection monitoring ✅ (Nov 6, 2025)
 - [ ] Mobile-optimized responsive design improvements
 - [ ] Dark mode support
 - [ ] Bulk item operations (move, delete, update)
@@ -213,24 +226,29 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 
 ### Short-term Goals (Current Sprint - Nov 2025)
 
-- [x] Complete Container Types system with tapered dimensions
-- [x] Implement collapsible locations UI
-- [x] Add A1-style slot labeling across app
-- [x] **Implement item check-out/check-in workflow with logging**
-- [x] **Expand category system with subcategories (35+ categories, 30+ subcategories)**
-- [x] **Add quick-move dropdown for instant item relocations**
-- [x] **Fix UI layouts (inventory page, container detail, edit button placement)**
+- [x] Complete Container Types system with tapered dimensions ✅
+- [x] Implement collapsible locations UI ✅
+- [x] Add A1-style slot labeling across app ✅
+- [x] **Implement item check-out/check-in workflow with logging** ✅
+- [x] **Expand category system with subcategories (35+ categories, 30+ subcategories)** ✅
+- [x] **Add quick-move dropdown for instant item relocations** ✅
+- [x] **Fix UI layouts (inventory page, container detail, edit button placement)** ✅
+- [x] **Items as Containers feature** ✅ (Nov 5, 2025)
+- [x] **Container capacity tracking with warnings** ✅ (Nov 5, 2025)
+- [x] **Global search functionality** ✅ (Nov 5, 2025)
+- [x] **Enhanced drag-and-drop UX** ✅ (Nov 5, 2025)
+- [x] **PWA Advanced Features** ✅ (Nov 6, 2025)
+  - IndexedDB offline storage ✅
+  - Push notifications client (Android) ✅
+  - Web Share Target ✅
+  - Camera permissions ✅
+  - Comprehensive documentation ✅
+- [ ] Push notification backend (VAPID keys + API routes)
+- [ ] Background sync processor for offline edits
 - [ ] CSV import with automatic category mapping to new structure
 - [ ] Photo upload functionality
-- [ ] **[HIGH PRIORITY]** Add activity timestamps and user tracking for items
-- [ ] **[HIGH PRIORITY]** Create 7-day overdue notification system
-- [ ] **[HIGH PRIORITY]** Update status badges for checked-out items
-- [ ] **[HIGH PRIORITY]** Container editing with approval workflow
-- [ ] **[HIGH PRIORITY]** QR scan → container detail with item actions
+- [ ] Add category/subcategory to create item forms
 - [ ] Fix QR camera access for scanning
-- [ ] Add photo upload UI (camera + file)
-- [ ] Add rack editing capabilities
-- [ ] Complete migration of legacy container data
 
 ### Medium-term Goals (Dec 2025 - Jan 2026) - Milestones 2-3
 
@@ -328,17 +346,27 @@ See `CONTRIBUTING.md` for detailed guidelines.
 - [x] ~~Global search functionality~~ — <span style="color:#16a34a">Shipped: Real-time debounced search across containers/items/locations with categorized results (Nov 5, 2025)</span>
 - [x] ~~Drag-and-drop UX improvements~~ — <span style="color:#16a34a">Shipped: Enhanced visual feedback, custom drag preview, pulse animations, drop indicators, grip icons (Nov 5, 2025)</span>
 - [x] ~~Item-containers in rack grid~~ — <span style="color:#16a34a">Shipped: Drag-and-drop support for items marked as containers, purple visual theme, updateItemSlot action (Nov 5, 2025)</span>
+- [x] ~~Navigation cleanup~~ — <span style="color:#16a34a">Shipped: Removed redundant Home link from navbar (Nov 6, 2025)</span>
+- [x] ~~PWA Advanced Features~~ — <span style="color:#16a34a">Shipped: Complete PWA implementation (Nov 6, 2025)</span>
+  - [x] ~~IndexedDB offline storage~~ — <span style="color:#16a34a">Browser-native database with 5 React hooks (useOnlineStatus, useOfflineCache, useLastSync, useOfflineReady, useRefreshCache)</span>
+  - [x] ~~Offline status banner~~ — <span style="color:#16a34a">Visual connection indicator with last sync time and manual refresh</span>
+  - [x] ~~Push notifications (Android)~~ — <span style="color:#16a34a">Client-side complete with permission UI and platform detection (iOS not supported)</span>
+  - [x] ~~Web Share Target~~ — <span style="color:#16a34a">Receive shared photos/links from other apps (iOS + Android support)</span>
+  - [x] ~~Camera permissions~~ — <span style="color:#16a34a">Manifest configuration for QR scanning from home screen</span>
+  - [x] ~~App shortcuts~~ — <span style="color:#16a34a">Quick access to Scan, Inventory, Locations</span>
+  - [x] ~~PWA documentation~~ — <span style="color:#16a34a">3 comprehensive guides (~1650 lines total)</span>
 
 ---
 
 ## 🗓️ Release Schedule
 
 - **v0.1.0** (Nov 2025): ✅ Bootstrap & Foundation complete
-- **v0.2.0** (Dec 2025): Milestone 1 & 2 - Database finalization + Rack visualization
-- **v0.3.0** (Jan 2026): Milestone 3 - Container management + QR system
-- **v0.4.0** (Feb 2026): Milestone 4 - Item management + Photo uploads
-- **v0.5.0** (Mar 2026): Milestone 5 - History + Search
-- **v1.0.0** (Apr 2026): Milestone 6 - PWA enhancements + Production deployment
+- **v0.2.0** (Dec 2025): ✅ Database finalization + Rack visualization complete
+- **v0.3.0** (Jan 2026): 🔄 Container management + QR system (80% complete)
+- **v0.4.0** (Feb 2026): 🔄 Item management + Photo uploads (60% complete)
+- **v0.5.0** (Mar 2026): ✅ History + Search complete
+- **v0.6.0** (Apr 2026): ✅ PWA Advanced Features complete
+- **v1.0.0** (May 2026): Production deployment + Self-hosting
 - **v2.0.0** (Q4 2026): Multi-user + Collaboration features
 
 ---

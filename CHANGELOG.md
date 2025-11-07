@@ -9,6 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Progressive Web App (PWA) - Advanced Features** (Nov 6, 2025) - Full mobile app experience with offline support
+  - **IndexedDB Offline Storage**: Complete browser-native database caching system
+    - `src/lib/indexedDB.ts` - Full-featured IndexedDB wrapper with stores for items, containers, locations, racks, syncQueue, metadata
+    - Indexed queries for fast lookups (by containerId, category, status, code, qrCode, currentSlotId)
+    - Sync queue for offline mutations with conflict tracking
+    - Storage quota estimation and browser compatibility checks
+  - **Offline Cache React Hooks**: Five custom hooks for seamless offline functionality
+    - `useOnlineStatus()` - Real-time connection monitoring with navigator.onLine events
+    - `useOfflineCache<T>()` - Automatic server-to-IndexedDB sync with cache-first fallback
+    - `useLastSync()` - Track last successful sync timestamp per cache key
+    - `useOfflineReady()` - Check if app has cached data for offline use
+    - `useRefreshCache()` - Force cache clear and reload from server
+  - **Offline Status Banner**: Visual connection indicator at screen bottom
+    - Green "Online" / Orange "Offline Mode" status with last sync time
+    - "Data cached" indicator with item counts
+    - Refresh button to manually sync when online
+    - Only renders when relevant (offline or has cached data)
+  - **Web Push Notifications** (Android Chrome/Edge only - iOS Safari not supported)
+    - `src/lib/pushNotifications.ts` - Complete push manager with VAPID support
+    - Subscribe/unsubscribe functionality with backend persistence
+    - Browser capability detection and permission management
+    - Test notification functionality
+    - `src/components/NotificationSettings.tsx` - Full permission UI with platform warnings
+    - iOS limitation documented (Apple policy to protect App Store ecosystem)
+    - Email notification alternative provided for iOS users
+  - **Web Share Target**: Receive shared content from other apps (iOS + Android)
+    - `public/manifest.json` updated with share_target configuration
+    - `src/app/share/route.ts` - POST endpoint handler for multipart form data
+    - `src/app/share/process/page.tsx` - UI for processing shared photos, links, text
+    - Share from Photos, Safari, Chrome directly into WheresMy inventory
+    - Works on both iOS and Android (unlike push notifications)
+  - **Camera & Notification Permissions**: Manifest configuration for mobile capabilities
+    - Camera permission for QR scanning from home screen
+    - Notifications permission for Android push support
+    - Shortcuts for quick access (Scan QR, View Inventory, Manage Locations)
+  - **Enhanced PWA Manifest**: Complete icon set, shortcuts, and mobile optimization
+    - Multiple icon sizes (72, 96, 128, 144, 152, 192, 384, 512px)
+    - Maskable icons for adaptive icon support (192, 512px)
+    - App shortcuts for common actions
+    - Orientation set to "any" for flexible display
+    - Theme color and background color defined
+  - **Comprehensive PWA Documentation**: Three complete guides
+    - `docs/PWA_SETUP.md` (~800 lines) - Installation, testing, deployment
+    - `docs/PUSH_NOTIFICATIONS.md` (~400 lines) - Push notification deep-dive with iOS alternatives
+    - `docs/PWA_ADVANCED_FEATURES.md` (~450 lines) - Session summary with architecture diagrams
 - **Items as Containers System** (Nov 5, 2025) - Items can now act as standalone containers with drag-and-drop rack slot assignment
   - `isContainer` Boolean flag on Item model to mark items that act as containers
   - `volume` Float field for capacity calculations (cubic inches)
@@ -128,6 +173,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Navigation Cleanup** (Nov 6, 2025) - Removed redundant "Home" link from navbar (logo already navigates home)
+- **PWA Development Mode** (Nov 6, 2025) - Enabled PWA in development for mobile testing (was previously disabled)
 - **Container card buttons refactored to icon-only mode** with Edit and Assign to Rack buttons side-by-side in compact horizontal layout
 - **EditContainerModalButton simplified** to only edit name/description with helper text directing to AssignToRackButton for location changes
 - **Rack grid visual selector** replaces dropdown for slot assignment, showing full rack layout with occupied/available slots
