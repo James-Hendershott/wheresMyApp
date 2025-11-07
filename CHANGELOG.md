@@ -173,6 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Documentation Consolidation** (Nov 7, 2025) - Merged root `learn.md` into `Obsidian_Notes/02-Learning/01-Complete-Learning-Guide.md` for centralized learning resources
 - **Navigation Cleanup** (Nov 6, 2025) - Removed redundant "Home" link from navbar (logo already navigates home)
 - **PWA Development Mode** (Nov 6, 2025) - Enabled PWA in development for mobile testing (was previously disabled)
 - **Container card buttons refactored to icon-only mode** with Edit and Assign to Rack buttons side-by-side in compact horizontal layout
