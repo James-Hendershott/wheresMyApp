@@ -1258,7 +1258,7 @@ Web apps that feel like native apps:
 - Installable to home screen
 - Offline functionality
 - Background sync
-- Push notifications
+- Push notifications (Android only - iOS Safari does not support Web Push API)
 
 ### Setup with next-pwa
 
@@ -1267,7 +1267,10 @@ Already configured in `next.config.js`:
 ```js
 const withPWA = require("next-pwa")({
   dest: "public",
-  disable: process.env.NODE_ENV === "development",
+  disable: false, // Changed from development-only to always enabled for mobile testing
+  runtimeCaching: [
+    // Custom caching strategies for offline support
+  ],
 });
 ```
 
@@ -1281,16 +1284,710 @@ const withPWA = require("next-pwa")({
   "short_name": "WheresMy",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#2563eb"
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan QR Code",
+      "url": "/scan",
+      "description": "Scan a container QR code"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": ["image/*", "video/*"]
+        }
+      ]
+    }
+  }
 }
 ```
 
-### Testing
+### Testing PWA Installation
 
-1. Build for production: `pnpm build && pnpm start`
-2. Open in Chrome
-3. DevTools → Application → Manifest
-4. Click "Install" prompt
+#### On Android (Full Support ✅)
+
+1. Build for production: `npm run build && npm run start`
+2. Open in Chrome on your Android device
+3. Look for "Install app" prompt
+4. Tap to add to home screen
+5. App opens in standalone mode (no browser chrome)
+
+#### On iOS (Limited Support ⚠️)
+
+1. Open in Safari (not Chrome!)
+2. Tap Share button
+3. Scroll down and tap "Add to Home Screen"
+4. Name the app and tap "Add"
+5. **GOTCHA**: iOS does not support:
+   - Web Push Notifications (use email notifications instead)
+   - Background Sync API
+   - Full service worker capabilities
+
+#### Desktop (Chrome/Edge)
+
+1. Look for install icon in address bar
+2. Click to install as desktop app
+3. Opens in app window without browser UI
+
+### Platform Compatibility Matrix
+
+| Feature                | Android Chrome/Edge | iOS Safari | Desktop Chrome/Edge |
+| ---------------------- | ------------------- | ---------- | ------------------- |
+| Install to Home Screen | ✅                  | ✅         | ✅                  |
+| Offline Storage        | ✅                  | ✅         | ✅                  |
+| IndexedDB              | ✅                  | ✅         | ✅                  |
+| Camera Access          | ✅                  | ✅         | ✅                  |
+| Web Share Target       | ✅                  | ✅         | ⚠️ Partial          |
+| Push Notifications     | ✅                  | ❌         | ✅                  |
+| Background Sync        | ✅                  | ❌         | ✅                  |
+
+**Why doesn't iOS support push?** Apple intentionally limits Web Push API to protect App Store revenue. They want you to build native iOS apps instead of PWAs.
+
+---
+
+## IndexedDB Offline Storage
+
+### What is IndexedDB?
+
+**IndexedDB** is a browser-native database that lets you store large amounts of structured data locally. Unlike localStorage (which only stores strings up to ~5MB), IndexedDB can:
+
+- Store complex objects (arrays, nested objects)
+- Handle large datasets (50MB+ typically)
+- Query with indexes (fast lookups)
+- Work offline (no server needed)
+
+### Our IndexedDB Architecture
+
+We use IndexedDB to cache server data for offline viewing:
+
+```typescript
+// src/lib/indexedDB.ts
+const DB_NAME = "wheresmyapp";
+const DB_VERSION = 1;
+
+// Define stores (like SQL tables)
+const STORES = {
+  items: "items",
+  containers: "containers",
+  locations: "locations",
+  racks: "racks",
+  syncQueue: "syncQueue", // For offline mutations
+  metadata: "metadata", // Track last sync times
+};
+```
+
+#### Key Functions
+
+```typescript
+// Open database connection
+const db = await openDB();
+
+// Store data
+await putInStore(db, "items", item);
+
+// Retrieve data
+const items = await getAllFromStore<Item>(db, "items");
+
+// Query with index
+const itemsInContainer = await getByIndex<Item>(
+  db,
+  "items",
+  "containerId",
+  "container-123"
+);
+
+// Track offline changes
+await addToSyncQueue(db, {
+  action: "UPDATE_ITEM",
+  data: { id: "item-1", name: "Updated name" },
+  timestamp: new Date(),
+});
+```
+
+### React Hooks for Offline Caching
+
+Instead of calling IndexedDB directly, use our custom hooks:
+
+#### 1. useOnlineStatus()
+
+Monitors network connection:
+
+```tsx
+"use client";
+import { useOnlineStatus } from "@/hooks/useOfflineCache";
+
+export function MyComponent() {
+  const isOnline = useOnlineStatus();
+
+  return (
+    <div>
+      {isOnline ? (
+        <span className="text-green-600">Connected</span>
+      ) : (
+        <span className="text-orange-600">Offline</span>
+      )}
+    </div>
+  );
+}
+```
+
+#### 2. useOfflineCache()
+
+Automatically syncs server data to IndexedDB and serves cached data when offline:
+
+```tsx
+"use client";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
+
+export function ItemsList() {
+  const {
+    data: items, // Cached data (null if not cached)
+    isOnline, // Connection status
+    isCached, // Whether data is in IndexedDB
+    error, // Any errors during caching
+    clearCache, // Function to clear cache
+  } = useOfflineCache<Item[]>(
+    "items", // Cache key
+    "/api/items" // API endpoint to fetch from
+  );
+
+  if (!items) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {!isOnline && <div>Viewing cached data</div>}
+      {items.map((item) => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+**How it works:**
+
+1. First load: Fetches from `/api/items`, stores in IndexedDB
+2. Subsequent loads: Serves from IndexedDB immediately (instant load!)
+3. If online: Re-fetches in background and updates cache
+4. If offline: Uses cached data only
+
+#### 3. useLastSync()
+
+Shows when data was last synced:
+
+```tsx
+const lastSync = useLastSync("items");
+
+if (lastSync) {
+  return <div>Last updated: {formatDistanceToNow(lastSync)} ago</div>;
+}
+```
+
+#### 4. useOfflineReady()
+
+Check if app has cached data for offline use:
+
+```tsx
+const isReady = useOfflineReady("items");
+
+if (!isReady) {
+  return <div>Please connect to internet to download inventory...</div>;
+}
+```
+
+### Offline Status Banner
+
+We have a global banner that shows connection status:
+
+```tsx
+// src/components/OfflineStatusBanner.tsx
+export function OfflineStatusBanner() {
+  const isOnline = useOnlineStatus();
+  const lastSync = useLastSync("items");
+  const { clearCache } = useOfflineCache("items", "/api/items");
+
+  // Only show when offline or has cached data
+  if (isOnline && !lastSync) return null;
+
+  return (
+    <div className={`${isOnline ? "bg-green-600" : "bg-orange-600"}`}>
+      <span>{isOnline ? "Online" : "Offline Mode"}</span>
+      {lastSync && <span>Last sync: {formatDistanceToNow(lastSync)} ago</span>}
+      {isOnline && (
+        <button onClick={clearCache}>
+          <RefreshCw />
+          Refresh
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+**Integrated in layout.tsx** so it appears on every page.
+
+### Best Practices for Offline Support
+
+1. **Cache read-heavy data**: Items, containers, locations (things users view)
+2. **Don't cache mutations**: Use syncQueue for offline updates
+3. **Show visual feedback**: Always indicate when viewing cached data
+4. **Provide manual refresh**: Let users force sync when needed
+5. **Handle sync conflicts**: If offline edits conflict with server, prompt user
+
+### Sync Queue for Offline Mutations
+
+When offline, users can still make changes. We queue them:
+
+```typescript
+// User edits item while offline
+await addToSyncQueue(db, {
+  action: "UPDATE_ITEM",
+  data: { id: "item-1", name: "New name" },
+  timestamp: new Date(),
+  status: "PENDING",
+});
+
+// When back online, process queue
+const queue = await getSyncQueue(db);
+for (const mutation of queue) {
+  try {
+    await fetch("/api/items", {
+      method: "PATCH",
+      body: JSON.stringify(mutation.data),
+    });
+    await removeFromSyncQueue(db, mutation.id); // Remove on success
+  } catch (error) {
+    // Keep in queue, mark as failed
+    await updateSyncQueueStatus(db, mutation.id, "FAILED");
+  }
+}
+```
+
+**Future enhancement**: Automatic background sync when connection restored.
+
+---
+
+## Push Notifications (Android Only)
+
+### What is Web Push?
+
+**Web Push API** lets you send notifications to users even when they're not actively using your app. Think: "Item checked out by User X" or "7-day checkout reminder".
+
+### Critical Platform Limitation
+
+❌ **iOS Safari does NOT support Web Push API**  
+✅ **Android Chrome/Edge fully support it**  
+✅ **Desktop Chrome/Edge/Firefox support it**
+
+**Why?** Apple policy to protect App Store revenue. They want you to build native iOS apps.
+
+**Solution for iOS users**: Email notifications via server-side job + Prisma User.email
+
+### Architecture
+
+```
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   Client    │ ────▶│ Your Server  │ ────▶│   Browser   │
+│ (subscribe) │      │ (web-push)   │      │ (show notif)│
+└─────────────┘      └──────────────┘      └─────────────┘
+      ▲                                            │
+      └────────────────────────────────────────────┘
+           Service Worker receives push event
+```
+
+### Setup Steps
+
+#### 1. Generate VAPID Keys
+
+VAPID keys authenticate your server:
+
+```bash
+npx web-push generate-vapid-keys
+
+# Output:
+# Public Key: BPxXz4...
+# Private Key: 8vXoF...
+```
+
+Add to `.env`:
+
+```
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=BPxXz4...
+VAPID_PRIVATE_KEY=8vXoF...
+```
+
+#### 2. Client-Side Subscription
+
+```tsx
+"use client";
+import { subscribeUserToPush } from "@/lib/pushNotifications";
+
+async function handleEnableNotifications() {
+  try {
+    // Request permission
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      throw new Error("Permission denied");
+    }
+
+    // Subscribe to push
+    await subscribeUserToPush();
+
+    toast.success("Notifications enabled!");
+  } catch (error) {
+    if (error.message.includes("not supported")) {
+      // iOS or other unsupported browser
+      toast.error("Push notifications not supported on this device");
+    } else {
+      toast.error("Failed to enable notifications");
+    }
+  }
+}
+```
+
+#### 3. Server-Side Sending
+
+```typescript
+// src/app/api/push/send/route.ts
+import webpush from "web-push";
+
+webpush.setVapidDetails(
+  "mailto:your-email@example.com",
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+);
+
+export async function POST(request: Request) {
+  const { userId, title, body } = await request.json();
+
+  // Get user's push subscription from database
+  const subscription = await prisma.pushSubscription.findUnique({
+    where: { userId },
+  });
+
+  if (!subscription) {
+    return Response.json({ error: "Not subscribed" }, { status: 404 });
+  }
+
+  // Send push notification
+  await webpush.sendNotification(
+    {
+      endpoint: subscription.endpoint,
+      keys: {
+        auth: subscription.auth,
+        p256dh: subscription.p256dh,
+      },
+    },
+    JSON.stringify({ title, body })
+  );
+
+  return Response.json({ success: true });
+}
+```
+
+#### 4. Service Worker Handler
+
+```javascript
+// public/service-worker.js
+self.addEventListener("push", (event) => {
+  const data = event.data.json();
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: "/icon-192.png",
+      badge: "/icon-72.png",
+      vibrate: [200, 100, 200],
+      data: {
+        url: "/inventory", // Click to open this page
+      },
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url));
+});
+```
+
+### Permission States
+
+Users can grant, deny, or block notifications:
+
+```tsx
+function NotificationSettings() {
+  const [permission, setPermission] = useState<NotificationPermission>("default");
+
+  useEffect(() => {
+    setPermission(Notification.permission);
+  }, []);
+
+  if (permission === "denied") {
+    return (
+      <div className="text-red-600">
+        Notifications blocked. To enable:
+        <ol>
+          <li>Go to browser Settings</li>
+          <li>Find Site Settings → Notifications</li>
+          <li>Allow for this site</li>
+        </ol>
+      </div>
+    );
+  }
+
+  if (permission === "granted") {
+    return <button onClick={unsubscribe}>Disable Notifications</button>;
+  }
+
+  return <button onClick={subscribe}>Enable Notifications</button>;
+}
+```
+
+### Testing Push Notifications
+
+1. **Check browser support**:
+
+   ```javascript
+   if ("serviceWorker" in navigator && "PushManager" in window) {
+     console.log("Push supported!");
+   } else {
+     console.log("Push NOT supported");
+   }
+   ```
+
+2. **Test on Android Chrome**:
+
+   - Open DevTools → Application → Service Workers
+   - Check "Push" to send test notification
+   - Verify notification appears
+
+3. **Test on iOS Safari**:
+   - Will fail! iOS doesn't support it
+   - Show alternative message: "Use email notifications"
+
+### iOS Alternative: Email Notifications
+
+Since iOS doesn't support push, implement email fallback:
+
+```typescript
+// When sending notification, check platform
+if (user.platformIsIOS) {
+  // Send email instead
+  await sendEmail({
+    to: user.email,
+    subject: title,
+    body: body,
+  });
+} else {
+  // Send push notification
+  await webpush.sendNotification(subscription, payload);
+}
+```
+
+**Detect iOS**:
+
+```typescript
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+```
+
+### Resources
+
+- [Web Push API MDN](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)
+- [web-push library](https://github.com/web-push-libs/web-push)
+- [VAPID specification](https://tools.ietf.org/html/rfc8292)
+- **Full guide**: `docs/PUSH_NOTIFICATIONS.md` in this project
+
+---
+
+## Web Share Target API
+
+### What is Web Share Target?
+
+Lets your PWA **receive** content shared from other apps. Examples:
+
+- Share photo from Photos app → Opens your app with photo
+- Share link from Safari → Opens your app to add item
+- Share text from Notes → Pre-fills description field
+
+### Supported Platforms
+
+✅ **Android** - Full support  
+✅ **iOS** - Full support (unlike push notifications!)  
+⚠️ **Desktop** - Partial support (Chrome/Edge only)
+
+### Setup
+
+#### 1. Configure Manifest
+
+```json
+// public/manifest.json
+{
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": ["image/*", "video/*"]
+        }
+      ]
+    }
+  }
+}
+```
+
+#### 2. Create API Route Handler
+
+```typescript
+// src/app/share/route.ts
+export async function POST(request: Request) {
+  const formData = await request.formData();
+
+  // Extract shared data
+  const title = formData.get("title") as string;
+  const text = formData.get("text") as string;
+  const url = formData.get("url") as string;
+  const media = formData.getAll("media") as File[];
+
+  // Authenticate user
+  const session = await auth();
+  if (!session) {
+    return Response.redirect("/login?callbackUrl=/share/process");
+  }
+
+  // Redirect to processing page with data
+  const params = new URLSearchParams({
+    title: title || "",
+    text: text || "",
+    url: url || "",
+  });
+
+  return Response.redirect(`/share/process?${params}`);
+}
+```
+
+#### 3. Create Processing Page
+
+```tsx
+// src/app/share/process/page.tsx
+"use client";
+
+export default function ShareProcessPage({
+  searchParams,
+}: {
+  searchParams: { title?: string; text?: string; url?: string };
+}) {
+  const [itemName, setItemName] = useState(searchParams.title || "");
+  const [description, setDescription] = useState(searchParams.text || "");
+
+  async function handleCreateItem() {
+    await createItem({
+      name: itemName,
+      description,
+      // Pre-fill from shared data
+    });
+  }
+
+  return (
+    <div>
+      <h1>Add Shared Item</h1>
+      <form onSubmit={handleCreateItem}>
+        <input
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
+          placeholder="Item name"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+        />
+        <button type="submit">Add to Inventory</button>
+      </form>
+    </div>
+  );
+}
+```
+
+### User Experience Flow
+
+1. User takes photo in Camera app
+2. Taps Share button → Sees "WheresMy App" in share sheet
+3. Taps WheresMy → App opens to `/share/process`
+4. Photo preview shown, item name/description pre-filled
+5. User confirms → Item created with photo
+
+### Testing Web Share Target
+
+#### On Android:
+
+1. Install PWA to home screen
+2. Open Photos app
+3. Select a photo → Share
+4. WheresMy App appears in share sheet
+5. Tap to share to app
+
+#### On iOS:
+
+1. Add PWA to home screen (Safari → Share → Add to Home Screen)
+2. Open Photos app
+3. Tap Share button
+4. Scroll down to "WheresMy" in app list
+5. Tap to share
+
+#### Desktop (limited):
+
+- Only works if PWA is **installed** (not in browser tab)
+- Right-click image → Share → WheresMy App
+
+### Gotchas
+
+1. **Must be installed**: Share target only appears for installed PWAs
+2. **HTTPS required**: Localhost works for dev, production needs HTTPS
+3. **Form data parsing**: Use `multipart/form-data`, not JSON
+4. **Authentication**: Check user is logged in, redirect if not
+5. **File size limits**: Handle large photos gracefully
+
+### Debugging
+
+Check if share target is registered:
+
+```javascript
+// In browser console (after PWA installed)
+navigator.share({
+  title: "Test",
+  text: "Test share",
+  url: "https://example.com",
+});
+```
+
+If your app doesn't appear, check:
+
+- ✅ Manifest has correct `share_target` syntax
+- ✅ PWA is installed (not just opened in browser)
+- ✅ HTTPS enabled (or localhost for dev)
+- ✅ Service worker registered
 
 ---
 
