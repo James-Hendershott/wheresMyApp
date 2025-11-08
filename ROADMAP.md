@@ -114,6 +114,7 @@ Build a comprehensive, user-friendly inventory tracking system that makes it eas
 - [x] QR codes stored in database
 - [x] QR codes downloadable as PNG
 - [x] **Container code prefixes with size** (TOTE27 for 27-gallon, CASE for suitcases based on HDX standards)
+- [x] **Nested containers system** (container-in-container storage with circular prevention) (Nov 7, 2025)
 - [ ] **[HIGH PRIORITY]** Container editing with admin/user approval workflow
 - [x] **[HIGH PRIORITY]** QR code scanner opens container with item management interface
 - [ ] QR code scanner using ZXing library (camera access needs fix)
@@ -355,6 +356,11 @@ See `CONTRIBUTING.md` for detailed guidelines.
   - [x] ~~Camera permissions~~ — <span style="color:#16a34a">Manifest configuration for QR scanning from home screen</span>
   - [x] ~~App shortcuts~~ — <span style="color:#16a34a">Quick access to Scan, Inventory, Locations</span>
   - [x] ~~PWA documentation~~ — <span style="color:#16a34a">3 comprehensive guides (~1650 lines total)</span>
+- [x] ~~Nested containers system~~ — <span style="color:#16a34a">Shipped: Container-in-container storage with circular nesting prevention (Nov 7, 2025)</span>
+  - [x] ~~Server actions with validation~~ — <span style="color:#16a34a">Circular prevention (ancestor walk), mutual exclusivity (slot XOR parent), automatic cleanup</span>
+  - [x] ~~AssignToContainerButton UI~~ — <span style="color:#16a34a">Modal with filtered container list, remove from parent option, location breadcrumbs</span>
+  - [x] ~~Container detail page updates~~ — <span style="color:#16a34a">Parent display ("Stored inside"), child containers grid, descendant filtering</span>
+  - [x] ~~Self-referential Prisma relations~~ — <span style="color:#16a34a">parentContainerId FK, bidirectional relations, indexed for performance</span>
 
 ---
 

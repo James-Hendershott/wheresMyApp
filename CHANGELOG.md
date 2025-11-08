@@ -9,6 +9,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Nested Containers System** (Nov 7, 2025) - Store containers inside other containers (e.g., book boxes inside totes)
+  - **Database Schema**: Self-referential relations on Container model
+    - `parentContainerId` String? field (nullable foreign key)
+    - `parentContainer` Container? (belongs-to relation)
+    - `childContainers` Container[] (has-many relation)
+    - Named relation: `"NestedContainers"` for Prisma self-reference
+    - Index on `parentContainerId` for query performance
+    - Migration: `20251105155912_add_nested_containers`
+  - **Server Actions** (`src/app/actions/containerActions.ts`):
+    - Enhanced `updateContainer()` with parent container support
+    - **Business Rules**:
+      - Mutual exclusivity: Container can be in rack slot OR parent container (not both)
+      - Self-nesting prevention: Container cannot contain itself
+      - Circular nesting prevention: Walks ancestor chain to detect loops
+      - Automatic cleanup: Moving to parent clears slot; moving to slot clears parent
+    - Transaction-based atomic updates for data consistency
+    - Three-level validation (self, ancestors, UI filtering)
+  - **UI Components**:
+    - `AssignToContainerButton.tsx` (~220 lines): Modal for selecting parent container
+      - Lists available containers with location breadcrumbs
+      - "Remove from Parent" option (orange highlighted)
+      - Current parent highlighted in blue
+      - Icon-only mode with Package icon
+      - Tooltip: "Store in Another Container"
+      - Filters out self and descendants to prevent circular nesting
+    - Container detail page updates (`src/app/containers/[id]/page.tsx`):
+      - Three action buttons: Store in Container, Assign to Rack, Edit
+      - Parent container display: "📦 Stored inside: [Parent Label]" with link
+      - Child containers grid: "Containers Stored Inside (N)" section
+      - Shows original rack location for nested containers
+      - Descendant exclusion algorithm (recursive filtering)
+  - **Documentation**:
+    - `NESTED_CONTAINERS_STATUS.md`: Complete implementation guide (~400 lines)
+    - Patterns documented: Self-referential relations, circular detection, descendant exclusion
+  - **Remaining Work**:
+    - Containers list page: Show parent/child info in cards
+    - Rack visualization: Add nested container indicators (📦 +3)
+    - Testing: Full end-to-end validation of circular prevention
+
 - **Progressive Web App (PWA) - Advanced Features** (Nov 6, 2025) - Full mobile app experience with offline support
   - **IndexedDB Offline Storage**: Complete browser-native database caching system
     - `src/lib/indexedDB.ts` - Full-featured IndexedDB wrapper with stores for items, containers, locations, racks, syncQueue, metadata
