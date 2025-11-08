@@ -104,6 +104,7 @@ export async function updateContainer(id: string, formData: FormData) {
   const label = formData.get("label") as string;
   const description = formData.get("description") as string;
   const currentSlotId = formData.get("currentSlotId") as string;
+  const parentContainerId = formData.get("parentContainerId") as string;
 
   if (!label || label.length < 2) {
     return { error: "Label is required and must be at least 2 characters" };
@@ -116,8 +117,39 @@ export async function updateContainer(id: string, formData: FormData) {
       const existing = await tx.container.findUnique({ where: { id } });
       if (!existing) throw new Error("Container not found");
 
-      // If slotId changed, free previous and occupy new
+      // GOTCHA: Container can be in a slot OR in another container, not both
       const newSlotId = currentSlotId || null;
+      const newParentId = parentContainerId || null;
+
+      if (newSlotId && newParentId) {
+        throw new Error(
+          "Container cannot be both in a rack slot AND inside another container"
+        );
+      }
+
+      // Prevent circular nesting (container containing itself or its ancestors)
+      if (newParentId) {
+        if (newParentId === id) {
+          throw new Error("Container cannot contain itself");
+        }
+
+        // Check if newParentId is a descendant of this container
+        let current = newParentId;
+        while (current) {
+          const parent = await tx.container.findUnique({
+            where: { id: current },
+            select: { parentContainerId: true },
+          });
+          if (parent?.parentContainerId === id) {
+            throw new Error(
+              "Cannot create circular nesting: the target container is nested inside this one"
+            );
+          }
+          current = parent?.parentContainerId || null;
+        }
+      }
+
+      // If slotId changed, free previous and occupy new
       if (newSlotId !== existing.currentSlotId) {
         // Free previous slot
         if (existing.currentSlotId) {
@@ -141,12 +173,26 @@ export async function updateContainer(id: string, formData: FormData) {
         }
       }
 
+      // If moving from slot to container, clear slot
+      if (newParentId && existing.currentSlotId) {
+        await tx.slot.update({
+          where: { id: existing.currentSlotId },
+          data: { containerId: null },
+        });
+      }
+
+      // If moving from container to slot, clear parent
+      if (newSlotId && existing.parentContainerId) {
+        // Parent will be cleared in the update below
+      }
+
       const container = await tx.container.update({
         where: { id },
         data: {
           label,
           description: description || null,
           currentSlotId: newSlotId,
+          parentContainerId: newParentId,
         },
       });
       return container;

@@ -1,6 +1,6 @@
 // WHY: Container detail page showing all items, QR code, and add/edit capabilities
-// WHAT: Displays container info, QR for printing, items list, and add item form
-// HOW: Server component with client-side QR display component
+// WHAT: Displays container info, QR for printing, items list, nested containers, and add item form
+// HOW: Server component with client-side QR display component and nested container support
 
 import { ItemActionsMenu } from "@/components/items/ItemActionsMenu";
 import Image from "next/image";
@@ -9,13 +9,17 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { QRCodeDisplay } from "./QRCodeDisplay";
 import { AddItemToContainerForm } from "./AddItemToContainerForm";
+import { EditContainerModalButton } from "@/components/containers/EditContainerModalButton";
+import { AssignToRackButton } from "@/components/containers/AssignToRackButton";
+import { AssignToContainerButton } from "@/components/containers/AssignToContainerButton";
+import { formatSlotLabel } from "@/lib/slotLabels";
 
 interface ContainerPageProps {
   params: { id: string };
 }
 
 export default async function ContainerPage({ params }: ContainerPageProps) {
-  const [container, allContainers] = await Promise.all([
+  const [container, allContainers, racks] = await Promise.all([
     prisma.container.findUnique({
       where: { id: params.id },
       include: {
@@ -34,11 +38,54 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
           },
           orderBy: { createdAt: "desc" },
         },
+        parentContainer: {
+          select: {
+            id: true,
+            label: true,
+            currentSlot: {
+              include: {
+                rack: {
+                  include: {
+                    location: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        childContainers: {
+          include: {
+            currentSlot: {
+              include: {
+                rack: {
+                  include: {
+                    location: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { label: "asc" },
+        },
       },
     }),
     prisma.container.findMany({
       select: { id: true, label: true },
       orderBy: { label: "asc" },
+    }),
+    prisma.rack.findMany({
+      include: {
+        location: true,
+        slots: {
+          select: {
+            id: true,
+            row: true,
+            col: true,
+            containerId: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
     }),
   ]);
 
@@ -47,8 +94,29 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
   const location = container.currentSlot?.rack?.location?.name || "Unassigned";
   const rack = container.currentSlot?.rack?.name || null;
   const slot = container.currentSlot
-    ? `${String.fromCharCode(65 + container.currentSlot.row)}${container.currentSlot.col + 1}`
+    ? formatSlotLabel(container.currentSlot.row, container.currentSlot.col)
     : null;
+
+  // Filter available containers (exclude self and descendants to prevent circular nesting)
+  const getDescendantIds = (containerId: string, containers: typeof allContainers): string[] => {
+    const directChildren = container.childContainers?.map(c => c.id) || [];
+    const allDescendants = [...directChildren];
+    
+    // Recursively find descendants (simplified - in production might need database query)
+    for (const childId of directChildren) {
+      const childContainer = allContainers.find(c => c.id === childId);
+      if (childContainer) {
+        allDescendants.push(...getDescendantIds(childId, containers));
+      }
+    }
+    
+    return allDescendants;
+  };
+
+  const descendantIds = getDescendantIds(container.id, allContainers);
+  const availableContainers = allContainers.filter(
+    c => c.id !== container.id && !descendantIds.includes(c.id)
+  );
 
   return (
     <main className="mx-auto max-w-4xl p-6">
@@ -74,14 +142,96 @@ export default async function ContainerPage({ params }: ContainerPageProps) {
                 {rack && ` → ${rack}`}
                 {slot && ` ${slot}`}
               </div>
+              {container.parentContainer && (
+                <div className="mt-1 text-sm">
+                  <span className="text-orange-600">📦 Stored inside: </span>
+                  <Link
+                    href={`/containers/${container.parentContainer.id}`}
+                    className="font-medium text-blue-600 hover:underline"
+                  >
+                    {container.parentContainer.label}
+                  </Link>
+                </div>
+              )}
               {container.description && (
                 <div className="mt-2 text-sm">{container.description}</div>
               )}
             </div>
           </div>
-          <QRCodeDisplay code={container.code} label={container.label} />
+          
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            <AssignToContainerButton
+              containerId={container.id}
+              containerLabel={container.label}
+              currentParentId={container.parentContainer?.id || null}
+              availableContainers={availableContainers}
+              iconOnly
+            />
+            <AssignToRackButton
+              containerId={container.id}
+              currentSlotId={container.currentSlot?.id || null}
+              racks={racks}
+              iconOnly
+            />
+            <EditContainerModalButton
+              container={{
+                id: container.id,
+                label: container.label,
+                description: container.description,
+              }}
+              iconOnly
+            />
+          </div>
         </div>
       </div>
+
+      {/* QR Code */}
+      <div className="mb-8">
+        <QRCodeDisplay code={container.code} label={container.label} />
+      </div>
+
+      {/* Child Containers (Nested Inside This Container) */}
+      {container.childContainers && container.childContainers.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-4 text-2xl font-semibold">
+            Containers Stored Inside ({container.childContainers.length})
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {container.childContainers.map((child) => {
+              const childLocation = child.currentSlot?.rack?.location?.name || "No rack location";
+              const childRack = child.currentSlot?.rack?.name || null;
+              const childSlot = child.currentSlot
+                ? formatSlotLabel(child.currentSlot.row, child.currentSlot.col)
+                : null;
+
+              return (
+                <Link
+                  key={child.id}
+                  href={`/containers/${child.id}`}
+                  className="block rounded-lg border border-blue-200 bg-blue-50 p-4 transition hover:border-blue-400"
+                >
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-lg font-semibold text-gray-900">
+                      📦 {child.label}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <div>Code: <span className="font-mono">{child.code}</span></div>
+                    {child.currentSlot && (
+                      <div className="mt-1">
+                        Originally from: {childLocation}
+                        {childRack && ` → ${childRack}`}
+                        {childSlot && ` ${childSlot}`}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Items List */}
       <div className="mb-8">

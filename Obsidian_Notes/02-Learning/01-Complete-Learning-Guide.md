@@ -824,6 +824,117 @@ await prisma.container.delete({
 });
 ```
 
+### Self-Referential Relations (Nested Data)
+
+**What**: A model that references itself (e.g., containers inside containers, folders inside folders).
+
+**When to Use**: Hierarchical or tree-like data structures.
+
+#### Example: Nested Containers
+
+```prisma
+model Container {
+  id                String      @id @default(cuid())
+  code              String      @unique
+  label             String
+  
+  // Self-referential relation for nesting
+  parentContainerId String?
+  parentContainer   Container?  @relation("NestedContainers", fields: [parentContainerId], references: [id], onDelete: SetNull)
+  childContainers   Container[] @relation("NestedContainers")
+  
+  @@index([parentContainerId])
+}
+```
+
+**Key Points**:
+1. **Named Relation**: Must use `@relation("Name")` for self-references (same name on both sides)
+2. **Nullable FK**: `parentContainerId String?` - top-level containers have no parent
+3. **Bidirectional**: 
+   - `parentContainer` (singular) - belongs-to relation
+   - `childContainers` (plural) - has-many relation
+4. **onDelete Behavior**: `SetNull` prevents cascading deletes (child becomes orphan instead)
+5. **Index**: Add `@@index([parentContainerId])` for query performance
+
+#### Querying Nested Data
+
+```tsx
+// Get container with all its children
+const container = await prisma.container.findUnique({
+  where: { id: "parent-id" },
+  include: {
+    childContainers: true, // All direct children
+    parentContainer: true, // The parent (if nested)
+  },
+});
+
+// Get all top-level containers (no parent)
+const topLevel = await prisma.container.findMany({
+  where: { parentContainerId: null },
+});
+
+// Get entire hierarchy (recursive - careful with deep nesting!)
+async function getDescendants(containerId: string): Promise<string[]> {
+  const children = await prisma.container.findMany({
+    where: { parentContainerId: containerId },
+    select: { id: true },
+  });
+  
+  const childIds = children.map(c => c.id);
+  const grandchildIds = await Promise.all(
+    childIds.map(id => getDescendants(id))
+  );
+  
+  return [...childIds, ...grandchildIds.flat()];
+}
+```
+
+#### Circular Nesting Prevention
+
+**Problem**: What if Container A contains B, which contains C, which contains A? Infinite loop!
+
+**Solution**: Walk the ancestor chain before allowing nesting.
+
+```tsx
+// Server action validation
+async function updateContainer(id: string, parentId: string | null) {
+  if (!parentId) return; // No parent = allowed
+  
+  // Check 1: Can't contain itself
+  if (parentId === id) {
+    throw new Error("Container cannot contain itself");
+  }
+  
+  // Check 2: Walk up the parent chain
+  let current = parentId;
+  while (current) {
+    const parent = await prisma.container.findUnique({
+      where: { id: current },
+      select: { parentContainerId: true },
+    });
+    
+    if (parent?.parentContainerId === id) {
+      throw new Error("Cannot create circular nesting");
+    }
+    
+    current = parent?.parentContainerId || null;
+  }
+  
+  // Safe to update
+  await prisma.container.update({
+    where: { id },
+    data: { parentContainerId: parentId },
+  });
+}
+```
+
+**Real-World Use Cases**:
+- Folders/subfolders in file systems
+- Comment threads with replies
+- Organizational hierarchies (manager → employee)
+- Product categories with subcategories
+- Containers inside other containers (totes, boxes, bins)
+
 ### Migrations
 
 ```bash
